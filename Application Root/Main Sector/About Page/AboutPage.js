@@ -4,6 +4,7 @@ class AboutPage extends JABView {
 		super(customId)
 		
 		// State
+		this.comingSoon = true
 		
 		// UI
 	}

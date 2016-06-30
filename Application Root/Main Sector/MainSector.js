@@ -10,7 +10,7 @@ class MainSector extends JABView {
 		
 		this.possibleStates = ['WorkPage', 'MorePage', 'AboutPage', 'ContactPage']
 		this.state = this.possibleStates[0]
-		
+		this.comingSoon = true
 
 		this.totalScrollDistanceSinceLastTrigger = 0
 		this.heightOfHeader = 100
@@ -20,8 +20,19 @@ class MainSector extends JABView {
 		this.aboutPage = new AboutPage('AboutPage')
 		this.morePage = new MorePage('MorePage')
 		this.workPage = new WorkPage('WorkPage')
+		
+		this.comingSoonView = new UILabel('ComingSoonView')
+		
 		this.homePage = new HomePage('HomePage')
 		this.header = new Header('Header')
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 	}
@@ -63,6 +74,7 @@ class MainSector extends JABView {
 		this.addAboutPage()
 		this.addMorePage()
 		this.addWorkPage()
+		this.addComingSoonView()
 		this.addHomePage()
 		this.addHeader()
 		
@@ -85,6 +97,10 @@ class MainSector extends JABView {
 	
 	addWorkPage () {
 		this.addSubview(this.workPage)
+	}
+	
+	addComingSoonView () {
+		this.addSubview(this.comingSoonView)
 	}
 	
 	addHomePage () {
@@ -116,7 +132,11 @@ class MainSector extends JABView {
 
 		this.configureWorkPage()
 		this.positionWorkPage()
-
+		
+		
+		this.configureComingSoonView()
+		this.positionComingSoonView()
+		
 		this.configureHomePage()
 		this.positionHomePage()
 
@@ -138,6 +158,8 @@ class MainSector extends JABView {
 			if (!this.subviewIsAboveSubviews(this.contactPage, [this.workPage, this.morePage, this.aboutPage])) {
 				this.insertSubviewAboveSubviews(this.contactPage, [this.workPage, this.morePage, this.aboutPage])
 			}
+			
+			setComingSoon(this.contactPage.comingSoon)
 		}
 		
 	}
@@ -159,6 +181,8 @@ class MainSector extends JABView {
 			if (!this.subviewIsAboveSubviews(this.aboutPage, [this.workPage, this.morePage, this.contactPage])) {
 				this.insertSubviewAboveSubviews(this.aboutPage, [this.workPage, this.morePage, this.contactPage])
 			}
+			
+			setComingSoon(this.aboutPage.comingSoon)
 		}
 		
 	}
@@ -180,6 +204,8 @@ class MainSector extends JABView {
 			if (!this.subviewIsAboveSubviews(this.morePage, [this.workPage, this.aboutPage, this.contactPage])) {
 				this.insertSubviewAboveSubviews(this.morePage, [this.workPage, this.aboutPage, this.contactPage])
 			}
+			
+			setComingSoon(this.morePage.comingSoon)
 		}
 		
 	}
@@ -210,10 +236,17 @@ class MainSector extends JABView {
 			if (!this.subviewIsAboveSubviews(this.workPage, [this.morePage, this.aboutPage, this.contactPage])) {
 				this.insertSubviewAboveSubviews(this.workPage, [this.morePage, this.aboutPage, this.contactPage])
 			}
+			
+			setComingSoon(this.workPage.comingSoon)
+			
+			this.workPage.updateAllUI()
+			
+			this.workPage.overflow = 'visible'
+		} else {
+			
+			this.workPage.overflow = 'hidden'
 		}
 		
-		
-		this.workPage.updateAllUI()
 	}
 
 	positionWorkPage () {
@@ -235,6 +268,50 @@ class MainSector extends JABView {
 		this.workPage.frame = newFrame
 
 	}
+	
+	
+	
+	
+	
+	
+	// Coming Soon View
+	configureComingSoonView () {
+		
+		this.comingSoonView.text = 'COMING SOON...'
+		
+		this.comingSoonView.textColor = 'white'
+		this.comingSoonView.fontSize = 30
+		this.comingSoonView.fontFamily = 'siteFont'
+		this.comingSoonView.fontWeight = 'bold'
+		this.comingSoonView.letterSpacing = 1.5
+		
+		this.comingSoonView.configureDuration = 0
+		
+		if (this.comingSoon) {
+			this.comingSoonView.opacity = 1
+		} else {
+			this.comingSoonView.opacity = 0
+		}
+	}
+	
+	positionComingSoonView () {
+		
+		var size = this.comingSoonView.font.sizeOfString(this.comingSoonView.text)
+		var newFrame = new CGRect()
+					
+		newFrame.size.width = size.width
+		newFrame.size.height = size.height
+
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = (this.height - newFrame.size.height)/2
+					
+		this.comingSoonView.frame = newFrame
+		
+	}
+	
+	
+	
+	
 
 
 	// Home Page
@@ -392,4 +469,18 @@ class MainSector extends JABView {
 		
 	}
 
+}
+
+
+function setComingSoon (newComingSoon) {
+	
+	if (newComingSoon != null) {
+		var changed = (applicationRoot.mainSector.comingSoon != newComingSoon)
+		applicationRoot.mainSector.comingSoon = newComingSoon
+		
+		if (changed) {
+			applicationRoot.mainSector.updateAllUI()
+		}
+	}
+	
 }

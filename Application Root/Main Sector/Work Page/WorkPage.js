@@ -19,6 +19,9 @@ class WorkPage extends JABView {
 		this.heightOfMenuSection = 50
 		
 		
+		this.comingSoon = null
+		
+		
 		// Initialize
 	}
 	
@@ -101,6 +104,8 @@ class WorkPage extends JABView {
 			if (!this.subviewIsAboveSubviews(this.projectsList, [this.reelView])) {
 				this.insertSubviewAboveSubviews(this.projectsList, [this.reelView])
 			}
+			
+			setComingSoon(this.projectsList.comingSoon)
 		}
 		
 		
@@ -141,6 +146,8 @@ class WorkPage extends JABView {
 			if (!this.subviewIsAboveSubviews(this.reelView, [this.projectsList])) {
 				this.insertSubviewAboveSubviews(this.reelView, [this.projectsList])
 			}
+			
+			setComingSoon(this.reelView.comingSoon)
 		}
 		
 		

@@ -4,8 +4,10 @@ class MorePage extends JABView {
 		super(customId)
 		
 		// State
+		this.comingSoon = true
 		
 		// UI
+		
 	}
 	
 	
@@ -28,10 +30,17 @@ class MorePage extends JABView {
 		
 	}
 	
+	
+	addComingSoonView () {
+		this.addSubview(this.comingSoonView)
+	}
+	
 	// Update
 	updateAllUI () {
 		super.updateAllUI()
+		
 	}
+	
 	
 	
 	//
