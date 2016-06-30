@@ -2,8 +2,8 @@ class UIFont {
 	
 	constructor (size, family, weight, style, variant) {
 		
-		this.stateSelectors = ['size', 'family', 'weight', 'style', 'variant', 'letterSpacing']
-		this.correspondingCSSSelectors = ['font-size', 'font-family', 'font-weight', 'font-style', 'font-variant', 'letter-spacing']
+		this.stateSelectors = ['size', 'family', 'weight', 'style', 'variant', 'letterSpacing', 'lineHeight']
+		this.correspondingCSSSelectors = ['font-size', 'font-family', 'font-weight', 'font-style', 'font-variant', 'letter-spacing', 'line-height']
 		
 		// State
 		this.size = null
@@ -12,6 +12,7 @@ class UIFont {
 		this.style = null
 		this.variant = null
 		this.letterSpacing = null
+		this.lineHeight = null
 		
 		
 		this.reservedId = 'UIFontReservedIDForTextMeasurement'
@@ -26,7 +27,7 @@ class UIFont {
 	//
 	
 	
-	sizeOfString (string) {
+	sizeOfString (string, widthConstraint) {
 		
 		$('body').append("<div id='" + this.reservedId + "'>" + string + "</div>")
 		
@@ -36,9 +37,14 @@ class UIFont {
 			left: '-1000px',
 			top: '-1000px',
 			
-			width: 'auto',
 			height: 'auto',
-			whiteSpace: 'nowrap'
+		}
+		
+		if (widthConstraint == 0 || widthConstraint == null) {
+			cssOptions.whiteSpace = 'nowrap'
+			cssOptions.width = 'auto'
+		} else {
+			cssOptions.width = widthConstraint + 'px'
 		}
 		
 		for (var i = 0; i < this.stateSelectors.length; i++) {
@@ -59,5 +65,6 @@ class UIFont {
 		return size
 		
 	}
+	
 	
 }

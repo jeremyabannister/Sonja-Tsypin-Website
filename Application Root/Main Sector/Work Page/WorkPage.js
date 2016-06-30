@@ -19,6 +19,9 @@ class WorkPage extends JABView {
 		this.heightOfMenuSection = 50
 		
 		
+		this.comingSoon = null
+		
+		
 		// Initialize
 	}
 	
@@ -101,6 +104,8 @@ class WorkPage extends JABView {
 			if (!this.subviewIsAboveSubviews(this.projectsList, [this.reelView])) {
 				this.insertSubviewAboveSubviews(this.projectsList, [this.reelView])
 			}
+			
+			setComingSoon(this.projectsList.comingSoon)
 		}
 		
 		
@@ -141,6 +146,8 @@ class WorkPage extends JABView {
 			if (!this.subviewIsAboveSubviews(this.reelView, [this.projectsList])) {
 				this.insertSubviewAboveSubviews(this.reelView, [this.projectsList])
 			}
+			
+			setComingSoon(this.reelView.comingSoon)
 		}
 		
 		
@@ -189,11 +196,14 @@ class WorkPage extends JABView {
 		this.menu.textColor = 'white'
 		this.menu.fontSize = 10
 		this.menu.letterSpacing = 1.5
+		this.menu.configureDuration = 550
+		this.menu.configureDelay = 100
 		
 		if (this.subdued) {
 			this.menu.opacity = 0
 		} else {
 			this.menu.opacity = 1
+			this.menu.configureEasingFunction = 'cubic-bezier(0.45, 0.03, 0.88, 0.79)'
 		}
 		
 		this.menu.updateAllUI()
@@ -216,10 +226,6 @@ class WorkPage extends JABView {
 
 		newFrame.origin.x = this.width - newFrame.size.width - rightBufferForMenu
 		newFrame.origin.y = topBufferForMenu
-		
-		if (this.subdued) {
-			newFrame.origin.y += 100
-		}
 
 		this.menu.frame = newFrame
 		

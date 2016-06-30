@@ -239,7 +239,10 @@ class HomePage extends JABView {
 				homePage.backgroundImageIndex = 1
 			}
 
-			homePage.animatedUpdate(1500, 0)
+			homePage.animatedUpdate({
+				configureDuration: 1500,
+				positionDuration: 0
+			})
 
 			homePage.startTimeoutForNextImage()
 

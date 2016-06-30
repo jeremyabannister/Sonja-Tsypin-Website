@@ -2,9 +2,11 @@ class ProjectsList extends JABView {
 
 	constructor (customId) {
 		super(customId)
-
+		
+		
 		// State
 		this.projectDataBundles = this.assembleProjectDataBundles()
+		this.comingSoon = true
 
 		// UI
 		this.projectRows = []
@@ -12,8 +14,6 @@ class ProjectsList extends JABView {
 			this.projectRows.push(new ProjectRow(null, this.projectDataBundles[i]))
 		}
 		
-		
-		// Initialize
 	}
 	
 	
@@ -38,7 +38,6 @@ class ProjectsList extends JABView {
 	}
 
 
-
 	
 	// Update
 	updateAllUI () {
@@ -47,6 +46,7 @@ class ProjectsList extends JABView {
 
 		this.configureProjectRows()
 		this.positionProjectRows()
+		
 	}
 
 
@@ -56,6 +56,10 @@ class ProjectsList extends JABView {
 
 		for (var i = 0; i < this.projectRows.length; i++) {
 			this.projectRows[i].projectDataBundle = this.projectDataBundles[i]
+			
+			if (this.comingSoon) {
+				this.projectRows[i].opacity = 0
+			}
 		}
 
 	}
@@ -80,6 +84,7 @@ class ProjectsList extends JABView {
 		}
 
 	}
+
 
 
 

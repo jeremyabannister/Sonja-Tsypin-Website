@@ -51,3 +51,20 @@ class Stopwatch {
 
 var globalStopwatch = new Stopwatch()
 
+
+
+
+// Math
+function greaterOfTwo (first, second) {
+	if (second > first) {
+		return second
+	}
+	return first
+}
+
+function lesserOfTwo (first, second) {
+	if (second < first) {
+		return second
+	}
+	return first
+}

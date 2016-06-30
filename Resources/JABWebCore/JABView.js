@@ -856,7 +856,7 @@ class JABView {
 	// Animated Update
 	//
 	
-	animatedUpdate (options) {
+	animatedUpdate (options, completion) {
 		
 		if (typeof options == 'number') {
 			options = {
@@ -877,10 +877,8 @@ class JABView {
 
 
 
-		var duration = this.animationOptions.configureDelay + this.animationOptions.configureDuration
-		if (this.animationOptions.positionDelay + this.animationOptions.positionDuration > duration) {
-			duration = this.animationOptions.positionDelay + this.animationOptions.positionDuration
-		}
+		var duration = this.longestAnimationTimeOfSelfAndSubviews()
+		
 		
 		var thisView = this
 		this.disableAnimationsTimer = setTimeout(function() {
@@ -894,38 +892,23 @@ class JABView {
 				positionDelay: 0
 			})
 		}, duration)
-
+		
+		if (completion == null) {
+			completion = function() {}
+		}
+		setTimeout(function() {
+			completion()
+		}, duration)
 	}
 	
-	removeNullsFromAnimationOptions (options) {
-		if (options.configureDuration == null) {
-			options.configureDuration = 0
+	longestAnimationTimeOfSelfAndSubviews () {
+		
+		var longestTime = greaterOfTwo((this.animationOptions.configureDelay || 0) + (this.animationOptions.configureDuration || 0), (this.animationOptions.positionDelay || 0) + (this.animationOptions.positionDuration || 0))
+		for (var i = 0; i < this.subviews.length; i++) {
+			longestTime = greaterOfTwo(longestTime, this.subviews[i].longestAnimationTimeOfSelfAndSubviews())
 		}
 		
-		if (options.configureEasingFunction == null) {
-			options.configureEasingFunction = 'ease-in-out'
-		}
-		
-		if (options.configureDelay == null) {
-			options.configureDelay = 0
-		}
-		
-		
-		
-		
-		if (options.positionDuration == null) {
-			options.positionDuration = 0
-		}
-		
-		if (options.positionEasingFunction == null) {
-			options.positionEasingFunction = 'ease-in-out'
-		}
-		
-		if (options.positionDelay == null) {
-			options.positionDelay = 0
-		}
-		
-		return options
+		return longestTime
 	}
 
 
