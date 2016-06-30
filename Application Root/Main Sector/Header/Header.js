@@ -11,7 +11,7 @@ class Header extends JABView {
 
 		// UI
 		this.logo = new Logo('Logo')
-		this.menu = new Menu('Menu', [['WORK', 'work'], ['MORE', 'more'], ['ABOUT', 'about'], ['CONTACT', 'contact']])
+		this.menu = new Menu('Menu', [['WORK', 'work'], ['MORE', 'more'], ['ABOUT', 'about']])
 
 
 	}

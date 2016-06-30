@@ -38,7 +38,7 @@ class UILabel extends JABView {
 
 	set text (newText) {
 		this._text = newText
-		$(this.selector).text(newText)
+		$(this.selector).html(newText)
 	}
 
 

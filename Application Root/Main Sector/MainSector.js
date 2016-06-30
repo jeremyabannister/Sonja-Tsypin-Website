@@ -176,6 +176,13 @@ class MainSector extends JABView {
 	configureAboutPage () {
 		
 		this.aboutPage.backgroundColor = 'black'
+		this.aboutPage.reservedTopBuffer = this.heightOfHeader
+		
+		if (this.websiteClosed) {
+			this.aboutPage.subdued = true
+		} else {
+			this.aboutPage.subdued = false
+		}
 		
 		if (this.state == this.possibleStates[2]) {
 			if (!this.subviewIsAboveSubviews(this.aboutPage, [this.workPage, this.morePage, this.contactPage])) {
@@ -183,13 +190,18 @@ class MainSector extends JABView {
 			}
 			
 			setComingSoon(this.aboutPage.comingSoon)
+			
 		}
+		
+		this.aboutPage.updateAllUI()
 		
 	}
 	
 	positionAboutPage () {
 		
-		this.aboutPage.frame = this.bounds
+		var newFrame = this.bounds
+		
+		this.aboutPage.frame = newFrame
 	}
 
 
@@ -453,6 +465,7 @@ class MainSector extends JABView {
 		
 		if (pageIdentifier == 'work') {
 			this.state = this.possibleStates[0]
+			this.workPage.state = this.workPage.possibleStates[0]
 		} else if (pageIdentifier == 'more') {
 			this.state = this.possibleStates[1]
 		} else if (pageIdentifier == 'about') {
