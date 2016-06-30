@@ -4,6 +4,7 @@ class ReelView extends JABView {
 		super(customId)
 		
 		// State
+		this.comingSoon = false
 		
 		// UI
 		this.vimeoView = new JABVimeoView('VimeoView')
@@ -62,7 +63,7 @@ class ReelView extends JABView {
 		newFrame.size.height = newFrame.size.width * (9.0/16.0)
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = 20
+		newFrame.origin.y = 0
 					
 		this.vimeoView.frame = newFrame
 		

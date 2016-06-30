@@ -56,7 +56,7 @@ class Menu extends JABView {
 	set selectedIndex (newSelectedIndex) {
 		
 		var difference = Math.abs(this.selectedIndex - newSelectedIndex)
-		this.underlinePositionDuration = 200 * difference
+		this.underlinePositionDuration = lesserOfTwo(200 * difference, 400)
 		
 		this._selectedIndex = newSelectedIndex
 	}
