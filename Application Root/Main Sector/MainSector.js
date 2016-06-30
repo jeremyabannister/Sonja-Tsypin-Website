@@ -24,6 +24,14 @@ class MainSector extends JABView {
 		this.header = new Header('Header')
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 	
