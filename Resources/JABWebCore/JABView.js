@@ -17,7 +17,6 @@ class JABView {
 		}
 		
 		
-		
 		// Subviews
 		this.subviews = []
 		
