@@ -163,7 +163,7 @@ class AboutPage extends JABView {
 		newFrame.size.height = size.height
 
 		newFrame.origin.x = this.bioText.x
-		newFrame.origin.y = this.bioText.bottom + 60
+		newFrame.origin.y = this.bioText.bottom + 56
 		
 					
 		this.emailAddress.frame = newFrame
