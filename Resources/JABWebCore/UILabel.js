@@ -63,7 +63,8 @@ class UILabel extends JABView {
 			'font-weight': newFont.weight,
 			'font-style': newFont.style,
 			'font-variant': newFont.variant,
-			'letter-spacing': newFont.letterSpacing
+			'letter-spacing': newFont.letterSpacing,
+			'line-height': newFont.lineHeight
 		})
 	}
 
@@ -175,7 +176,17 @@ class UILabel extends JABView {
 		this.font = this.font
 	}
 
-
+	
+	
+	// Line Height
+	get lineHeight () {
+		return this.font.lineHeight
+	}
+	
+	set lineHeight (newLineHeight) {
+		this.font.lineHeight = newLineHeight
+		this.font = this.font
+	}
 
 
 
