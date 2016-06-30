@@ -91,10 +91,11 @@ class AboutPage extends JABView {
 	
 	positionBioText () {
 		
-		var size = this.bioText.font.sizeOfString(this.bioText.text, this.bioText.width)
 		var newFrame = new CGRect()
 					
 		newFrame.size.width = 740
+		
+		var size = this.bioText.font.sizeOfString(this.bioText.text, newFrame.size.width)
 		newFrame.size.height = size.height
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
@@ -162,7 +163,7 @@ class AboutPage extends JABView {
 		newFrame.size.height = size.height
 
 		newFrame.origin.x = this.bioText.x
-		newFrame.origin.y = this.bioText.bottom + 55
+		newFrame.origin.y = this.bioText.bottom + 60
 		
 					
 		this.emailAddress.frame = newFrame
