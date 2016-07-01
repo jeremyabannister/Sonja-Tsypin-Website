@@ -4,10 +4,12 @@ class JABVimeoView extends JABView {
 		super(customId)
 		
 		// State
-		this.vimeoId = ''
+		this.vimeoId = null
 		
 		// UI
+		this.player = null
 		this.iframe = "<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>"
+		
 		
 	}
 	
@@ -25,12 +27,18 @@ class JABVimeoView extends JABView {
 	// Getters and Setters
 	//
 	get vimeoId () {
-		return $(this.selector + ' > img').attr('src')
+		return this._vimeoId
 	}
 	
 	set vimeoId (newVimeoId) {
-		this._vimeoId = newVimeoId
-		$(this.selector + ' > iframe').attr({ 'src':('https://player.vimeo.com/video/' + newVimeoId + '?portrait=0&badge=0&byline=0&title=0') })
+		var changed = this.vimeoId != newVimeoId
+		
+		if (changed) {
+			this._vimeoId = newVimeoId
+			$(this.selector + ' > iframe').attr({ 'src':('https://player.vimeo.com/video/' + newVimeoId + '?portrait=0&badge=0&byline=0&title=0&api=1') })
+			
+			this.player = new Vimeo.Player($(this.selector + ' > iframe'));
+		}
 	}
 	
 	
@@ -81,6 +89,19 @@ class JABVimeoView extends JABView {
 	//
 	// Actions
 	//
+	
+	play () {
+		if (this.player != null) {
+			this.player.play()
+		}
+	}
+	
+	pause () {
+		if (this.player != null) {
+			this.player.pause()
+		}
+	}
+	
 	
 	//
 	// Delegate

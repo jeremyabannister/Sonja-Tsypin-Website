@@ -28,6 +28,7 @@ var WorkPage = function (_JABView) {
 		_this.possibleStates = ['Reel', 'Projects'];
 		_this.state = _this.possibleStates[0];
 		_this.subdued = true;
+		_this.currentlyActive = null;
 
 		_this.reservedTopBuffer = 0;
 		_this.heightOfMenuSection = 50;
@@ -145,6 +146,14 @@ var WorkPage = function (_JABView) {
 				}
 
 				setComingSoon(this.reelView.comingSoon);
+
+				if (this.currentlyActive) {
+					this.reelView.currentlyActive = true;
+				} else {
+					this.reelView.currentlyActive = false;
+				}
+			} else {
+				this.reelView.currentlyActive = false;
 			}
 
 			if (this.state == this.possibleStates[0] && !this.subdued) {
@@ -258,6 +267,20 @@ var WorkPage = function (_JABView) {
 			} else if (this.state == this.possibleStates[1]) {
 				this.reelView.configureDuration = 0;
 				this.projectsList.configureDuration = null;
+			}
+		}
+	}, {
+		key: 'currentlyActive',
+		get: function get() {
+			return this._currentlyActive;
+		},
+		set: function set(newCurrentlyActive) {
+			var changed = this.currentlyActive != newCurrentlyActive;
+
+			if (changed) {
+				this._currentlyActive = newCurrentlyActive;
+
+				this.configureReelView();
 			}
 		}
 	}]);

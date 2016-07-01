@@ -246,10 +246,13 @@ var MainSector = function (_JABView) {
 
 				this.workPage.updateAllUI();
 
-				this.workPage.overflow = 'visible';
+				if (!this.websiteClosed) {
+					this.workPage.currentlyActive = true;
+				} else {
+					this.workPage.currentlyActive = false;
+				}
 			} else {
-
-				this.workPage.overflow = 'hidden';
+				this.workPage.currentlyActive = false;
 			}
 		}
 	}, {

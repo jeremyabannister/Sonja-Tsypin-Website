@@ -253,10 +253,14 @@ class MainSector extends JABView {
 			
 			this.workPage.updateAllUI()
 			
-			this.workPage.overflow = 'visible'
-		} else {
+			if (!this.websiteClosed) {
+				this.workPage.currentlyActive = true
+			} else {
+				this.workPage.currentlyActive = false
+			}
 			
-			this.workPage.overflow = 'hidden'
+		} else {
+			this.workPage.currentlyActive = false
 		}
 		
 	}
