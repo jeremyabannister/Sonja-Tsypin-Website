@@ -20,9 +20,10 @@ var JABVimeoView = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JABVimeoView).call(this, customId));
 
-		_this.vimeoId = '';
+		_this.vimeoId = null;
 
 		// UI
+		_this.player = null;
 		_this.iframe = "<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
 
 		return _this;
@@ -90,6 +91,21 @@ var JABVimeoView = function (_JABView) {
 		// Actions
 		//
 
+	}, {
+		key: 'play',
+		value: function play() {
+			if (this.player != null) {
+				this.player.play();
+			}
+		}
+	}, {
+		key: 'pause',
+		value: function pause() {
+			if (this.player != null) {
+				this.player.pause();
+			}
+		}
+
 		//
 		// Delegate
 		//
@@ -97,11 +113,17 @@ var JABVimeoView = function (_JABView) {
 	}, {
 		key: 'vimeoId',
 		get: function get() {
-			return $(this.selector + ' > img').attr('src');
+			return this._vimeoId;
 		},
 		set: function set(newVimeoId) {
-			this._vimeoId = newVimeoId;
-			$(this.selector + ' > iframe').attr({ 'src': 'https://player.vimeo.com/video/' + newVimeoId + '?portrait=0&badge=0&byline=0&title=0' });
+			var changed = this.vimeoId != newVimeoId;
+
+			if (changed) {
+				this._vimeoId = newVimeoId;
+				$(this.selector + ' > iframe').attr({ 'src': 'https://player.vimeo.com/video/' + newVimeoId + '?portrait=0&badge=0&byline=0&title=0&api=1' });
+
+				this.player = new Vimeo.Player($(this.selector + ' > iframe'));
+			}
 		}
 	}]);
 

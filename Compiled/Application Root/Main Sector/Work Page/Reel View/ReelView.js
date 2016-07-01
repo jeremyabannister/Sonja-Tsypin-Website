@@ -20,6 +20,7 @@ var ReelView = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ReelView).call(this, customId));
 
+		_this.currentlyActive = null;
 		_this.comingSoon = false;
 
 		// UI
@@ -39,13 +40,18 @@ var ReelView = function (_JABView) {
 		}
 
 		//
+		// Getters and Setters
+		//
+
+	}, {
+		key: 'addAllUI',
+
+
+		//
 		// UI
 		//
 
 		// Add
-
-	}, {
-		key: 'addAllUI',
 		value: function addAllUI() {
 			this.addVimeoView();
 		}
@@ -71,7 +77,12 @@ var ReelView = function (_JABView) {
 	}, {
 		key: 'configureVimeoView',
 		value: function configureVimeoView() {
-			this.vimeoView.vimeoId = '153864846';
+
+			var vimeoId = '153864846';
+
+			if (this.vimeoView.vimeoId != vimeoId) {
+				this.vimeoView.vimeoId = vimeoId;
+			}
 		}
 	}, {
 		key: 'positionVimeoView',
@@ -96,10 +107,45 @@ var ReelView = function (_JABView) {
 		// Actions
 		//
 
+		// Video
+
+	}, {
+		key: 'playReel',
+		value: function playReel() {
+			if (this.vimeoView != null) {
+				this.vimeoView.play();
+			}
+		}
+	}, {
+		key: 'pauseReel',
+		value: function pauseReel() {
+			if (this.vimeoView != null) {
+				this.vimeoView.pause();
+			}
+		}
+
 		//
 		// Delegate
 		//
 
+	}, {
+		key: 'currentlyActive',
+		get: function get() {
+			return this._currentlyActive;
+		},
+		set: function set(newCurrentlyActive) {
+			var changed = this.currentlyActive != newCurrentlyActive;
+
+			if (changed) {
+				this._currentlyActive = newCurrentlyActive;
+
+				if (this.currentlyActive) {
+					this.playReel();
+				} else {
+					this.pauseReel();
+				}
+			}
+		}
 	}]);
 
 	return ReelView;

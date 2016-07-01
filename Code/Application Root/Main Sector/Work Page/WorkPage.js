@@ -14,6 +14,7 @@ class WorkPage extends JABView {
 		this.possibleStates = ['Reel', 'Projects']
 		this.state = this.possibleStates[0]
 		this.subdued = true
+		this.currentlyActive = null
 		
 		this.reservedTopBuffer = 0
 		this.heightOfMenuSection = 50
@@ -47,6 +48,20 @@ class WorkPage extends JABView {
 		}
 	}
 	
+	
+	get currentlyActive () {
+		return this._currentlyActive
+	}
+	
+	set currentlyActive (newCurrentlyActive) {
+		var changed = this.currentlyActive != newCurrentlyActive
+		
+		if (changed) {
+			this._currentlyActive = newCurrentlyActive
+			
+			this.configureReelView()
+		}
+	}
 	
 	//
 	// UI
@@ -148,6 +163,14 @@ class WorkPage extends JABView {
 			}
 			
 			setComingSoon(this.reelView.comingSoon)
+			
+			if (this.currentlyActive) {
+				this.reelView.currentlyActive = true
+			} else {
+				this.reelView.currentlyActive = false
+			}
+		} else {
+			this.reelView.currentlyActive = false
 		}
 		
 		

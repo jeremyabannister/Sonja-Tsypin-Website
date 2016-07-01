@@ -4,6 +4,7 @@ class ReelView extends JABView {
 		super(customId)
 		
 		// State
+		this.currentlyActive = null
 		this.comingSoon = false
 		
 		// UI
@@ -21,6 +22,28 @@ class ReelView extends JABView {
 	}
 	
 	
+	
+	//
+	// Getters and Setters
+	//
+	
+	get currentlyActive () {
+		return this._currentlyActive
+	}
+	
+	set currentlyActive (newCurrentlyActive) {
+		var changed = this.currentlyActive != newCurrentlyActive
+		
+		if (changed) {
+			this._currentlyActive = newCurrentlyActive
+			
+			if (this.currentlyActive) {
+				this.playReel()
+			} else {
+				this.pauseReel()
+			}
+		}
+	}
 	
 	
 	//
@@ -51,7 +74,13 @@ class ReelView extends JABView {
 	// Vimeo View
 	
 	configureVimeoView () {
-		this.vimeoView.vimeoId = '153864846'
+		
+		var vimeoId = '153864846'
+		
+		if (this.vimeoView.vimeoId != vimeoId) {
+			this.vimeoView.vimeoId = vimeoId
+		}
+		
 		
 	}
 	
@@ -79,6 +108,20 @@ class ReelView extends JABView {
 	//
 	// Actions
 	//
+	
+	
+	// Video
+	playReel () {
+		if (this.vimeoView != null) {
+			this.vimeoView.play()
+		}
+	}
+	
+	pauseReel () {
+		if (this.vimeoView != null) {
+			this.vimeoView.pause()
+		}
+	}
 	
 	//
 	// Delegate
