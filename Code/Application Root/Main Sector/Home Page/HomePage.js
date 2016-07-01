@@ -114,11 +114,11 @@ class HomePage extends JABView {
 
 		if (this.backgroundLayer1IsActive) {
 			this.backgroundLayer1.opacity = 1
-			this.backgroundLayer1.src = '/Resources/Images/Home Page/Featured Stills/' + this.backgroundImageIndex + '.jpg'
+			this.backgroundLayer1.src = './Resources/Images/Home Page/Featured Stills/' + this.backgroundImageIndex + '.jpg'
 		} else {
 			this.backgroundLayer1.opacity = 0
 		}
-
+		
 	}
 
 	positionBackgroundLayer1 () {
@@ -148,7 +148,7 @@ class HomePage extends JABView {
 		if (this.backgroundLayer1IsActive) {
 			this.backgroundLayer2.opacity = 0
 		} else {
-			this.backgroundLayer2.src = '/Resources/Images/Home Page/Featured Stills/' + this.backgroundImageIndex + '.jpg'
+			this.backgroundLayer2.src = './Resources/Images/Home Page/Featured Stills/' + this.backgroundImageIndex + '.jpg'
 			this.backgroundLayer2.opacity = 1
 		}
 
@@ -177,7 +177,7 @@ class HomePage extends JABView {
 	// Enter Arrow
 	configureEnterArrow () {
 
-		this.enterArrow.src = '/Resources/Images/Buttons/Down Arrow.png'
+		this.enterArrow.src = './Resources/Images/Buttons/Enter Arrow.png'
 		this.enterArrow.cursor = 'pointer'
 
 		if (this.arrowFaded) {
@@ -191,7 +191,7 @@ class HomePage extends JABView {
 	positionEnterArrow () {
 
 
-		var widthOfEnterArrow = 40
+		var widthOfEnterArrow = 50
 		var bottomBufferForEnterArrow = 20
 
 

@@ -4,7 +4,7 @@ class JABImageView extends JABView {
 		super(customId)
 		
 		// State
-		this.src = ''
+		this.image = new UIImage('')
 		
 		// UI*
 		this.imageView = "<img>"
@@ -26,15 +26,33 @@ class JABImageView extends JABView {
 	
 	
 	
+	//
+	// Getters and Setters
+	//
+	
+	get image () {
+		return this._image
+	}
+	
+	set image (newImage) {
+		this._image = newImage
+		$(this.selector + ' > img').attr({ 'src':newImage.src })
+	}
+	
+	
+	
+	
 	
 	get src () {
-		return $(this.selector + ' > img').attr('src')
+		return this.image.src
 	}
 	
 	set src (newSrc) {
-		this._src = newSrc
-		$(this.selector + ' > img').attr({ 'src':newSrc })
+		this.image.src = newSrc
+		this.image = this.image
 	}
+	
+	
 	
 	
 	//
