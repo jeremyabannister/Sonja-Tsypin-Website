@@ -1,0 +1,173 @@
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Header = function (_JABView) {
+	_inherits(Header, _JABView);
+
+	function Header(customId) {
+		_classCallCheck(this, Header);
+
+		// State
+
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Header).call(this, customId));
+
+		_this.selectedMenuIndex = -1;
+		_this.websiteClosed = true;
+
+		// UI
+		_this.logo = new Logo('Logo');
+		_this.menu = new Menu('Menu', [['WORK', 'work'], ['MORE', 'more'], ['ABOUT', 'about']]);
+
+		return _this;
+	}
+
+	//
+	// Init
+	//
+
+	_createClass(Header, [{
+		key: 'init',
+		value: function init() {
+			_get(Object.getPrototypeOf(Header.prototype), 'init', this).call(this);
+
+			this.startEventListeners();
+		}
+
+		//
+		// UI
+		//
+
+		// Add
+
+	}, {
+		key: 'addAllUI',
+		value: function addAllUI() {
+
+			this.addLogo();
+			this.addMenu();
+		}
+	}, {
+		key: 'addLogo',
+		value: function addLogo() {
+			this.addSubview(this.logo);
+		}
+	}, {
+		key: 'addMenu',
+		value: function addMenu() {
+			this.addSubview(this.menu);
+		}
+
+		// Update
+
+	}, {
+		key: 'updateAllUI',
+		value: function updateAllUI() {
+			_get(Object.getPrototypeOf(Header.prototype), 'updateAllUI', this).call(this);
+
+			this.configureLogo();
+			this.positionLogo();
+
+			this.configureMenu();
+			this.positionMenu();
+		}
+
+		// Logo
+
+	}, {
+		key: 'configureLogo',
+		value: function configureLogo() {
+
+			// this.logo.animationsDisabled = ['all']
+			if (this.websiteClosed) {
+				this.logo.faded = true;
+			} else {
+				this.logo.faded = false;
+			}
+			this.logo.cursor = 'pointer';
+
+			this.logo.updateAllUI();
+		}
+	}, {
+		key: 'positionLogo',
+		value: function positionLogo() {
+
+			var leftBufferForLogo = (this.width - applicationRoot.contentWidth) / 2;
+			var topBufferForLogo = 39;
+
+			this.logo.frame = new CGRect(leftBufferForLogo, 39, this.logo.requiredWidth, this.logo.requiredHeight);
+		}
+
+		// Menu
+
+	}, {
+		key: 'configureMenu',
+		value: function configureMenu() {
+
+			this.menu.showUnderline = !this.websiteClosed;
+			this.menu.selectedIndex = this.selectedMenuIndex;
+
+			this.menu.textColor = 'white';
+			this.menu.fontSize = 12;
+			this.menu.letterSpacing = 1.5;
+			this.menu.fontWeight = 'bold';
+			this.menu.textAlign = 'right';
+
+			this.menu.updateAllUI();
+		}
+	}, {
+		key: 'positionMenu',
+		value: function positionMenu() {
+
+			var widthOfMenu = this.width / 2;
+			var heightOfMenu = this.height;
+
+			var topBufferForMenu = 42;
+			var rightBufferForMenu = (this.width - applicationRoot.contentWidth) / 2;
+
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.menu.requiredWidth;
+			newFrame.size.height = this.menu.requiredHeight;
+
+			newFrame.origin.x = this.width - newFrame.size.width - rightBufferForMenu;
+			newFrame.origin.y = topBufferForMenu;
+
+			this.menu.frame = newFrame;
+		}
+
+		//
+		// Event Listeners
+		//
+
+	}, {
+		key: 'startEventListeners',
+		value: function startEventListeners() {
+
+			var header = this;
+			$(this.logo.selector).click(function () {
+				header.parent.headerLogoWasClicked();
+			});
+		}
+
+		//
+		// Delegate
+		//
+
+	}, {
+		key: 'menuButtonWasPressed',
+		value: function menuButtonWasPressed(buttonIdentifier) {
+			this.parent.headerDidSelectPage(buttonIdentifier);
+		}
+	}]);
+
+	return Header;
+}(JABView);
