@@ -114,7 +114,7 @@ var ProjectsList = function (_JABView) {
 			powderRoom.subtitle = 'dir. SONJA TSYPIN';
 			powderRoom.year = '2016';
 
-			powderRoom.stills = ['/Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg'];
+			powderRoom.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg'];
 			powderRoom.mainStillIndex = 2;
 
 			dataBundles.push(powderRoom);
@@ -125,7 +125,7 @@ var ProjectsList = function (_JABView) {
 			powderRoom2.subtitle = 'dir. SONJA TSYPIN';
 			powderRoom2.year = '2016';
 
-			powderRoom2.stills = ['/Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', '/Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg'];
+			powderRoom2.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg'];
 			powderRoom2.mainStillIndex = 0;
 
 			// dataBundles.push(powderRoom2)
