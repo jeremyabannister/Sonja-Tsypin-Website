@@ -37,9 +37,7 @@ class ReelView extends JABView {
 		if (changed) {
 			this._currentlyActive = newCurrentlyActive
 			
-			if (this.currentlyActive) {
-				this.playReel()
-			} else {
+			if (!this.currentlyActive) {
 				this.pauseReel()
 			}
 		}

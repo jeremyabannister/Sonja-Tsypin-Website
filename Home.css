@@ -82,3 +82,22 @@ body {
 	background-color: black;
 }
 
+
+
+
+
+/* Animations  */
+@keyframes bounce {
+	
+	
+	0% {
+	    transform:translate3d(0px, 0px, 0px);
+	}
+	50% {
+		/*transform: translate3d(10px, -10px, 0px);*/
+	}
+	100% {
+	    transform:translate3d(0px, 0px, 0px);
+	}
+	
+}

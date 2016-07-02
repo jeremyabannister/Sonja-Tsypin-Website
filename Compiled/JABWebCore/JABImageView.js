@@ -20,7 +20,7 @@ var JABImageView = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JABImageView).call(this, customId));
 
-		_this.src = '';
+		_this.image = new UIImage('');
 
 		// UI*
 		_this.imageView = "<img>";
@@ -40,6 +40,11 @@ var JABImageView = function (_JABView) {
 
 			this.positionImageView();
 		}
+
+		//
+		// Getters and Setters
+		//
+
 	}, {
 		key: 'positionImageView',
 
@@ -56,13 +61,22 @@ var JABImageView = function (_JABView) {
 			});
 		}
 	}, {
+		key: 'image',
+		get: function get() {
+			return this._image;
+		},
+		set: function set(newImage) {
+			this._image = newImage;
+			$(this.selector + ' > img').attr({ 'src': newImage.src });
+		}
+	}, {
 		key: 'src',
 		get: function get() {
-			return $(this.selector + ' > img').attr('src');
+			return this.image.src;
 		},
 		set: function set(newSrc) {
-			this._src = newSrc;
-			$(this.selector + ' > img').attr({ 'src': newSrc });
+			this.image.src = newSrc;
+			this.image = this.image;
 		}
 	}]);
 

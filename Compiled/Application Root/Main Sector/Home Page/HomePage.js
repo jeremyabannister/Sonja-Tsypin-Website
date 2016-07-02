@@ -23,12 +23,13 @@ var HomePage = function (_JABView) {
 		_this.backgroundImageIndex = 1;
 		_this.backgroundLayer1IsActive = true;
 		_this.arrowFaded = true;
+		_this.currentlyActive = true;
 
 		// UI
 		_this.blackBackground = new JABView('BlackBackground');
 		_this.backgroundLayer1 = new JABImageView('BackgroundLayer1');
 		_this.backgroundLayer2 = new JABImageView('BackgroundLayer2');
-		_this.enterArrow = new JABImageView('EnterArrow');
+		_this.enterArrow = new EnterArrow('EnterArrow');
 
 		return _this;
 	}
@@ -184,26 +185,27 @@ var HomePage = function (_JABView) {
 		key: 'configureEnterArrow',
 		value: function configureEnterArrow() {
 
-			this.enterArrow.src = './Resources/Images/Buttons/Down Arrow.png';
 			this.enterArrow.cursor = 'pointer';
 
-			if (this.arrowFaded) {
-				this.enterArrow.opacity = 0.3;
+			if (this.currentlyActive) {
+				this.enterArrow.opacity = 1;
 			} else {
-				this.enterArrow.opacity = 0.6;
+				this.enterArrow.opacity = 0;
 			}
+
+			this.enterArrow.configureDuration = 300;
 		}
 	}, {
 		key: 'positionEnterArrow',
 		value: function positionEnterArrow() {
 
 			var widthOfEnterArrow = 40;
-			var bottomBufferForEnterArrow = 20;
+			var bottomBufferForEnterArrow = 10;
 
 			var newFrame = new CGRect();
 
 			newFrame.size.width = widthOfEnterArrow;
-			newFrame.size.height = newFrame.size.width;
+			newFrame.size.height = newFrame.size.width + 20;
 
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
 			newFrame.origin.y = this.height - newFrame.size.height - bottomBufferForEnterArrow;

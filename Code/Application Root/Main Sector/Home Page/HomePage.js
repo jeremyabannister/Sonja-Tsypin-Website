@@ -8,13 +8,14 @@ class HomePage extends JABView {
 		this.backgroundImageIndex = 1
 		this.backgroundLayer1IsActive = true
 		this.arrowFaded = true
+		this.currentlyActive = true
 		
 		
 		// UI
 		this.blackBackground = new JABView('BlackBackground')
 		this.backgroundLayer1 = new JABImageView('BackgroundLayer1')
 		this.backgroundLayer2 = new JABImageView('BackgroundLayer2')
-		this.enterArrow = new JABImageView('EnterArrow')
+		this.enterArrow = new EnterArrow('EnterArrow')
 
 		
 
@@ -177,28 +178,28 @@ class HomePage extends JABView {
 	// Enter Arrow
 	configureEnterArrow () {
 
-		this.enterArrow.src = './Resources/Images/Buttons/Enter Arrow.png'
 		this.enterArrow.cursor = 'pointer'
-
-		if (this.arrowFaded) {
-			this.enterArrow.opacity = 0.3
+		
+		if (this.currentlyActive) {
+			this.enterArrow.opacity = 1
 		} else {
-			this.enterArrow.opacity = 0.6
+			this.enterArrow.opacity = 0
 		}
+		
+		this.enterArrow.configureDuration = 300
 
 	}
 
 	positionEnterArrow () {
 
 
-		var widthOfEnterArrow = 50
-		var bottomBufferForEnterArrow = 20
-
+		var widthOfEnterArrow = 40
+		var bottomBufferForEnterArrow = 10
 
 		var newFrame = new CGRect()
 
 		newFrame.size.width = widthOfEnterArrow
-		newFrame.size.height = newFrame.size.width
+		newFrame.size.height = newFrame.size.width + 20
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		newFrame.origin.y = this.height - newFrame.size.height - bottomBufferForEnterArrow

@@ -321,6 +321,14 @@ var MainSector = function (_JABView) {
 
 			this.homePage.overflow = 'hidden';
 			this.homePage.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
+
+			if (this.websiteClosed) {
+				this.homePage.currentlyActive = true;
+			} else {
+				this.homePage.currentlyActive = false;
+			}
+
+			this.homePage.updateAllUI();
 		}
 	}, {
 		key: 'positionHomePage',

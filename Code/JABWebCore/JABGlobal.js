@@ -32,7 +32,10 @@ class Stopwatch {
 		this.timePointZero = this.currentAbsoluteTime
 	}
 	
-	reset () {
+	reset (message) {
+		if (message != null) {
+			console.log(message)
+		}
 		this.timePointZero = this.currentAbsoluteTime
 	}
 	
@@ -44,8 +47,13 @@ class Stopwatch {
 		return this.currentAbsoluteTime - this.timePointZero
 	}
 	
-	logTime () {
-		console.log(this.currentStopwatchTime)
+	logTime (message) {
+		if (message == null) {
+			message = ''
+		} else {
+			message = ' ' + message
+		}
+		console.log(this.currentStopwatchTime + message)
 	}
 }
 
