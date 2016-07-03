@@ -20,6 +20,16 @@ $(window).load(function () {
   applicationRoot = new ApplicationRoot('ApplicationRoot');
   applicationRoot.addAllUI();
   positionApplicationRoot();
+
+  /*
+  $(applicationRoot.selector).append("<div id='hello'></div>")
+  $('#hello').css({
+   'background-color': 'red',
+   'width': '400',
+   'height': '300',
+   'position': 'fixed'
+  })
+  */
 });
 
 $(window).resize(function () {
@@ -48,21 +58,8 @@ $(window).bind('mousewheel DOMMouseScroll wheel MozMousePixelScroll', function(e
 });
 */
 
-var userIsScrolling = false;
-var userStoppedScrollingTimeout;
-
 $(document).bind('mousewheel', function (evt) {
+
   var delta = evt.originalEvent.wheelDelta;
-
-  clearTimeout(userStoppedScrollingTimeout);
-  userIsScrolling = true;
   applicationRoot.userDidScrollByAmount(delta);
-  setTimeoutForUserStoppedScrolling();
 });
-
-function setTimeoutForUserStoppedScrolling() {
-  userStoppedScrollingTimeout = setTimeout(function () {
-    userIsScrolling = false;
-    applicationRoot.userDidStopScrolling();
-  }, 20);
-}

@@ -4,14 +4,24 @@ class AboutPage extends JABView {
 		super(customId)
 		
 		// State
-		this.reservedTopBuffer = 0
 		this.subdued = false
 		this.comingSoon = false
+		
+		this.scrollable = false
+		this.scrollFinishTimer
+		this.readyToClose = true
+		
+		// Parameters
+		this.reservedTopBuffer = 0
+		this.topBufferForBioText = 80
+		this.bottomBufferForEmailAddress = 60
 		
 		// UI
 		this.bioText = new UILabel('Bio')
 		this.line = new JABView("Line")
 		this.emailAddress = new UILabel('EmailAddress')
+		
+		this.footer = new Footer('Footer')
 	}
 	
 	
@@ -21,8 +31,19 @@ class AboutPage extends JABView {
 	
 	init () {
 		super.init()
+		
+		this.startEventListeners()
 	}
 	
+	
+	//
+	// Getters and Setters
+	//
+	
+	requiredHeightForWidth (width) {
+		
+		return this.footer.bottom
+	}
 	
 	
 	//
@@ -35,6 +56,8 @@ class AboutPage extends JABView {
 		this.addBioText()
 		this.addLine()
 		this.addEmailAddress()
+		
+		this.addFooter()
 	}
 	
 	
@@ -47,6 +70,11 @@ class AboutPage extends JABView {
 	}
 	addEmailAddress () {
 		this.addSubview(this.emailAddress)
+	}
+	
+	
+	addFooter () {
+		this.addSubview(this.footer)
 	}
 	
 	
@@ -63,6 +91,10 @@ class AboutPage extends JABView {
 		
 		this.configureLine()
 		this.positionLine()
+		
+		
+		this.configureFooter()
+		this.positionFooter()
 	}
 	
 	
@@ -99,11 +131,8 @@ class AboutPage extends JABView {
 		newFrame.size.height = size.height
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = this.reservedTopBuffer + 80
+		newFrame.origin.y = this.reservedTopBuffer + this.topBufferForBioText
 		
-		if (this.subdued) {
-			newFrame.origin.y += 100
-		}
 		
 		this.bioText.frame = newFrame
 	}
@@ -139,7 +168,7 @@ class AboutPage extends JABView {
 	// Email Address
 	configureEmailAddress () {
 		
-		this.emailAddress.text = "e-mail &nbsp;:: &nbsp;sotsyp@gmail.com"
+		this.emailAddress.text = "e-mail &nbsp;:: &nbsp;sonjatsypin@gmail.com"
 		this.emailAddress.textColor = 'white'
 		this.emailAddress.fontSize = 13
 		this.emailAddress.fontFamily = 'siteFont'
@@ -171,9 +200,62 @@ class AboutPage extends JABView {
 	}
 	
 	
+	
+	
+	
+	// Footer
+	configureFooter () {
+		
+		
+	}
+	
+	positionFooter () {
+		
+		var view = this.footer
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = this.width
+		newFrame.size.height = this.footer.requiredHeight
+
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = this.emailAddress.bottom + this.bottomBufferForEmailAddress
+		
+		if (newFrame.origin.y < this.height - this.footer.requiredHeight) {
+			newFrame.origin.y = this.height - this.footer.requiredHeight
+		}
+		
+							
+		view.frame = newFrame
+		
+	}
+	
+	
+	
+	
+	
 	//
 	// Event Listeners
 	//
+
+	startEventListeners () {
+		var aboutPage = this
+		
+		$(this.selector).bind('mousewheel', function(evt) {
+			
+			if (!aboutPage.scrollable) {
+				evt.preventDefault()
+			}
+			
+			clearTimeout(aboutPage.scrollFinishTimer)
+			if (aboutPage.scrollTop <= 0) {
+				aboutPage.scrollFinishTimer = setTimeout(function () {
+					aboutPage.readyToClose = true
+				}, 50)
+			} else {
+				aboutPage.readyToClose = false
+			}
+		})
+	}
 	
 	
 	//

@@ -20,18 +20,17 @@ var WorkPage = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(WorkPage).call(this, customId));
 
-		_this.projectsList = new ProjectsList('ProjectsList');
-		_this.reelView = new ReelView('ReelView');
+		_this.contentDomain = new ContentDomain('ContentDomain');
 		_this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS', 'projects']]);
 
 		// State
-		_this.possibleStates = ['Reel', 'Projects'];
-		_this.state = _this.possibleStates[0];
-		_this.subdued = true;
+		_this.stateIndex = 0;
 		_this.currentlyActive = null;
+		_this.subdued = true;
 
 		_this.reservedTopBuffer = 0;
 		_this.heightOfMenuSection = 50;
+		_this.scrollable = false;
 
 		_this.comingSoon = null;
 
@@ -44,29 +43,30 @@ var WorkPage = function (_JABView) {
 	//
 
 	_createClass(WorkPage, [{
-		key: 'addAllUI',
-
+		key: 'requiredHeightForWidth',
+		value: function requiredHeightForWidth(width) {
+			if (this.stateIndex == 0) {
+				return this.reservedTopBuffer + this.heightOfMenuSection + this.contentDomain.requiredHeightForWidth(width);
+			}
+		}
 
 		//
 		// UI
 		//
 
 		// Add
+
+	}, {
+		key: 'addAllUI',
 		value: function addAllUI() {
 
-			this.addProjectsList();
-			this.addReelView();
+			this.addContentDomain();
 			this.addMenu();
 		}
 	}, {
-		key: 'addProjectsList',
-		value: function addProjectsList() {
-			this.addSubview(this.projectsList);
-		}
-	}, {
-		key: 'addReelView',
-		value: function addReelView() {
-			this.addSubview(this.reelView);
+		key: 'addContentDomain',
+		value: function addContentDomain() {
+			this.addSubview(this.contentDomain);
 		}
 	}, {
 		key: 'addMenu',
@@ -81,104 +81,38 @@ var WorkPage = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(WorkPage.prototype), 'updateAllUI', this).call(this);
 
-			this.configureProjectsList();
-			this.positionProjectsList();
-
-			this.configureReelView();
-			this.positionReelView();
+			this.configureContentDomain();
+			this.positionContentDomain();
 
 			this.configureMenu();
 			this.positionMenu();
 		}
 
-		// Projects List
+		// Content Domain
 
 	}, {
-		key: 'configureProjectsList',
-		value: function configureProjectsList() {
+		key: 'configureContentDomain',
+		value: function configureContentDomain() {
 
-			this.projectsList.backgroundColor = 'black';
+			this.contentDomain.stateIndex = this.stateIndex;
+			this.contentDomain.currentlyActive = this.currentlyActive;
+			this.contentDomain.subdued = this.subdued;
+			this.contentDomain.scrollable = this.scrollable;
+			this.contentDomain.overflow = 'auto';
 
-			if (this.state == this.possibleStates[1]) {
-				if (!this.subviewIsAboveSubviews(this.projectsList, [this.reelView])) {
-					this.insertSubviewAboveSubviews(this.projectsList, [this.reelView]);
-				}
+			this.contentDomain.reservedTopBuffer = this.reservedTopBuffer;
+			this.contentDomain.heightOfMenuSection = this.heightOfMenuSection;
 
-				setComingSoon(this.projectsList.comingSoon);
-			}
-
-			if (this.state == this.possibleStates[1] && !this.subdued) {
-				this.projectsList.opacity = 1;
-			} else {
-				this.projectsList.opacity = 0;
-			}
+			this.contentDomain.updateAllUI();
 		}
 	}, {
-		key: 'positionProjectsList',
-		value: function positionProjectsList() {
+		key: 'positionContentDomain',
+		value: function positionContentDomain() {
 
-			var newFrame = new CGRect();
+			var view = this.contentDomain;
+			var newFrame = this.bounds;
 
-			newFrame.size.width = this.width;
-			newFrame.size.height = this.height - (this.reservedTopBuffer + this.heightOfMenuSection);
-
-			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
-			newFrame.origin.y = this.reservedTopBuffer + this.heightOfMenuSection;
-
-			if (this.subdued) {
-				newFrame.origin.y += 100;
-			}
-
-			this.projectsList.frame = newFrame;
-		}
-
-		// Reel Page
-
-	}, {
-		key: 'configureReelView',
-		value: function configureReelView() {
-
-			this.reelView.backgroundColor = 'black';
-
-			if (this.state == this.possibleStates[0]) {
-				if (!this.subviewIsAboveSubviews(this.reelView, [this.projectsList])) {
-					this.insertSubviewAboveSubviews(this.reelView, [this.projectsList]);
-				}
-
-				setComingSoon(this.reelView.comingSoon);
-
-				if (this.currentlyActive) {
-					this.reelView.currentlyActive = true;
-				} else {
-					this.reelView.currentlyActive = false;
-				}
-			} else {
-				this.reelView.currentlyActive = false;
-			}
-
-			if (this.state == this.possibleStates[0] && !this.subdued) {
-				this.reelView.opacity = 1;
-			} else {
-				this.reelView.opacity = 0;
-			}
-		}
-	}, {
-		key: 'positionReelView',
-		value: function positionReelView() {
-
-			var newFrame = new CGRect();
-
-			newFrame.size.width = this.width;
-			newFrame.size.height = this.height - (this.reservedTopBuffer + this.heightOfMenuSection);
-
-			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
-			newFrame.origin.y = this.reservedTopBuffer + this.heightOfMenuSection;
-
-			if (this.subdued) {
-				newFrame.origin.y += 100;
-			}
-
-			this.reelView.frame = newFrame;
+			view.frame = newFrame;
 		}
 
 		// Menu
@@ -187,14 +121,8 @@ var WorkPage = function (_JABView) {
 		key: 'configureMenu',
 		value: function configureMenu() {
 
+			this.menu.selectedIndex = this.stateIndex;
 			this.menu.showUnderline = true;
-
-			for (var i = 0; i < this.possibleStates.length; i++) {
-				if (this.possibleStates[i] == this.state) {
-					this.menu.selectedIndex = i;
-				}
-			}
-
 			this.menu.fadeUnselectedButtons = true;
 
 			this.menu.textColor = 'white';
@@ -243,15 +171,10 @@ var WorkPage = function (_JABView) {
 
 	}, {
 		key: 'menuButtonWasPressed',
-		value: function menuButtonWasPressed(buttonIdentifier) {
+		value: function menuButtonWasPressed(buttonIndex) {
 
-			if (buttonIdentifier == 'reel') {
-				this.state = this.possibleStates[0];
-			} else {
-				this.state = this.possibleStates[1];
-			}
-
-			this.animatedUpdate();
+			this.stateIndex = buttonIndex;
+			this.updateAllUI();
 		}
 	}, {
 		key: 'state',
@@ -279,8 +202,6 @@ var WorkPage = function (_JABView) {
 
 			if (changed) {
 				this._currentlyActive = newCurrentlyActive;
-
-				this.configureReelView();
 			}
 		}
 	}]);

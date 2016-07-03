@@ -21,7 +21,7 @@ var ProjectsList = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProjectsList).call(this, customId));
 
 		_this.projectDataBundles = _this.assembleProjectDataBundles();
-		_this.comingSoon = true;
+		_this.comingSoon = false;
 
 		// UI
 		_this.projectRows = [];
@@ -33,13 +33,23 @@ var ProjectsList = function (_JABView) {
 	}
 
 	//
-	// UI
+	// Getters and Setters
 	//
 
-	// Add
-
-
 	_createClass(ProjectsList, [{
+		key: 'requiredHeightForWidth',
+		value: function requiredHeightForWidth(width) {
+
+			return this.topBufferForTopProjectRow + (applicationRoot.contentWidth * (9.0 / 16.0) + this.betweenBufferForProjectRows) * this.projectRows.length;
+		}
+
+		//
+		// UI
+		//
+
+		// Add
+
+	}, {
 		key: 'addAllUI',
 		value: function addAllUI() {
 
@@ -128,7 +138,7 @@ var ProjectsList = function (_JABView) {
 			powderRoom2.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg'];
 			powderRoom2.mainStillIndex = 0;
 
-			// dataBundles.push(powderRoom2)
+			dataBundles.push(powderRoom2);
 
 			return dataBundles;
 		}

@@ -11,7 +11,7 @@ class Header extends JABView {
 
 		// UI
 		this.logo = new Logo('Logo')
-		this.menu = new Menu('Menu', [['WORK', 'work'], ['MORE', 'more'], ['ABOUT', 'about']])
+		this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS	', 'projects'], ['ABOUT', 'about']])
 
 
 	}
@@ -154,8 +154,8 @@ class Header extends JABView {
 	//
 
 
-	menuButtonWasPressed (buttonIdentifier) {
-		this.parent.headerDidSelectPage(buttonIdentifier)
+	menuButtonWasPressed (buttonIndex) {
+		this.parent.headerDidSelectPage(buttonIndex)
 	}
 
 }

@@ -9,6 +9,7 @@ var applicationRoot
 // Initialization
 //
 
+
 $(document).ready(function() {
   
   fontSpy('siteFont') // This causes the custom font 'siteFont' to be loaded so that the widths of the text elements of the website can be accurately calculated
@@ -19,7 +20,16 @@ $(window).load(function() {
    applicationRoot = new ApplicationRoot('ApplicationRoot')
    applicationRoot.addAllUI()
    positionApplicationRoot()
-
+   
+   /*
+   $(applicationRoot.selector).append("<div id='hello'></div>")
+   $('#hello').css({
+    'background-color': 'red',
+    'width': '400',
+    'height': '300',
+    'position': 'fixed'
+   })
+   */
 })
 
 $(window).resize(function() {
@@ -51,23 +61,12 @@ $(window).bind('mousewheel DOMMouseScroll wheel MozMousePixelScroll', function(e
 });
 */
 
-var userIsScrolling = false
-var userStoppedScrollingTimeout
-
 $(document).bind('mousewheel', function(evt) {
-    var delta = evt.originalEvent.wheelDelta
-
-    clearTimeout(userStoppedScrollingTimeout)
-    userIsScrolling = true
-    applicationRoot.userDidScrollByAmount(delta)
-    setTimeoutForUserStoppedScrolling()
+  
+  var delta = evt.originalEvent.wheelDelta
+  applicationRoot.userDidScrollByAmount(delta)
+  
+  
 })
-
-function setTimeoutForUserStoppedScrolling () {
-	userStoppedScrollingTimeout = setTimeout(function() {
-		userIsScrolling = false
-		applicationRoot.userDidStopScrolling()
-	}, 20)
-}
 
 

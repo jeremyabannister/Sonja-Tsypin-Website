@@ -164,8 +164,8 @@ var Header = function (_JABView) {
 
 	}, {
 		key: 'menuButtonWasPressed',
-		value: function menuButtonWasPressed(buttonIdentifier) {
-			this.parent.headerDidSelectPage(buttonIdentifier);
+		value: function menuButtonWasPressed(buttonIndex) {
+			this.parent.headerDidSelectPage(buttonIndex);
 		}
 	}]);
 

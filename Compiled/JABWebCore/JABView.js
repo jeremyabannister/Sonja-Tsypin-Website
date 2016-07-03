@@ -57,6 +57,7 @@ var JABView = function () {
 		this.borderRadius = 0;
 		this.zIndex = 0;
 
+		this.position = 'absolute';
 		this.overflow = 'visible';
 		this.cursor = 'auto';
 
@@ -139,9 +140,7 @@ var JABView = function () {
 
 				subview.updateViewString();
 				$(this.selector).append(subview.view);
-				$(subview.selector).css({
-					'position': 'absolute'
-				});
+				subview.position = 'absolute';
 
 				subview.init();
 			}
@@ -579,6 +578,11 @@ var JABView = function () {
 			return currentHighestId + 1;
 		}
 	}, {
+		key: 'scrollTop',
+		get: function get() {
+			return $(this.selector).scrollTop();
+		}
+	}, {
 		key: 'animationOptions',
 		get: function get() {
 			return this._animationOptions;
@@ -867,6 +871,20 @@ var JABView = function () {
 			this._zIndex = newZIndex;
 			$(this.selector).css({
 				'z-index': newZIndex
+			});
+		}
+
+		// Position
+
+	}, {
+		key: 'position',
+		get: function get() {
+			return this._position;
+		},
+		set: function set(newPosition) {
+			this._position = newPosition;
+			$(this.selector).css({
+				'position': newPosition
 			});
 		}
 

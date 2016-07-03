@@ -228,7 +228,7 @@ class Menu extends JABView {
 		for (var i = 0; i < this.buttons.length; i++) {
 			if (this.buttons[i] == view) {
 				if (this.buttonInfo.length > i) {
-					this.parent.menuButtonWasPressed(this.buttonInfo[i][1])
+					this.parent.menuButtonWasPressed(i)
 				}
 			}
 		}

@@ -20,6 +20,13 @@ function updateSizeClassForWidth (width) {
 
 
 
+// Property Support
+function isPropertySupported(property)
+{
+	return property in document.body.style;
+}
+
+
 
 // Animation
 var defaultAnimationDuration = 400

@@ -22,13 +22,20 @@ var MainSector = function (_JABView) {
 
 		_this.websiteClosed = true;
 		_this.websiteClosedLocked = false;
+		_this.homePageHidden = false;
+		_this.scrollable = false;
 
-		_this.possibleStates = ['WorkPage', 'MorePage', 'AboutPage', 'ContactPage'];
-		_this.state = _this.possibleStates[0];
+		_this.stateIndex = 0;
+
+		// Scrolling
+		_this.scrollPosition = 0;
+		_this.scrollSensitivity = 0.5;
+		_this.bottomScrollBuffer = 0;
 		_this.comingSoon = true;
+		_this.scrollReboundTimer;
 
-		_this.totalScrollDistanceSinceLastTrigger = 0;
-		_this.heightOfHeader = 100;
+		// Parameters
+		_this.heightOfHeader = 0;
 
 		// UI
 		_this.contactPage = new ContactPage('ContactPage');
@@ -37,9 +44,6 @@ var MainSector = function (_JABView) {
 		_this.workPage = new WorkPage('WorkPage');
 
 		_this.comingSoonView = new UILabel('ComingSoonView');
-
-		_this.homePage = new HomePage('HomePage');
-		_this.header = new Header('Header');
 
 		return _this;
 	}
@@ -74,8 +78,6 @@ var MainSector = function (_JABView) {
 			this.addMorePage();
 			this.addWorkPage();
 			this.addComingSoonView();
-			this.addHomePage();
-			this.addHeader();
 		}
 	}, {
 		key: 'addContactPage',
@@ -102,16 +104,6 @@ var MainSector = function (_JABView) {
 		value: function addComingSoonView() {
 			this.addSubview(this.comingSoonView);
 		}
-	}, {
-		key: 'addHomePage',
-		value: function addHomePage() {
-			this.addSubview(this.homePage);
-		}
-	}, {
-		key: 'addHeader',
-		value: function addHeader() {
-			this.addSubview(this.header);
-		}
 
 		// Update
 
@@ -134,12 +126,6 @@ var MainSector = function (_JABView) {
 
 			this.configureComingSoonView();
 			this.positionComingSoonView();
-
-			this.configureHomePage();
-			this.positionHomePage();
-
-			this.configureHeader();
-			this.positionHeader();
 		}
 
 		// Contact Page
@@ -147,22 +133,27 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'configureContactPage',
 		value: function configureContactPage() {
+			var view = this.contactPage;
 
-			this.contactPage.backgroundColor = 'black';
-
-			if (this.state == this.possibleStates[3]) {
-				if (!this.subviewIsAboveSubviews(this.contactPage, [this.workPage, this.morePage, this.aboutPage])) {
-					this.insertSubviewAboveSubviews(this.contactPage, [this.workPage, this.morePage, this.aboutPage]);
+			view.backgroundColor = 'black';
+			if (this.currentlyActivePage == view) {
+				if (!this.subviewIsAboveSubviews(view, [this.workPage, this.morePage, this.aboutPage])) {
+					this.insertSubviewAboveSubviews(view, [this.workPage, this.morePage, this.aboutPage]);
 				}
 
-				setComingSoon(this.contactPage.comingSoon);
+				setComingSoon(view.comingSoon);
 			}
 		}
 	}, {
 		key: 'positionContactPage',
 		value: function positionContactPage() {
+			var view = this.contactPage;
 
-			this.contactPage.frame = this.bounds;
+			var newFrame = this.bounds;
+
+			// newFrame.origin.y = this.scrollPosition
+
+			view.frame = newFrame;
 		}
 
 		// About Page
@@ -171,30 +162,34 @@ var MainSector = function (_JABView) {
 		key: 'configureAboutPage',
 		value: function configureAboutPage() {
 
-			this.aboutPage.backgroundColor = 'black';
-			this.aboutPage.reservedTopBuffer = this.heightOfHeader;
+			var view = this.aboutPage;
 
-			if (this.websiteClosed) {
-				this.aboutPage.subdued = true;
-			} else {
-				this.aboutPage.subdued = false;
-			}
-
-			if (this.state == this.possibleStates[2]) {
-				if (!this.subviewIsAboveSubviews(this.aboutPage, [this.workPage, this.morePage, this.contactPage])) {
-					this.insertSubviewAboveSubviews(this.aboutPage, [this.workPage, this.morePage, this.contactPage]);
+			view.backgroundColor = 'black';
+			if (this.currentlyActivePage == view) {
+				if (!this.subviewIsAboveSubviews(view, [this.workPage, this.morePage, this.contactPage])) {
+					this.insertSubviewAboveSubviews(view, [this.workPage, this.morePage, this.contactPage]);
 				}
 
-				setComingSoon(this.aboutPage.comingSoon);
+				setComingSoon(view.comingSoon);
 			}
 
-			this.aboutPage.updateAllUI();
+			view.reservedTopBuffer = this.heightOfHeader;
+
+			if (this.websiteClosed) {
+				view.subdued = true;
+			} else {
+				view.subdued = false;
+			}
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionAboutPage',
 		value: function positionAboutPage() {
 
 			var newFrame = this.bounds;
+
+			// newFrame.origin.y = this.scrollPosition
 
 			this.aboutPage.frame = newFrame;
 		}
@@ -205,21 +200,26 @@ var MainSector = function (_JABView) {
 		key: 'configureMorePage',
 		value: function configureMorePage() {
 
-			this.morePage.backgroundColor = 'black';
+			var view = this.morePage;
 
-			if (this.state == this.possibleStates[1]) {
-				if (!this.subviewIsAboveSubviews(this.morePage, [this.workPage, this.aboutPage, this.contactPage])) {
-					this.insertSubviewAboveSubviews(this.morePage, [this.workPage, this.aboutPage, this.contactPage]);
+			view.backgroundColor = 'black';
+			if (this.currentlyActivePage == view) {
+				if (!this.subviewIsAboveSubviews(view, [this.workPage, this.aboutPage, this.contactPage])) {
+					this.insertSubviewAboveSubviews(view, [this.workPage, this.aboutPage, this.contactPage]);
 				}
 
-				setComingSoon(this.morePage.comingSoon);
+				setComingSoon(view.comingSoon);
 			}
 		}
 	}, {
 		key: 'positionMorePage',
 		value: function positionMorePage() {
 
-			this.morePage.frame = this.bounds;
+			var newFrame = this.bounds;
+
+			// newFrame.origin.y = this.scrollPosition
+
+			this.morePage.frame = newFrame;
 		}
 
 		// Work Page
@@ -228,51 +228,43 @@ var MainSector = function (_JABView) {
 		key: 'configureWorkPage',
 		value: function configureWorkPage() {
 
-			this.workPage.backgroundColor = 'black';
-			this.workPage.reservedTopBuffer = this.heightOfHeader;
+			var view = this.workPage;
 
-			if (this.websiteClosed) {
-				this.workPage.subdued = true;
-			} else {
-				this.workPage.subdued = false;
-			}
+			view.backgroundColor = 'black';
+			view.reservedTopBuffer = this.heightOfHeader;
+			view.scrollable = this.scrollable;
 
-			if (this.state == this.possibleStates[0]) {
-				if (!this.subviewIsAboveSubviews(this.workPage, [this.morePage, this.aboutPage, this.contactPage])) {
-					this.insertSubviewAboveSubviews(this.workPage, [this.morePage, this.aboutPage, this.contactPage]);
+			if (this.currentlyActivePage == view) {
+				if (!this.subviewIsAboveSubviews(view, [this.morePage, this.aboutPage, this.contactPage])) {
+					this.insertSubviewAboveSubviews(view, [this.morePage, this.aboutPage, this.contactPage]);
 				}
 
-				setComingSoon(this.workPage.comingSoon);
-
-				this.workPage.updateAllUI();
+				setComingSoon(view.comingSoon);
 
 				if (!this.websiteClosed) {
-					this.workPage.currentlyActive = true;
+					view.currentlyActive = true;
 				} else {
-					this.workPage.currentlyActive = false;
+					view.currentlyActive = false;
 				}
 			} else {
 				this.workPage.currentlyActive = false;
 			}
+
+			if (this.websiteClosed) {
+				view.subdued = true;
+			} else {
+				view.subdued = false;
+			}
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionWorkPage',
 		value: function positionWorkPage() {
 
-			var newFrame = new CGRect();
-
-			newFrame.size.width = this.width;
-			newFrame.size.height = this.height;
-
-			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
-
-			if (this.state == this.possibleStates[0]) {
-				newFrame.origin.y = 0;
-			} else {
-				newFrame.origin.y = 0;
-			}
-
-			this.workPage.frame = newFrame;
+			var view = this.workPage;
+			var newFrame = this.bounds;
+			view.frame = newFrame;
 		}
 
 		// Coming Soon View
@@ -313,172 +305,14 @@ var MainSector = function (_JABView) {
 			this.comingSoonView.frame = newFrame;
 		}
 
-		// Home Page
-
-	}, {
-		key: 'configureHomePage',
-		value: function configureHomePage() {
-
-			this.homePage.overflow = 'hidden';
-			this.homePage.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
-
-			if (this.websiteClosed) {
-				this.homePage.currentlyActive = true;
-			} else {
-				this.homePage.currentlyActive = false;
-			}
-
-			this.homePage.updateAllUI();
-		}
-	}, {
-		key: 'positionHomePage',
-		value: function positionHomePage() {
-
-			if (this.websiteClosed) {
-				this.homePage.frame = new CGRect(0, 0, this.width, this.height);
-			} else {
-				this.homePage.frame = new CGRect(0, -this.height, this.width, this.height);
-			}
-		}
-
-		// Header
-
-	}, {
-		key: 'configureHeader',
-		value: function configureHeader() {
-
-			this.header.websiteClosed = this.websiteClosed;
-			this.header.selectedMenuIndex = $.inArray(this.state, this.possibleStates);
-			this.header.updateAllUI();
-		}
-	}, {
-		key: 'positionHeader',
-		value: function positionHeader() {
-			this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader);
-		}
-
 		//
 		// Actions
 		//
-
-		// Navigation
-
-	}, {
-		key: 'openWebsite',
-		value: function openWebsite(duration) {
-			if (this.websiteClosed) {
-				if (!this.websiteClosedLocked) {
-					this.websiteClosed = false;
-
-					this.setWebsiteClosedLockedForTimeout(duration);
-
-					if (duration == null) {
-						duration = 800;
-					}
-					this.animatedUpdate({
-
-						configureDuration: duration,
-						configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
-
-						positionDuration: duration,
-						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
-					});
-				}
-			}
-		}
-	}, {
-		key: 'closeWebsite',
-		value: function closeWebsite(duration) {
-			if (!this.websiteClosed) {
-				if (!this.websiteClosedLocked) {
-					this.websiteClosed = true;
-
-					this.setWebsiteClosedLockedForTimeout(duration);
-
-					if (duration == null) {
-						duration = 800;
-					}
-					this.animatedUpdate({
-
-						configureDuration: duration,
-						configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
-
-						positionDuration: duration,
-						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
-					});
-				}
-			}
-		}
-	}, {
-		key: 'setWebsiteClosedLockedForTimeout',
-		value: function setWebsiteClosedLockedForTimeout(timeoutDuration) {
-			this.websiteClosedLocked = true;
-			var mainSector = this;
-			setTimeout(function () {
-				mainSector.websiteClosedLocked = false;
-			}, timeoutDuration);
-		}
-
-		// Scrolling
-
-	}, {
-		key: 'userDidScrollByAmount',
-		value: function userDidScrollByAmount(amount) {
-
-			if (this.websiteClosed) {
-				if (amount < 0) {
-					this.openWebsite(800);
-				}
-			} else {
-				if (amount > 0) {
-					this.closeWebsite(800);
-				}
-			}
-		}
-	}, {
-		key: 'userDidStopScrolling',
-		value: function userDidStopScrolling() {}
 
 		//
 		// Delegate
 		//
 
-		// Home Page
-
-	}, {
-		key: 'homePageDownArrowWasClicked',
-		value: function homePageDownArrowWasClicked() {
-			this.openWebsite();
-		}
-
-		// Header
-
-	}, {
-		key: 'headerLogoWasClicked',
-		value: function headerLogoWasClicked() {
-			this.closeWebsite();
-		}
-	}, {
-		key: 'headerDidSelectPage',
-		value: function headerDidSelectPage(pageIdentifier) {
-
-			if (pageIdentifier == 'work') {
-				this.state = this.possibleStates[0];
-				this.workPage.state = this.workPage.possibleStates[0];
-			} else if (pageIdentifier == 'more') {
-				this.state = this.possibleStates[1];
-			} else if (pageIdentifier == 'about') {
-				this.state = this.possibleStates[2];
-			} else if (pageIdentifier == 'contact') {
-				this.state = this.possibleStates[3];
-			}
-
-			if (this.websiteClosed) {
-				this.openWebsite();
-			} else {
-				this.animatedUpdate();
-			}
-		}
 	}, {
 		key: 'websiteClosed',
 		get: function get() {
@@ -488,6 +322,22 @@ var MainSector = function (_JABView) {
 			if (!this.websiteClosedLocked) {
 				this._websiteClosed = newWebsiteClosed;
 			}
+		}
+	}, {
+		key: 'currentlyActivePage',
+		get: function get() {
+			return this.pages[this.stateIndex];
+		}
+	}, {
+		key: 'pages',
+		get: function get() {
+			return [this.workPage, this.morePage, this.aboutPage, this.contactPage];
+		}
+	}, {
+		key: 'readyToClose',
+		get: function get() {
+
+			return this.workPage.contentDomain.readyToClose;
 		}
 	}]);
 

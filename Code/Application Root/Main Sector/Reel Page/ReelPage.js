@@ -1,4 +1,4 @@
-class ReelView extends JABView {
+class ReelPage extends JABView {
 	
 	constructor (customId) {
 		super(customId)
@@ -7,9 +7,18 @@ class ReelView extends JABView {
 		this.currentlyActive = null
 		this.comingSoon = false
 		
+		this.scrollable = false
+		this.scrollFinishTimer
+		this.readyToClose = true
+		
+		// Parameters
+		this.reservedTopBuffer = 0
+		this.topBufferForVimeoView = 20
+		this.bottomBufferForVimeoView = 60
+		
 		// UI
 		this.vimeoView = new JABVimeoView('VimeoView')
-		
+		this.footer = new Footer('Footer')
 	}
 	
 	
@@ -19,6 +28,8 @@ class ReelView extends JABView {
 	
 	init () {
 		super.init()
+		
+		this.startEventListeners()
 	}
 	
 	
@@ -44,6 +55,11 @@ class ReelView extends JABView {
 	}
 	
 	
+	requiredHeightForWidth (width) {
+		return this.footer.bottom
+	}
+	
+	
 	//
 	// UI
 	//
@@ -52,11 +68,16 @@ class ReelView extends JABView {
 	// Add
 	addAllUI () {
 		this.addVimeoView()
+		this.addFooter()
 	}
 	
 	
 	addVimeoView () {
 		this.addSubview(this.vimeoView)
+	}
+	
+	addFooter () {
+		this.addSubview(this.footer)
 	}
 	
 	
@@ -66,6 +87,9 @@ class ReelView extends JABView {
 		
 		this.configureVimeoView()
 		this.positionVimeoView()
+		
+		this.configureFooter()
+		this.positionFooter()
 	}
 	
 	
@@ -80,6 +104,10 @@ class ReelView extends JABView {
 		}
 		
 		
+		this.vimeoView.blur = 0
+		
+		
+		
 	}
 	
 	positionVimeoView () {
@@ -90,9 +118,33 @@ class ReelView extends JABView {
 		newFrame.size.height = newFrame.size.width * (9.0/16.0)
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = 0
-					
+		newFrame.origin.y = this.reservedTopBuffer + this.topBufferForVimeoView
+				
 		this.vimeoView.frame = newFrame
+		
+	}
+	
+	
+	
+	
+	// Footer
+	configureFooter () {
+		
+		
+	}
+	
+	positionFooter () {
+		
+		var view = this.footer
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = this.width
+		newFrame.size.height = this.footer.requiredHeight
+
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = this.vimeoView.bottom + this.bottomBufferForVimeoView
+							
+		view.frame = newFrame
 		
 	}
 	
@@ -101,6 +153,26 @@ class ReelView extends JABView {
 	//
 	// Event Listeners
 	//
+
+	startEventListeners () {
+		var reelPage = this
+		
+		$(this.selector).bind('mousewheel', function(evt) {
+			
+			if (!reelPage.scrollable) {
+				evt.preventDefault()
+			}
+			
+			clearTimeout(reelPage.scrollFinishTimer)
+			if (reelPage.scrollTop <= 0) {
+				reelPage.scrollFinishTimer = setTimeout(function () {
+					reelPage.readyToClose = true
+				}, 50)
+			} else {
+				reelPage.readyToClose = false
+			}
+		})
+	}
 	
 	
 	//

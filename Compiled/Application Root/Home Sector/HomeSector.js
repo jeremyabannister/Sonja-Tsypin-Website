@@ -10,21 +10,20 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ReelView = function (_JABView) {
-	_inherits(ReelView, _JABView);
+var HomeSector = function (_JABView) {
+	_inherits(HomeSector, _JABView);
 
-	function ReelView(customId) {
-		_classCallCheck(this, ReelView);
+	function HomeSector(customId) {
+		_classCallCheck(this, HomeSector);
 
 		// State
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ReelView).call(this, customId));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HomeSector).call(this, customId));
 
-		_this.currentlyActive = null;
-		_this.comingSoon = false;
+		_this.currentlyActive = true;
 
 		// UI
-		_this.vimeoView = new JABVimeoView('VimeoView');
+		_this.homePage = new HomePage('HomePage');
 
 		return _this;
 	}
@@ -33,32 +32,28 @@ var ReelView = function (_JABView) {
 	// Init
 	//
 
-	_createClass(ReelView, [{
+	_createClass(HomeSector, [{
 		key: 'init',
 		value: function init() {
-			_get(Object.getPrototypeOf(ReelView.prototype), 'init', this).call(this);
+			_get(Object.getPrototypeOf(HomeSector.prototype), 'init', this).call(this);
 		}
-
-		//
-		// Getters and Setters
-		//
-
-	}, {
-		key: 'addAllUI',
-
 
 		//
 		// UI
 		//
 
 		// Add
+
+	}, {
+		key: 'addAllUI',
 		value: function addAllUI() {
-			this.addVimeoView();
+
+			this.addHomePage();
 		}
 	}, {
-		key: 'addVimeoView',
-		value: function addVimeoView() {
-			this.addSubview(this.vimeoView);
+		key: 'addHomePage',
+		value: function addHomePage() {
+			this.addSubview(this.homePage);
 		}
 
 		// Update
@@ -66,37 +61,56 @@ var ReelView = function (_JABView) {
 	}, {
 		key: 'updateAllUI',
 		value: function updateAllUI() {
-			_get(Object.getPrototypeOf(ReelView.prototype), 'updateAllUI', this).call(this);
+			_get(Object.getPrototypeOf(HomeSector.prototype), 'updateAllUI', this).call(this);
 
-			this.configureVimeoView();
-			this.positionVimeoView();
+			this.configureHomePage();
+			this.positionHomePage();
 		}
 
-		// Vimeo View
+		// Home Page
 
 	}, {
-		key: 'configureVimeoView',
-		value: function configureVimeoView() {
+		key: 'configureHomePage',
+		value: function configureHomePage() {
 
-			var vimeoId = '153864846';
+			this.homePage.overflow = 'hidden';
+			this.homePage.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
 
-			if (this.vimeoView.vimeoId != vimeoId) {
-				this.vimeoView.vimeoId = vimeoId;
-			}
+			this.homePage.currentlyActive = this.currentlyActive;
+
+			/*
+   if (this.homePageHidden) {
+   	this.homePage.opacity = 0
+   } else {
+   	this.homePage.opacity = 1
+   }
+   */
+
+			this.homePage.updateAllUI();
 		}
 	}, {
-		key: 'positionVimeoView',
-		value: function positionVimeoView() {
+		key: 'positionHomePage',
+		value: function positionHomePage() {
 
-			var newFrame = new CGRect();
+			var newFrame = this.bounds;
 
-			newFrame.size.width = applicationRoot.contentWidth;
-			newFrame.size.height = newFrame.size.width * (9.0 / 16.0);
+			this.homePage.frame = newFrame;
+		}
 
-			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
-			newFrame.origin.y = 0;
+		// Header
 
-			this.vimeoView.frame = newFrame;
+	}, {
+		key: 'configureHeader',
+		value: function configureHeader() {
+
+			this.header.websiteClosed = this.websiteClosed;
+			this.header.selectedMenuIndex = $.inArray(this.state, this.possibleStates);
+			this.header.updateAllUI();
+		}
+	}, {
+		key: 'positionHeader',
+		value: function positionHeader() {
+			this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader);
 		}
 
 		//
@@ -107,44 +121,18 @@ var ReelView = function (_JABView) {
 		// Actions
 		//
 
-		// Video
-
-	}, {
-		key: 'playReel',
-		value: function playReel() {
-			if (this.vimeoView != null) {
-				this.vimeoView.play();
-			}
-		}
-	}, {
-		key: 'pauseReel',
-		value: function pauseReel() {
-			if (this.vimeoView != null) {
-				this.vimeoView.pause();
-			}
-		}
-
 		//
 		// Delegate
 		//
 
+		// Home Page
+
 	}, {
-		key: 'currentlyActive',
-		get: function get() {
-			return this._currentlyActive;
-		},
-		set: function set(newCurrentlyActive) {
-			var changed = this.currentlyActive != newCurrentlyActive;
-
-			if (changed) {
-				this._currentlyActive = newCurrentlyActive;
-
-				if (!this.currentlyActive) {
-					this.pauseReel();
-				}
-			}
+		key: 'homePageDownArrowWasClicked',
+		value: function homePageDownArrowWasClicked() {
+			this.parent.homeSectorEnterButtonWasClicked();
 		}
 	}]);
 
-	return ReelView;
+	return HomeSector;
 }(JABView);
