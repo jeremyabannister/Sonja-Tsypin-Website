@@ -23,12 +23,20 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		_this.laboratoryEnabled = false;
 		_this.contentWidth = { 'xs': 700, 's': 780, 'm': 1000, 'l': 1000 };
 
+		_this.websiteClosed = true;
+		_this.websiteClosedLocked = false;
+
+		// Parameters
+		_this.heightOfHeader = 100;
+
 		if (_this.laboratoryEnabled) {
 			_this.laboratory = new Laboratory('Laboratory');
 		} else {
 
 			// UI
 			_this.mainSector = new MainSector('MainSector');
+			_this.homeSector = new HomeSector('HomeSector');
+			_this.header = new Header('Header');
 		}
 
 		// Initialize
@@ -55,12 +63,24 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			} else {
 
 				this.addMainSector();
+				this.addHomeSector();
+				this.addHeader();
 			}
 		}
 	}, {
 		key: 'addMainSector',
 		value: function addMainSector() {
 			this.addSubview(this.mainSector);
+		}
+	}, {
+		key: 'addHomeSector',
+		value: function addHomeSector() {
+			this.addSubview(this.homeSector);
+		}
+	}, {
+		key: 'addHeader',
+		value: function addHeader() {
+			this.addSubview(this.header);
 		}
 	}, {
 		key: 'addLaboratory',
@@ -82,6 +102,12 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 				this.configureMainSector();
 				this.positionMainSector();
+
+				this.configureHomeSector();
+				this.positionHomeSector();
+
+				this.configureHeader();
+				this.positionHeader();
 			}
 		}
 
@@ -90,12 +116,57 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'configureMainSector',
 		value: function configureMainSector() {
-			this.mainSector.backgroundColor = '#000000';
+			this.mainSector.backgroundColor = 'black';
+			this.mainSector.heightOfHeader = this.heightOfHeader;
+			this.mainSector.websiteClosed = this.websiteClosed;
+
+			this.mainSector.updateAllUI();
 		}
 	}, {
 		key: 'positionMainSector',
 		value: function positionMainSector() {
 			this.mainSector.frame = new CGRect(0, 0, this.width, this.height);
+		}
+
+		// Home Sector
+
+	}, {
+		key: 'configureHomeSector',
+		value: function configureHomeSector() {
+			this.homeSector.backgroundColor = 'black';
+
+			if (this.websiteClosed) {
+				this.homeSector.currenlyActive = true;
+			} else {
+				this.homeSector.currenlyActive = false;
+			}
+		}
+	}, {
+		key: 'positionHomeSector',
+		value: function positionHomeSector() {
+			var newFrame = this.bounds;
+
+			if (!this.websiteClosed) {
+				newFrame.origin.y = -this.height;
+			}
+
+			this.homeSector.frame = newFrame;
+		}
+
+		// Header
+
+	}, {
+		key: 'configureHeader',
+		value: function configureHeader() {
+
+			this.header.websiteClosed = this.websiteClosed;
+			this.header.selectedMenuIndex = this.mainSector.stateIndex;
+			this.header.updateAllUI();
+		}
+	}, {
+		key: 'positionHeader',
+		value: function positionHeader() {
+			this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader);
 		}
 	}, {
 		key: 'configureLaboratory',
@@ -133,15 +204,127 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		// Actions
 		//
 
+		// Navigation
+
+	}, {
+		key: 'openWebsite',
+		value: function openWebsite(duration) {
+			if (this.websiteClosed) {
+				if (!this.websiteClosedLocked) {
+					this.websiteClosed = false;
+
+					this.setWebsiteClosedLockedForTimeout(duration);
+
+					if (duration == null) {
+						duration = 800;
+					}
+
+					var applicationRoot = this;
+					this.animatedUpdate({
+
+						configureDuration: duration,
+						configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
+
+						positionDuration: duration,
+						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+					}, function () {
+						applicationRoot.header.backgroundColor = 'black';
+						applicationRoot.homePageHidden = true;
+						applicationRoot.mainSector.scrollable = true;
+						applicationRoot.updateAllUI();
+					});
+				}
+			}
+		}
+	}, {
+		key: 'closeWebsite',
+		value: function closeWebsite(duration) {
+			if (!this.websiteClosed) {
+				if (!this.websiteClosedLocked) {
+					this.websiteClosed = true;
+
+					this.setWebsiteClosedLockedForTimeout(duration);
+
+					if (duration == null) {
+						duration = 800;
+					}
+
+					this.header.backgroundColor = 'rgba(0, 0, 0, 0)';
+					this.homePageHidden = false;
+					this.configureHomeSector();
+					this.animatedUpdate({
+
+						configureDuration: duration,
+						configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
+
+						positionDuration: duration,
+						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+					}, function () {
+						applicationRoot.mainSector.scrollable = false;
+						applicationRoot.updateAllUI();
+					});
+				}
+			}
+		}
+	}, {
+		key: 'setWebsiteClosedLockedForTimeout',
+		value: function setWebsiteClosedLockedForTimeout(timeoutDuration) {
+			this.websiteClosedLocked = true;
+			var applicationRoot = this;
+			setTimeout(function () {
+				applicationRoot.websiteClosedLocked = false;
+			}, timeoutDuration);
+		}
+
+		// Scrolling
+
 	}, {
 		key: 'userDidScrollByAmount',
 		value: function userDidScrollByAmount(amount) {
-			this.mainSector.userDidScrollByAmount(amount);
+
+			if (this.websiteClosed) {
+				if (amount < 0) {
+					this.openWebsite(800);
+				}
+			} else {
+				if (amount > 0) {
+					if (this.mainSector.readyToClose) {
+						this.closeWebsite(800);
+					}
+				}
+			}
+		}
+
+		//
+		// Delegate
+		//
+
+		// Home Sector
+
+	}, {
+		key: 'homeSectorEnterButtonWasClicked',
+		value: function homeSectorEnterButtonWasClicked() {
+			this.openWebsite();
+		}
+
+		// Header
+
+	}, {
+		key: 'headerLogoWasClicked',
+		value: function headerLogoWasClicked() {
+			this.closeWebsite();
 		}
 	}, {
-		key: 'userDidStopScrolling',
-		value: function userDidStopScrolling() {
-			this.mainSector.userDidStopScrolling();
+		key: 'headerDidSelectPage',
+		value: function headerDidSelectPage(pageIndex) {
+
+			this.mainSector.stateIndex = pageIndex;
+
+			if (this.websiteClosed) {
+				this.openWebsite();
+			} else {
+				this.animatedUpdate();
+			}
 		}
 	}, {
 		key: 'contentWidth',

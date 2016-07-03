@@ -46,6 +46,7 @@ var JABView = function () {
 			positionEasingFunction: null,
 			positionDelay: null
 		};
+		this.willingToInheritAnimationOptions = true;
 
 		// Position
 		this.frame = new CGRect();
@@ -56,6 +57,7 @@ var JABView = function () {
 		this.borderRadius = 0;
 		this.zIndex = 0;
 
+		this.position = 'absolute';
 		this.overflow = 'visible';
 		this.cursor = 'auto';
 
@@ -138,9 +140,7 @@ var JABView = function () {
 
 				subview.updateViewString();
 				$(this.selector).append(subview.view);
-				$(subview.selector).css({
-					'position': 'absolute'
-				});
+				subview.position = 'absolute';
 
 				subview.init();
 			}
@@ -259,14 +259,16 @@ var JABView = function () {
 		key: 'inheritAnimationOptions',
 		value: function inheritAnimationOptions(newAnimationOptions) {
 
-			for (var key in newAnimationOptions) {
-				if (this.masterAnimationOptions[key] == null) {
-					this.animationOptions[key] = newAnimationOptions[key];
+			if (this.willingToInheritAnimationOptions) {
+				for (var key in newAnimationOptions) {
+					if (this.masterAnimationOptions[key] == null) {
+						this.animationOptions[key] = newAnimationOptions[key];
+					}
 				}
-			}
 
-			this.updateTransition();
-			this.setSubviewsAnimationOptions(newAnimationOptions);
+				this.updateTransition();
+				this.setSubviewsAnimationOptions(newAnimationOptions);
+			}
 		}
 	}, {
 		key: 'updateTransition',
@@ -464,7 +466,7 @@ var JABView = function () {
 
 	}, {
 		key: 'animatedUpdate',
-		value: function animatedUpdate(options, completion) {
+		value: function animatedUpdate(options, configureCompletion, positionCompletion) {
 
 			if (typeof options == 'number') {
 				options = {
@@ -483,7 +485,9 @@ var JABView = function () {
 			this.setSubviewsAnimationOptions(options);
 			this.updateAllUI();
 
-			var duration = this.longestAnimationTimeOfSelfAndSubviews();
+			var longestConfigureTime = this.longestConfigureAnimationTimeOfSelfAndSubviews();
+			var longestPositionTime = this.longestPositionAnimationTimeOfSelfAndSubviews();
+			var disableDuration = greaterOfTwo(longestConfigureTime, longestPositionTime);
 
 			var thisView = this;
 			this.disableAnimationsTimer = setTimeout(function () {
@@ -496,22 +500,43 @@ var JABView = function () {
 					positionEasingFunction: 'ease-in-out',
 					positionDelay: 0
 				});
-			}, duration);
+			}, disableDuration);
 
-			if (completion == null) {
-				completion = function completion() {};
+			if (configureCompletion == null) {
+				configureCompletion = function configureCompletion() {};
 			}
+
+			if (positionCompletion == null) {
+				positionCompletion = function positionCompletion() {};
+				longestConfigureTime = disableDuration; // If there is only one completion passed then ensure that it occurs at the end of all animations
+			}
+
 			setTimeout(function () {
-				completion();
-			}, duration);
+				configureCompletion();
+			}, longestConfigureTime);
+
+			setTimeout(function () {
+				positionCompletion();
+			}, longestPositionTime);
 		}
 	}, {
-		key: 'longestAnimationTimeOfSelfAndSubviews',
-		value: function longestAnimationTimeOfSelfAndSubviews() {
+		key: 'longestConfigureAnimationTimeOfSelfAndSubviews',
+		value: function longestConfigureAnimationTimeOfSelfAndSubviews() {
 
-			var longestTime = greaterOfTwo((this.animationOptions.configureDelay || 0) + (this.animationOptions.configureDuration || 0), (this.animationOptions.positionDelay || 0) + (this.animationOptions.positionDuration || 0));
+			var longestTime = (this.animationOptions.configureDelay || 0) + (this.animationOptions.configureDuration || 0);
 			for (var i = 0; i < this.subviews.length; i++) {
-				longestTime = greaterOfTwo(longestTime, this.subviews[i].longestAnimationTimeOfSelfAndSubviews());
+				longestTime = greaterOfTwo(longestTime, this.subviews[i].longestConfigureAnimationTimeOfSelfAndSubviews());
+			}
+
+			return longestTime;
+		}
+	}, {
+		key: 'longestPositionAnimationTimeOfSelfAndSubviews',
+		value: function longestPositionAnimationTimeOfSelfAndSubviews() {
+
+			var longestTime = (this.animationOptions.positionDelay || 0) + (this.animationOptions.positionDuration || 0);
+			for (var i = 0; i < this.subviews.length; i++) {
+				longestTime = greaterOfTwo(longestTime, this.subviews[i].longestPositionAnimationTimeOfSelfAndSubviews());
 			}
 
 			return longestTime;
@@ -551,6 +576,11 @@ var JABView = function () {
 				}
 			}
 			return currentHighestId + 1;
+		}
+	}, {
+		key: 'scrollTop',
+		get: function get() {
+			return $(this.selector).scrollTop();
 		}
 	}, {
 		key: 'animationOptions',
@@ -841,6 +871,20 @@ var JABView = function () {
 			this._zIndex = newZIndex;
 			$(this.selector).css({
 				'z-index': newZIndex
+			});
+		}
+
+		// Position
+
+	}, {
+		key: 'position',
+		get: function get() {
+			return this._position;
+		},
+		set: function set(newPosition) {
+			this._position = newPosition;
+			$(this.selector).css({
+				'position': newPosition
 			});
 		}
 

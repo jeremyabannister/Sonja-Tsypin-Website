@@ -38,13 +38,21 @@ var Stopwatch = function () {
 
 	_createClass(Stopwatch, [{
 		key: 'reset',
-		value: function reset() {
+		value: function reset(message) {
+			if (message != null) {
+				console.log(message);
+			}
 			this.timePointZero = this.currentAbsoluteTime;
 		}
 	}, {
 		key: 'logTime',
-		value: function logTime() {
-			console.log(this.currentStopwatchTime);
+		value: function logTime(message) {
+			if (message == null) {
+				message = '';
+			} else {
+				message = ' ' + message;
+			}
+			console.log(this.currentStopwatchTime + message);
 		}
 	}, {
 		key: 'currentAbsoluteTime',

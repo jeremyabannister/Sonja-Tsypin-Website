@@ -67,8 +67,7 @@ class InteractiveCover extends JABView {
 
 	    this.titleLabel.text = this.imageData.title
 	    this.titleLabel.textColor = 'white'
-			// this.titleLabel.fontFamily = 'Montserrat'
-			// this.titleLabel.opacity = 0.4
+		this.titleLabel.fontFamily = 'siteFont'
 	    this.titleLabel.fontSize = 20
 	    this.titleLabel.fontWeight = 300
 	    this.titleLabel.letterSpacing = 3

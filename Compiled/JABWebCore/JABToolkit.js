@@ -1,3 +1,3 @@
 "use strict";
 
-function fontSizeForStringOfWidth(string, font, width) {}
+function replaceSpacesWithSpaceCode(string) {}

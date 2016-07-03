@@ -10,44 +10,36 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var WorkPage = function (_JABView) {
-	_inherits(WorkPage, _JABView);
+var Header = function (_JABView) {
+	_inherits(Header, _JABView);
 
-	function WorkPage(customId) {
-		_classCallCheck(this, WorkPage);
-
-		// UI
-
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(WorkPage).call(this, customId));
-
-		_this.contentDomain = new ContentDomain('ContentDomain');
-		_this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS', 'projects']]);
+	function Header(customId) {
+		_classCallCheck(this, Header);
 
 		// State
-		_this.stateIndex = 0;
-		_this.currentlyActive = null;
-		_this.subdued = true;
 
-		_this.reservedTopBuffer = 0;
-		_this.heightOfMenuSection = 50;
-		_this.scrollable = false;
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Header).call(this, customId));
 
-		_this.comingSoon = null;
+		_this.selectedMenuIndex = -1;
+		_this.websiteClosed = true;
 
-		// Initialize
+		// UI
+		_this.logo = new Logo('Logo');
+		_this.menu = new Menu('Menu', [['WORK', 'work'], ['MORE', 'more'], ['ABOUT', 'about']]);
+
 		return _this;
 	}
 
 	//
-	// Getters and Setters
+	// Init
 	//
 
-	_createClass(WorkPage, [{
-		key: 'requiredHeightForWidth',
-		value: function requiredHeightForWidth(width) {
-			if (this.stateIndex == 0) {
-				return this.reservedTopBuffer + this.heightOfMenuSection + this.contentDomain.requiredHeightForWidth(width);
-			}
+	_createClass(Header, [{
+		key: 'init',
+		value: function init() {
+			_get(Object.getPrototypeOf(Header.prototype), 'init', this).call(this);
+
+			this.startEventListeners();
 		}
 
 		//
@@ -60,13 +52,13 @@ var WorkPage = function (_JABView) {
 		key: 'addAllUI',
 		value: function addAllUI() {
 
-			this.addContentDomain();
+			this.addLogo();
 			this.addMenu();
 		}
 	}, {
-		key: 'addContentDomain',
-		value: function addContentDomain() {
-			this.addSubview(this.contentDomain);
+		key: 'addLogo',
+		value: function addLogo() {
+			this.addSubview(this.logo);
 		}
 	}, {
 		key: 'addMenu',
@@ -79,40 +71,39 @@ var WorkPage = function (_JABView) {
 	}, {
 		key: 'updateAllUI',
 		value: function updateAllUI() {
-			_get(Object.getPrototypeOf(WorkPage.prototype), 'updateAllUI', this).call(this);
+			_get(Object.getPrototypeOf(Header.prototype), 'updateAllUI', this).call(this);
 
-			this.configureContentDomain();
-			this.positionContentDomain();
+			this.configureLogo();
+			this.positionLogo();
 
 			this.configureMenu();
 			this.positionMenu();
 		}
 
-		// Content Domain
+		// Logo
 
 	}, {
-		key: 'configureContentDomain',
-		value: function configureContentDomain() {
+		key: 'configureLogo',
+		value: function configureLogo() {
 
-			this.contentDomain.stateIndex = this.stateIndex;
-			this.contentDomain.currentlyActive = this.currentlyActive;
-			this.contentDomain.subdued = this.subdued;
-			this.contentDomain.scrollable = this.scrollable;
-			this.contentDomain.overflow = 'auto';
+			// this.logo.animationsDisabled = ['all']
+			if (this.websiteClosed) {
+				this.logo.faded = true;
+			} else {
+				this.logo.faded = false;
+			}
+			this.logo.cursor = 'pointer';
 
-			this.contentDomain.reservedTopBuffer = this.reservedTopBuffer;
-			this.contentDomain.heightOfMenuSection = this.heightOfMenuSection;
-
-			this.contentDomain.updateAllUI();
+			this.logo.updateAllUI();
 		}
 	}, {
-		key: 'positionContentDomain',
-		value: function positionContentDomain() {
+		key: 'positionLogo',
+		value: function positionLogo() {
 
-			var view = this.contentDomain;
-			var newFrame = this.bounds;
+			var leftBufferForLogo = (this.width - applicationRoot.contentWidth) / 2;
+			var topBufferForLogo = 39;
 
-			view.frame = newFrame;
+			this.logo.frame = new CGRect(leftBufferForLogo, 39, this.logo.requiredWidth, this.logo.requiredHeight);
 		}
 
 		// Menu
@@ -121,22 +112,14 @@ var WorkPage = function (_JABView) {
 		key: 'configureMenu',
 		value: function configureMenu() {
 
-			this.menu.selectedIndex = this.stateIndex;
-			this.menu.showUnderline = true;
-			this.menu.fadeUnselectedButtons = true;
+			this.menu.showUnderline = !this.websiteClosed;
+			this.menu.selectedIndex = this.selectedMenuIndex;
 
 			this.menu.textColor = 'white';
-			this.menu.fontSize = 10;
+			this.menu.fontSize = 12;
 			this.menu.letterSpacing = 1.5;
-			this.menu.configureDuration = 550;
-			this.menu.configureDelay = 100;
-
-			if (this.subdued) {
-				this.menu.opacity = 0;
-			} else {
-				this.menu.opacity = 1;
-				this.menu.configureEasingFunction = 'cubic-bezier(0.45, 0.03, 0.88, 0.79)';
-			}
+			this.menu.fontWeight = 'bold';
+			this.menu.textAlign = 'right';
 
 			this.menu.updateAllUI();
 		}
@@ -147,7 +130,7 @@ var WorkPage = function (_JABView) {
 			var widthOfMenu = this.width / 2;
 			var heightOfMenu = this.height;
 
-			var topBufferForMenu = 120;
+			var topBufferForMenu = 42;
 			var rightBufferForMenu = (this.width - applicationRoot.contentWidth) / 2;
 
 			var newFrame = new CGRect();
@@ -162,8 +145,18 @@ var WorkPage = function (_JABView) {
 		}
 
 		//
-		// Actions
+		// Event Listeners
 		//
+
+	}, {
+		key: 'startEventListeners',
+		value: function startEventListeners() {
+
+			var header = this;
+			$(this.logo.selector).click(function () {
+				header.parent.headerLogoWasClicked();
+			});
+		}
 
 		//
 		// Delegate
@@ -172,39 +165,9 @@ var WorkPage = function (_JABView) {
 	}, {
 		key: 'menuButtonWasPressed',
 		value: function menuButtonWasPressed(buttonIndex) {
-
-			this.stateIndex = buttonIndex;
-			this.updateAllUI();
-		}
-	}, {
-		key: 'state',
-		get: function get() {
-			return this._state;
-		},
-		set: function set(newState) {
-			this._state = newState;
-
-			if (this.state == this.possibleStates[0]) {
-				this.reelView.configureDuration = null;
-				this.projectsList.configureDuration = 0;
-			} else if (this.state == this.possibleStates[1]) {
-				this.reelView.configureDuration = 0;
-				this.projectsList.configureDuration = null;
-			}
-		}
-	}, {
-		key: 'currentlyActive',
-		get: function get() {
-			return this._currentlyActive;
-		},
-		set: function set(newCurrentlyActive) {
-			var changed = this.currentlyActive != newCurrentlyActive;
-
-			if (changed) {
-				this._currentlyActive = newCurrentlyActive;
-			}
+			this.parent.headerDidSelectPage(buttonIndex);
 		}
 	}]);
 
-	return WorkPage;
+	return Header;
 }(JABView);

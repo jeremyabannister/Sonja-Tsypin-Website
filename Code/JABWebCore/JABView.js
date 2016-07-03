@@ -43,6 +43,7 @@ class JABView {
 			positionEasingFunction: null,
 			positionDelay: null
 		}
+		this.willingToInheritAnimationOptions = true
 
 
 		// Position
@@ -53,17 +54,18 @@ class JABView {
 		this.opacity = 1
 		this.backgroundColor = 'transparent'
 		this.borderRadius = 0
+		this.blur = 0
+		
 		this.zIndex = 0
-		
-		
+		this.position = 'absolute'
 		this.overflow = 'visible'
 		this.cursor = 'auto'
-
+		
 	
 	
 		// Other
 		this.clickable = false		
-
+		
 
 	}
 
@@ -137,6 +139,11 @@ class JABView {
 	
 	
 	
+	get scrollTop () {
+		return $(this.selector).scrollTop()
+	}
+	
+	
 	//
 	// View
 	//
@@ -171,9 +178,7 @@ class JABView {
 			
 			subview.updateViewString()
 			$(this.selector).append(subview.view)
-			$(subview.selector).css({
-				'position':'absolute',
-			})
+			subview.position = 'absolute'
 			
 			subview.init()
 		}
@@ -200,8 +205,7 @@ class JABView {
 	}
 	
 	bringSubviewToFront (subview) {
-		this.removeSubview(subview)
-		this.addSubview(subview)
+		this.insertSubviewAboveSubviews(subview, this.subviews)
 	}
 	
 	
@@ -288,14 +292,16 @@ class JABView {
 	// Options
 	inheritAnimationOptions (newAnimationOptions) {
 		
-		for (var key in newAnimationOptions) {
-			if (this.masterAnimationOptions[key] == null) {
-				this.animationOptions[key] = newAnimationOptions[key]
+		if (this.willingToInheritAnimationOptions) {
+			for (var key in newAnimationOptions) {
+				if (this.masterAnimationOptions[key] == null) {
+					this.animationOptions[key] = newAnimationOptions[key]
+				}
 			}
+			
+			this.updateTransition()
+			this.setSubviewsAnimationOptions(newAnimationOptions)
 		}
-		
-		this.updateTransition()
-		this.setSubviewsAnimationOptions(newAnimationOptions)
 	}
 	
 	
@@ -400,7 +406,7 @@ class JABView {
 		var positionDelay = this.animationOptions.positionDelay || 0
 		
 		$(this.selector).css({
-			transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
+			transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
 		})
 	}
 	
@@ -418,6 +424,31 @@ class JABView {
 	get computedBorderRadius () {
 		return $(this.selector).css('border-radius')
 	}
+	
+	get computedFilter () {
+		return $(this.selector).css('filter')
+	}
+	
+	get computedFilterWebkit () {
+		return $(this.selector).css('-webkit-filter')
+	}
+	
+	get computedFilterMoz () {
+		return $(this.selector).css('-moz-filter')
+	}
+	
+	get computedFilterO () {
+		return $(this.selector).css('-o-filter')
+	}
+	
+	get computedFilterMS () {
+		return $(this.selector).css('-ms-filter')
+	}
+	
+	get computedBackdropBlur () {
+		return $(this.selector).css('-webkit-backdrop-blur')
+	}
+	
 	
 	
 	
@@ -464,6 +495,22 @@ class JABView {
 	stopBorderRadius () {
 		$(this.selector).css({
 			borderRadius: this.computedBorderRadius
+		})
+	}
+	
+	stopBlur () {
+		$(this.selector).css({
+			'-webkit-filter': this.computedFilterWebkit,
+			'-moz-filter': this.computedFilterMoz,
+			'-o-filter': this.computedFilterO,
+			'-ms-filter': this.computedFilterMS,
+			'filter': this.computedFilter
+		})
+	}
+	
+	stopBackdropBlur () {
+		$(this.selector).css({
+			'-webkit-backdrop-blur': this.computerBackdropBlur
 		})
 	}
 	
@@ -701,6 +748,50 @@ class JABView {
 		})
 	}
 
+	
+	// Blur
+	get blur () {
+		return this._blur
+	}
+	
+	set blur (newBlur) {
+		this._blur = newBlur
+		
+		this.updateTransition()
+		this.stopBlur()
+		$(this.selector).css({
+			'-webkit-filter': 'blur(' + newBlur + 'px)',
+			'-moz-filter': 'blur(' + newBlur + 'px)',
+			'-o-filter': 'blur(' + newBlur + 'px)',
+			'-ms-filter': 'blur(' + newBlur + 'px)',
+			'filter': 'blur(' + newBlur + 'px)'
+		})
+	}
+	
+	
+	get backdropBlur () {
+		return this._backdropBlur
+	}
+	
+	
+	set backdropBlur (newBackdropBlur) {
+		this._backdropBlur = newBackdropBlur
+		
+		this.updateTransition()
+		this.stopBackdropBlur()
+		$(this.selector).css({
+			'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
+		})
+	}
+
+
+
+
+
+
+
+
+
 
 	// ZIndex
 	get zIndex () {
@@ -716,10 +807,17 @@ class JABView {
 	}
 
 
-
-
-
-
+	// Position
+	get position () {
+		return this._position
+	}
+	
+	set position (newPosition) {
+		this._position = newPosition
+		$(this.selector).css({
+			'position': newPosition
+		})
+	}
 
 
 	// Overflow
@@ -856,7 +954,7 @@ class JABView {
 	// Animated Update
 	//
 	
-	animatedUpdate (options, completion) {
+	animatedUpdate (options, configureCompletion, positionCompletion) {
 		
 		if (typeof options == 'number') {
 			options = {
@@ -876,9 +974,9 @@ class JABView {
 		this.updateAllUI()
 
 
-
-		var duration = this.longestAnimationTimeOfSelfAndSubviews()
-		
+		var longestConfigureTime = this.longestConfigureAnimationTimeOfSelfAndSubviews()
+		var longestPositionTime = this.longestPositionAnimationTimeOfSelfAndSubviews()
+		var disableDuration = greaterOfTwo(longestConfigureTime, longestPositionTime)
 		
 		var thisView = this
 		this.disableAnimationsTimer = setTimeout(function() {
@@ -891,25 +989,49 @@ class JABView {
 				positionEasingFunction: 'ease-in-out',
 				positionDelay: 0
 			})
-		}, duration)
+		}, disableDuration)
 		
-		if (completion == null) {
-			completion = function() {}
+		
+		if (configureCompletion == null) {
+			configureCompletion = function() {}
 		}
+		
+		if (positionCompletion == null) {
+			positionCompletion = function() {}
+			longestConfigureTime = disableDuration // If there is only one completion passed then ensure that it occurs at the end of all animations
+		}
+		
+		
 		setTimeout(function() {
-			completion()
-		}, duration)
+			configureCompletion()
+		}, longestConfigureTime)
+		
+		setTimeout(function() {
+			positionCompletion()
+		}, longestPositionTime)
 	}
 	
-	longestAnimationTimeOfSelfAndSubviews () {
+	longestConfigureAnimationTimeOfSelfAndSubviews () {
 		
-		var longestTime = greaterOfTwo((this.animationOptions.configureDelay || 0) + (this.animationOptions.configureDuration || 0), (this.animationOptions.positionDelay || 0) + (this.animationOptions.positionDuration || 0))
+		var longestTime = (this.animationOptions.configureDelay || 0) + (this.animationOptions.configureDuration || 0)
 		for (var i = 0; i < this.subviews.length; i++) {
-			longestTime = greaterOfTwo(longestTime, this.subviews[i].longestAnimationTimeOfSelfAndSubviews())
+			longestTime = greaterOfTwo(longestTime, this.subviews[i].longestConfigureAnimationTimeOfSelfAndSubviews())
 		}
 		
 		return longestTime
 	}
+	
+	longestPositionAnimationTimeOfSelfAndSubviews () {
+		
+		var longestTime = (this.animationOptions.positionDelay || 0) + (this.animationOptions.positionDuration || 0)
+		for (var i = 0; i < this.subviews.length; i++) {
+			longestTime = greaterOfTwo(longestTime, this.subviews[i].longestPositionAnimationTimeOfSelfAndSubviews())
+		}
+		
+		return longestTime
+	}
+	
+	
 
 
 	setSubviewsAnimationOptions (options) {

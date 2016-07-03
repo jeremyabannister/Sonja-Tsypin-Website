@@ -10,75 +10,129 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var JABImageView = function (_JABView) {
-	_inherits(JABImageView, _JABView);
+var HomeSector = function (_JABView) {
+	_inherits(HomeSector, _JABView);
 
-	function JABImageView(customId) {
-		_classCallCheck(this, JABImageView);
+	function HomeSector(customId) {
+		_classCallCheck(this, HomeSector);
 
 		// State
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JABImageView).call(this, customId));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HomeSector).call(this, customId));
 
-		_this.image = new UIImage('');
+		_this.currentlyActive = true;
 
-		// UI*
-		_this.imageView = "<img>";
+		// UI
+		_this.homePage = new HomePage('HomePage');
 
 		return _this;
 	}
 
-	_createClass(JABImageView, [{
-		key: 'addAllUI',
-		value: function addAllUI() {
-			$(this.selector).append(this.imageView);
+	//
+	// Init
+	//
+
+	_createClass(HomeSector, [{
+		key: 'init',
+		value: function init() {
+			_get(Object.getPrototypeOf(HomeSector.prototype), 'init', this).call(this);
 		}
-	}, {
-		key: 'updateAllUI',
-		value: function updateAllUI() {
-			_get(Object.getPrototypeOf(JABImageView.prototype), 'updateAllUI', this).call(this);
-
-			this.positionImageView();
-		}
-
-		//
-		// Getters and Setters
-		//
-
-	}, {
-		key: 'positionImageView',
-
 
 		//
 		// UI
 		//
 
-		value: function positionImageView() {
+		// Add
 
-			$(this.selector + ' > img').css({
-				'width': this.width + 'px',
-				'height': this.height + 'px'
-			});
+	}, {
+		key: 'addAllUI',
+		value: function addAllUI() {
+
+			this.addHomePage();
 		}
 	}, {
-		key: 'image',
-		get: function get() {
-			return this._image;
-		},
-		set: function set(newImage) {
-			this._image = newImage;
-			$(this.selector + ' > img').attr({ 'src': newImage.src });
+		key: 'addHomePage',
+		value: function addHomePage() {
+			this.addSubview(this.homePage);
+		}
+
+		// Update
+
+	}, {
+		key: 'updateAllUI',
+		value: function updateAllUI() {
+			_get(Object.getPrototypeOf(HomeSector.prototype), 'updateAllUI', this).call(this);
+
+			this.configureHomePage();
+			this.positionHomePage();
+		}
+
+		// Home Page
+
+	}, {
+		key: 'configureHomePage',
+		value: function configureHomePage() {
+
+			this.homePage.overflow = 'hidden';
+			this.homePage.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
+
+			this.homePage.currentlyActive = this.currentlyActive;
+
+			/*
+   if (this.homePageHidden) {
+   	this.homePage.opacity = 0
+   } else {
+   	this.homePage.opacity = 1
+   }
+   */
+
+			this.homePage.updateAllUI();
 		}
 	}, {
-		key: 'src',
-		get: function get() {
-			return this.image.src;
-		},
-		set: function set(newSrc) {
-			this.image.src = newSrc;
-			this.image = this.image;
+		key: 'positionHomePage',
+		value: function positionHomePage() {
+
+			var newFrame = this.bounds;
+
+			this.homePage.frame = newFrame;
+		}
+
+		// Header
+
+	}, {
+		key: 'configureHeader',
+		value: function configureHeader() {
+
+			this.header.websiteClosed = this.websiteClosed;
+			this.header.selectedMenuIndex = $.inArray(this.state, this.possibleStates);
+			this.header.updateAllUI();
+		}
+	}, {
+		key: 'positionHeader',
+		value: function positionHeader() {
+			this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader);
+		}
+
+		//
+		// Event Listeners
+		//
+
+		//
+		// Actions
+		//
+
+		//
+		// Delegate
+		//
+
+		// Home Page
+
+	}, {
+		key: 'homePageDownArrowWasClicked',
+		value: function homePageDownArrowWasClicked() {
+			this.parent.homeSectorEnterButtonWasClicked();
 		}
 	}]);
 
-	return JABImageView;
+	return HomeSector;
 }(JABView);
