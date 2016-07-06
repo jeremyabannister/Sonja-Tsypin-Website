@@ -20,6 +20,9 @@ class JABView {
 		// Subviews
 		this.subviews = []
 		
+		// State
+		this.state = {}
+		this.parameters = {}
 
 		// Animation
 		this.disableAnimationsTimer = setTimeout(function() {}, 0)
@@ -208,6 +211,21 @@ class JABView {
 		this.insertSubviewAboveSubviews(subview, this.subviews)
 	}
 	
+	pushSubviewToBack (subview) {
+		
+		if (subview instanceof JABView) {
+			
+			var indexOfSubview = this.indexOfSubview(subview)
+			if (indexOfSubview != -1) {
+				this.subviews.splice(indexOfSubview, 1)
+			}
+			
+			this.subviews.splice(0, 0, subview)
+			this.updateZIndiciesOfSubviews()
+			
+		}
+		
+	}
 	
 	insertSubviewAboveSubview(insertedSubview, anchorSubview) {
 		
@@ -385,12 +403,41 @@ class JABView {
 	
 	
 	
+	// State
+	get state () {
+		return this._state
+	}
 	
+	set state (newState) {
+		if (this.state == null) {
+			this._state = {}
+		}
+		for (var key in newState) {
+			this._state[key] = newState[key]
+		}
+	}
+	
+	
+	
+	// Parameters
+	get parameters () {
+		return this._parameters
+	}
+	
+	set parameters (newParameters) {
+		if (this.parameters == null) {
+			this._parameters = {}
+		}
+		for (var key in newParameters) {
+			this._parameters[key] = newParameters[key]
+		}
+	}
 	
 	
 	
 	// Transition
 	updateTransition () {
+		
 		
 		if (this.id == '1---Menu---Header---MainSector---ApplicationRoot') {
 			// console.log(this.selector + ' is updating transition with ' + this.animationOptions.configureDuration)
@@ -404,6 +451,7 @@ class JABView {
 		var positionDuration = this.animationOptions.positionDuration || 0
 		var positionEasingFunction = this.animationOptions.positionEasingFunction || 'ease-in-out'
 		var positionDelay = this.animationOptions.positionDelay || 0
+		
 		
 		$(this.selector).css({
 			transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
@@ -595,8 +643,6 @@ class JABView {
 
 	set frame (newFrame) {
 		
-		this.updateTransition()
-		
 		var scaled = ((newFrame.size.width != this.width) || (newFrame.size.height != this.height))
 		var moved = ((newFrame.origin.x != this.x) || (newFrame.origin.y != this.y))
 		var changed = (moved || scaled)
@@ -606,6 +652,7 @@ class JABView {
 
 		if (changed) {
 			
+			this.updateTransition()
 			this.stopPositioning()
 			$(this.selector).css({
 				
@@ -641,7 +688,7 @@ class JABView {
 	set y (newY) {
 		this.frame = new CGRect(this.frame.origin.x, newY, this.frame.size.width, this.frame.size.height)
 	}
-
+	
 
 	// Width
 	get width () {

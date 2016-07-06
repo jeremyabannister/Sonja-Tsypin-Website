@@ -5,7 +5,7 @@ class ProjectMetaDataBundle {
 		this.id = ''
 		this.title = ''
 		this.subtitle = ''
-
+		this.year = ''
 	}
 
 

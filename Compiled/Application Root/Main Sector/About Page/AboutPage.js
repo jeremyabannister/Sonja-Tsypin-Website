@@ -20,14 +20,24 @@ var AboutPage = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AboutPage).call(this, customId));
 
-		_this.reservedTopBuffer = 0;
 		_this.subdued = false;
 		_this.comingSoon = false;
+
+		_this.scrollable = false;
+		_this.scrollFinishTimer;
+		_this.readyToClose = true;
+
+		// Parameters
+		_this.reservedTopBuffer = 0;
+		_this.topBufferForBioText = 80;
+		_this.bottomBufferForEmailAddress = 60;
 
 		// UI
 		_this.bioText = new UILabel('Bio');
 		_this.line = new JABView("Line");
 		_this.emailAddress = new UILabel('EmailAddress');
+
+		_this.footer = new Footer('Footer');
 		return _this;
 	}
 
@@ -39,6 +49,19 @@ var AboutPage = function (_JABView) {
 		key: 'init',
 		value: function init() {
 			_get(Object.getPrototypeOf(AboutPage.prototype), 'init', this).call(this);
+
+			this.startEventListeners();
+		}
+
+		//
+		// Getters and Setters
+		//
+
+	}, {
+		key: 'requiredHeightForWidth',
+		value: function requiredHeightForWidth(width) {
+
+			return this.footer.bottom;
 		}
 
 		//
@@ -54,6 +77,8 @@ var AboutPage = function (_JABView) {
 			this.addBioText();
 			this.addLine();
 			this.addEmailAddress();
+
+			this.addFooter();
 		}
 	}, {
 		key: 'addBioText',
@@ -69,6 +94,11 @@ var AboutPage = function (_JABView) {
 		key: 'addEmailAddress',
 		value: function addEmailAddress() {
 			this.addSubview(this.emailAddress);
+		}
+	}, {
+		key: 'addFooter',
+		value: function addFooter() {
+			this.addSubview(this.footer);
 		}
 
 		// Update
@@ -86,6 +116,9 @@ var AboutPage = function (_JABView) {
 
 			this.configureLine();
 			this.positionLine();
+
+			this.configureFooter();
+			this.positionFooter();
 		}
 
 		// Bio
@@ -94,7 +127,7 @@ var AboutPage = function (_JABView) {
 		key: 'configureBioText',
 		value: function configureBioText() {
 
-			this.bioText.text = '<i>Sonja Tsypin is a director and cinematographer based in New York and Los Angeles. Sonja\'s most recent short film, POWDER ROOM (2016), recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja\'s other recent work as Director of Photography includes upcoming narrative feature-length film ANGELS [2016, dir. Audrey Banks], short psychological drama BIRTH DAY [2016, dir. Eva Evans] and short horror film THEODORE [2015, dir. Ondine Viñao]. Sonja\'s directing work includes CONTACT ESTERINA [2014], a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and THE MURDER [2014], a short film remake of Alfred Hitchcock\'s "Blackmail." Sonja comes from a background in fine art; she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master\'s Degree in cinematography.</i>';
+			this.bioText.text = '<i>Sonja Tsypin is a director and cinematographer based in New York and Los Angeles. Sonja\'s most recent short film, POWDER ROOM (2016), recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja\'s other recent work as Director of Photography includes upcoming narrative feature-length film ANGELS [2016, dir. Audrey Banks], short psychological drama BIRTH DAY [2016, dir. Eva Evans] and short horror film THEODORE [2015, dir. Ondine Vi\u00f1ao]. Sonja\'s directing work includes CONTACT ESTERINA [2014], a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and THE MURDER [2014], a short film remake of Alfred Hitchcock\'s "Blackmail." Sonja comes from a background in fine art; she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master\'s Degree in cinematography.</i>';
 			this.bioText.textColor = 'white';
 			this.bioText.fontSize = 13;
 			this.bioText.fontFamily = 'siteFont';
@@ -123,11 +156,7 @@ var AboutPage = function (_JABView) {
 			newFrame.size.height = size.height;
 
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
-			newFrame.origin.y = this.reservedTopBuffer + 80;
-
-			if (this.subdued) {
-				newFrame.origin.y += 100;
-			}
+			newFrame.origin.y = this.reservedTopBuffer + this.topBufferForBioText;
 
 			this.bioText.frame = newFrame;
 		}
@@ -167,7 +196,7 @@ var AboutPage = function (_JABView) {
 		key: 'configureEmailAddress',
 		value: function configureEmailAddress() {
 
-			this.emailAddress.text = "e-mail &nbsp;:: &nbsp;sotsyp@gmail.com";
+			this.emailAddress.text = "e-mail &nbsp;:: &nbsp;sonjatsypin@gmail.com";
 			this.emailAddress.textColor = 'white';
 			this.emailAddress.fontSize = 13;
 			this.emailAddress.fontFamily = 'siteFont';
@@ -195,9 +224,56 @@ var AboutPage = function (_JABView) {
 			this.emailAddress.frame = newFrame;
 		}
 
+		// Footer
+
+	}, {
+		key: 'configureFooter',
+		value: function configureFooter() {}
+	}, {
+		key: 'positionFooter',
+		value: function positionFooter() {
+
+			var view = this.footer;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.width;
+			newFrame.size.height = this.footer.requiredHeight;
+
+			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+			newFrame.origin.y = this.emailAddress.bottom + this.bottomBufferForEmailAddress;
+
+			if (newFrame.origin.y < this.height - this.footer.requiredHeight) {
+				newFrame.origin.y = this.height - this.footer.requiredHeight;
+			}
+
+			view.frame = newFrame;
+		}
+
 		//
 		// Event Listeners
 		//
+
+	}, {
+		key: 'startEventListeners',
+		value: function startEventListeners() {
+			var aboutPage = this;
+
+			$(this.selector).bind('mousewheel', function (evt) {
+
+				if (!aboutPage.scrollable) {
+					evt.preventDefault();
+				}
+
+				clearTimeout(aboutPage.scrollFinishTimer);
+				if (aboutPage.scrollTop <= 0) {
+					aboutPage.scrollFinishTimer = setTimeout(function () {
+						aboutPage.readyToClose = true;
+					}, 50);
+				} else {
+					aboutPage.readyToClose = false;
+				}
+			});
+		}
 
 		//
 		// Actions

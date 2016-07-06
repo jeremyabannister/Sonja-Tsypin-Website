@@ -29,7 +29,9 @@ class MainSector extends JABView {
 		this.reelPage = new ReelPage('ReelPage')
 		
 		this.comingSoonView = new UILabel('ComingSoonView')
-
+		
+		
+		
 		
 	}
 
@@ -199,6 +201,7 @@ class MainSector extends JABView {
 		
 		view.backgroundColor = 'black'
 		view.overflow = 'auto'
+		view.parameters = {reservedTopBuffer: this.heightOfHeader}
 		view.reservedTopBuffer = this.heightOfHeader
 		
 		if (this.currentlyActivePage == view) {
@@ -207,17 +210,20 @@ class MainSector extends JABView {
 				this.bringSubviewToFront(this.headerBackdrop)
 			}
 			
-			view.scrollable = this.scrollable
+			view.state.scrollable = this.scrollable
 			
 			setComingSoon(view.comingSoon)
 			
 			if (this.currentlyActive) {
 				view.opacity = 1
+				view.currentlyActive = true
 			} else {
 				view.opacity = 0
+				view.currentlyActive = false
 			}
 		} else {
 			view.opacity = 0
+			view.currentlyActive = false
 		}
 		
 		
@@ -316,9 +322,7 @@ class MainSector extends JABView {
 		this.comingSoonView.fontWeight = 'bold'
 		this.comingSoonView.letterSpacing = 1.5
 		
-		this.comingSoonView.configureDuration = 0
-		
-		if (this.comingSoon) {
+		if (this.comingSoon && this.currentlyActive) {
 			this.comingSoonView.opacity = 1
 		} else {
 			this.comingSoonView.opacity = 0
@@ -335,6 +339,14 @@ class MainSector extends JABView {
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		newFrame.origin.y = (this.height - newFrame.size.height)/2
+		
+		if (!this.currentlyActive) {
+			newFrame.origin.y += 100
+		}
+		
+		if (!this.comingSoon) {
+			newFrame.origin.x = this.width
+		}
 					
 		this.comingSoonView.frame = newFrame
 		

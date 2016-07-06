@@ -22,10 +22,7 @@ class ApplicationRoot extends JABApplicationRoot {
 			
 			// UI
 			this.mainSector = new MainSector('MainSector')
-			
 			this.headerBackdrop = new JABView('HeaderBackdrop')
-			this.underline = new JABView('Underline')
-			
 			this.homeSector = new HomeSector('HomeSector')
 			this.header = new Header('Header')
 		}
@@ -61,10 +58,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		} else {
 			
 			this.addMainSector()
-			
 			this.addHeaderBackdrop()
-			this.addUnderline()
-			
 			this.addHomeSector()
 			this.addHeader()
 		}
@@ -78,10 +72,6 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	addHeaderBackdrop () {
 		this.addSubview(this.headerBackdrop)
-	}
-	
-	addUnderline () {
-		this.addSubview(this.underline)
 	}
 	
 	addHomeSector () {
@@ -122,9 +112,6 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.configureHeaderBackdrop()
 			this.positionHeaderBackdrop()
 			
-			this.configureUnderline()
-			this.positionUnderline()
-			
 			this.configureHomeSector()
 			this.positionHomeSector()
 			
@@ -162,6 +149,7 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.headerBackdrop.backgroundColor = 'black'
 		}
 		
+		
 	}
 	
 	positionHeaderBackdrop () {
@@ -180,29 +168,6 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 	}
 	
-	
-	
-	// Underline
-	configureUnderline () {
-		
-		// this.underline.backgroundColor = 'rgba(0, 0, 0, 0.4)'
-		// this.underline.backdropBlur = 10
-		
-	}
-	
-	positionUnderline () {
-		var view = this.underline
-		var newFrame = new CGRect()
-							
-		newFrame.size.width = applicationRoot.contentWidth
-		newFrame.size.height = 20
-
-		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = this.headerBackdrop.bottom - (newFrame.size.height) + 5
-							
-		view.frame = newFrame
-	}
-	
 
 
 	
@@ -210,6 +175,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	configureHomeSector () {
 		this.homeSector.backgroundColor = 'black'
 		
+		this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
 		this.homeSector.currentlyActive = this.websiteClosed
 		this.homeSector.updateAllUI()
 	}

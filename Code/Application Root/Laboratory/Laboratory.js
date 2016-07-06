@@ -93,6 +93,7 @@ class Laboratory extends JABView {
 		this.view1.red()
 		this.view1.text = 'SONJA TSYPIN'
 		this.view1.fontFamily = 'siteFont'
+		this.view1.positionDuration = 1000
 		
 	}
 	
@@ -146,18 +147,12 @@ class Laboratory extends JABView {
 		if (experimentNumber == 1) {
 			
 			
-			var a = null
-			var b = null
-			var c = 3
-			
-			var test = a || b || c
-			
-			console.log(test)
 			
 			
 		} else if (experimentNumber == 2) {
 			
-			
+			this.view1.width = 300
+			this.view1.x += 500
 			
 			
 		} else if (experimentNumber == 3) {

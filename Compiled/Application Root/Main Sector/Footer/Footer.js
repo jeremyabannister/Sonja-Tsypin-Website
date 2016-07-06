@@ -20,16 +20,22 @@ var Footer = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Footer).call(this, customId));
 
-		_this.requiredHeight = 50;
+		_this.requiredHeight = 70;
 
 		// Parameters
-		_this.leftBufferForCopyrightLabel = 10;
+		_this.leftBufferForCopyrightLabel = 5;
 
-		_this.sizeOfButtons = 20;
+		_this.sizeOfButtons = 14;
+
+		_this.buttonWidthToHeights = [1, 1, 1.32941176];
+		_this.buttonHeightAdjustments = [0, 1, -2];
+		_this.buttonSeparationAdjustments = [3, 2];
+		_this.buttonYAdjustments = [0, 1, -2];
+
 		_this.rightBufferForRightButton = _this.leftBufferForCopyrightLabel;
-		_this.betweenBufferForButtons = 20;
+		_this.betweenBufferForButtons = 10;
 
-		_this.buttonImages = ['./Resources/Images/Buttons/Instagram Button.png', './Resources/Images/Buttons/Email Button.png'];
+		_this.buttonImages = ['./Resources/Images/Buttons/Instagram Button.png', './Resources/Images/Buttons/Art Button.png', './Resources/Images/Buttons/Email Button.png'];
 
 		// UI
 		_this.copyrightLabel = new UILabel('CopyrightLabel');
@@ -101,7 +107,7 @@ var Footer = function (_JABView) {
 
 			var view = this.copyrightLabel;
 
-			view.text = 'SONJA TSYPIN © 2016';
+			view.text = 'SONJA TSYPIN \u00a9 2016';
 			view.textColor = 'white';
 			view.fontFamily = 'siteFont';
 			view.fontWeight = 'bold';
@@ -120,7 +126,7 @@ var Footer = function (_JABView) {
 			newFrame.size.width = size.width;
 			newFrame.size.height = size.height;
 
-			newFrame.origin.x = (this.width - applicationRoot.contentWidth) / 2;
+			newFrame.origin.x = (this.width - applicationRoot.contentWidth) / 2 + this.leftBufferForCopyrightLabel;
 			newFrame.origin.y = (this.height - newFrame.size.height) / 2;
 
 			view.frame = newFrame;
@@ -146,14 +152,20 @@ var Footer = function (_JABView) {
 
 			for (var i = 0; i < this.buttons.length; i++) {
 
-				var view = this.buttons[i];
+				var buttonIndex = this.buttons.length - 1 - i;
+				var view = this.buttons[buttonIndex];
 				var newFrame = new CGRect();
 
-				newFrame.size.width = this.sizeOfButtons;
-				newFrame.size.height = newFrame.size.width;
+				newFrame.size.height = this.sizeOfButtons + this.buttonHeightAdjustments[buttonIndex];
+				newFrame.size.width = newFrame.size.height * this.buttonWidthToHeights[buttonIndex];
 
-				newFrame.origin.x = this.width - (this.width - applicationRoot.contentWidth) / 2 - newFrame.size.width - this.rightBufferForRightButton - i * (this.sizeOfButtons + this.betweenBufferForButtons);
-				newFrame.origin.y = 0;
+				var separationAdjustment = 0;
+				if (buttonIndex != 2) {
+					separationAdjustment = this.buttonSeparationAdjustments[buttonIndex];
+				}
+
+				newFrame.origin.x = this.width - (this.width - applicationRoot.contentWidth) / 2 - newFrame.size.width - this.rightBufferForRightButton - i * (this.sizeOfButtons + this.betweenBufferForButtons) - separationAdjustment;
+				newFrame.origin.y = (this.height - newFrame.size.height) / 2 + this.buttonYAdjustments[buttonIndex];
 
 				view.frame = newFrame;
 			}
@@ -171,6 +183,17 @@ var Footer = function (_JABView) {
 		// Delegate
 		//
 
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+			if (view == this.buttons[0]) {
+				window.open('http://www.instagram.com/sonjatsypin');
+			} else if (view == this.buttons[1]) {
+				window.open('http://www.sonjatsypin.weebly.com');
+			}
+		}
 	}]);
 
 	return Footer;

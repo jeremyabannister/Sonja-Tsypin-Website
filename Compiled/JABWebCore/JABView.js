@@ -55,8 +55,9 @@ var JABView = function () {
 		this.opacity = 1;
 		this.backgroundColor = 'transparent';
 		this.borderRadius = 0;
-		this.zIndex = 0;
+		this.blur = 0;
 
+		this.zIndex = 0;
 		this.position = 'absolute';
 		this.overflow = 'visible';
 		this.cursor = 'auto';
@@ -169,8 +170,22 @@ var JABView = function () {
 	}, {
 		key: 'bringSubviewToFront',
 		value: function bringSubviewToFront(subview) {
-			this.removeSubview(subview);
-			this.addSubview(subview);
+			this.insertSubviewAboveSubviews(subview, this.subviews);
+		}
+	}, {
+		key: 'pushSubviewToBack',
+		value: function pushSubviewToBack(subview) {
+
+			if (subview instanceof JABView) {
+
+				var indexOfSubview = this.indexOfSubview(subview);
+				if (indexOfSubview != -1) {
+					this.subviews.splice(indexOfSubview, 1);
+				}
+
+				this.subviews.splice(0, 0, subview);
+				this.updateZIndiciesOfSubviews();
+			}
 		}
 	}, {
 		key: 'insertSubviewAboveSubview',
@@ -290,7 +305,7 @@ var JABView = function () {
 			var positionDelay = this.animationOptions.positionDelay || 0;
 
 			$(this.selector).css({
-				transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
+				transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
 			});
 		}
 
@@ -318,6 +333,24 @@ var JABView = function () {
 		value: function stopBorderRadius() {
 			$(this.selector).css({
 				borderRadius: this.computedBorderRadius
+			});
+		}
+	}, {
+		key: 'stopBlur',
+		value: function stopBlur() {
+			$(this.selector).css({
+				'-webkit-filter': this.computedFilterWebkit,
+				'-moz-filter': this.computedFilterMoz,
+				'-o-filter': this.computedFilterO,
+				'-ms-filter': this.computedFilterMS,
+				'filter': this.computedFilter
+			});
+		}
+	}, {
+		key: 'stopBackdropBlur',
+		value: function stopBackdropBlur() {
+			$(this.selector).css({
+				'-webkit-backdrop-blur': this.computerBackdropBlur
 			});
 		}
 	}, {
@@ -661,6 +694,36 @@ var JABView = function () {
 			return $(this.selector).css('border-radius');
 		}
 	}, {
+		key: 'computedFilter',
+		get: function get() {
+			return $(this.selector).css('filter');
+		}
+	}, {
+		key: 'computedFilterWebkit',
+		get: function get() {
+			return $(this.selector).css('-webkit-filter');
+		}
+	}, {
+		key: 'computedFilterMoz',
+		get: function get() {
+			return $(this.selector).css('-moz-filter');
+		}
+	}, {
+		key: 'computedFilterO',
+		get: function get() {
+			return $(this.selector).css('-o-filter');
+		}
+	}, {
+		key: 'computedFilterMS',
+		get: function get() {
+			return $(this.selector).css('-ms-filter');
+		}
+	}, {
+		key: 'computedBackdropBlur',
+		get: function get() {
+			return $(this.selector).css('-webkit-backdrop-blur');
+		}
+	}, {
 		key: 'computedX',
 		get: function get() {
 			var transformString = $(this.selector).css('transform');
@@ -856,6 +919,41 @@ var JABView = function () {
 			this.stopBorderRadius();
 			$(this.selector).css({
 				'border-radius': newBorderRadius
+			});
+		}
+
+		// Blur
+
+	}, {
+		key: 'blur',
+		get: function get() {
+			return this._blur;
+		},
+		set: function set(newBlur) {
+			this._blur = newBlur;
+
+			this.updateTransition();
+			this.stopBlur();
+			$(this.selector).css({
+				'-webkit-filter': 'blur(' + newBlur + 'px)',
+				'-moz-filter': 'blur(' + newBlur + 'px)',
+				'-o-filter': 'blur(' + newBlur + 'px)',
+				'-ms-filter': 'blur(' + newBlur + 'px)',
+				'filter': 'blur(' + newBlur + 'px)'
+			});
+		}
+	}, {
+		key: 'backdropBlur',
+		get: function get() {
+			return this._backdropBlur;
+		},
+		set: function set(newBackdropBlur) {
+			this._backdropBlur = newBackdropBlur;
+
+			this.updateTransition();
+			this.stopBackdropBlur();
+			$(this.selector).css({
+				'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
 			});
 		}
 

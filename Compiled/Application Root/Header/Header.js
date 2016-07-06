@@ -25,7 +25,7 @@ var Header = function (_JABView) {
 
 		// UI
 		_this.logo = new Logo('Logo');
-		_this.menu = new Menu('Menu', [['WORK', 'work'], ['MORE', 'more'], ['ABOUT', 'about']]);
+		_this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS	', 'projects'], ['ABOUT', 'about']]);
 
 		return _this;
 	}

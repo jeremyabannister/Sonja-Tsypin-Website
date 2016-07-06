@@ -20,6 +20,7 @@ class JABImageView extends JABView {
 	updateAllUI () {
 		super.updateAllUI()
 		
+		this.configureImageView()
 		this.positionImageView()
 		
 	}
@@ -58,6 +59,23 @@ class JABImageView extends JABView {
 	//
 	// UI
 	//
+	
+	configureImageView () {
+		
+		var configureDuration = this.animationOptions.configureDuration || 0
+		var configureEasingFunction = this.animationOptions.configureEasingFunction || 'ease-in-out'
+		var configureDelay = this.animationOptions.configureDelay || 0
+		
+		
+		var positionDuration = this.animationOptions.positionDuration || 0
+		var positionEasingFunction = this.animationOptions.positionEasingFunction || 'ease-in-out'
+		var positionDelay = this.animationOptions.positionDelay || 0
+		
+		$(this.selector + ' > img').css({
+			transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
+		})
+		
+	}
 	
 	
 	positionImageView () {

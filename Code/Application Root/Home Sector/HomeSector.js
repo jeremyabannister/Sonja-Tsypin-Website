@@ -54,12 +54,7 @@ class HomeSector extends JABView {
 	configureHomePage () {
 		
 		this.homePage.overflow = 'hidden'
-		this.homePage.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
-		
 		this.homePage.currentlyActive = this.currentlyActive
-		
-		this.homePage.currentlyActive = this.currentlyActive
-		
 		this.homePage.updateAllUI()
 		
 	}

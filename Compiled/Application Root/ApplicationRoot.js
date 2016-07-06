@@ -27,7 +27,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		_this.websiteClosedLocked = false;
 
 		// Parameters
-		_this.heightOfHeader = 100;
+		_this.heightOfHeader = 110;
 
 		if (_this.laboratoryEnabled) {
 			_this.laboratory = new Laboratory('Laboratory');
@@ -35,6 +35,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			// UI
 			_this.mainSector = new MainSector('MainSector');
+			_this.headerBackdrop = new JABView('HeaderBackdrop');
 			_this.homeSector = new HomeSector('HomeSector');
 			_this.header = new Header('Header');
 		}
@@ -63,6 +64,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			} else {
 
 				this.addMainSector();
+				this.addHeaderBackdrop();
 				this.addHomeSector();
 				this.addHeader();
 			}
@@ -71,6 +73,11 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		key: 'addMainSector',
 		value: function addMainSector() {
 			this.addSubview(this.mainSector);
+		}
+	}, {
+		key: 'addHeaderBackdrop',
+		value: function addHeaderBackdrop() {
+			this.addSubview(this.headerBackdrop);
 		}
 	}, {
 		key: 'addHomeSector',
@@ -103,6 +110,9 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 				this.configureMainSector();
 				this.positionMainSector();
 
+				this.configureHeaderBackdrop();
+				this.positionHeaderBackdrop();
+
 				this.configureHomeSector();
 				this.positionHomeSector();
 
@@ -118,7 +128,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		value: function configureMainSector() {
 			this.mainSector.backgroundColor = 'black';
 			this.mainSector.heightOfHeader = this.heightOfHeader;
-			this.mainSector.websiteClosed = this.websiteClosed;
+			this.mainSector.currentlyActive = !this.websiteClosed;
 
 			this.mainSector.updateAllUI();
 		}
@@ -128,6 +138,36 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			this.mainSector.frame = new CGRect(0, 0, this.width, this.height);
 		}
 
+		// Header Backdrop
+
+	}, {
+		key: 'configureHeaderBackdrop',
+		value: function configureHeaderBackdrop() {
+
+			if (isPropertySupported('-webkit-backdrop-filter')) {
+				this.headerBackdrop.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+				this.headerBackdrop.backdropBlur = 10;
+			} else {
+				this.headerBackdrop.backgroundColor = 'black';
+			}
+		}
+	}, {
+		key: 'positionHeaderBackdrop',
+		value: function positionHeaderBackdrop() {
+
+			var headerBackdropExtension = 0;
+			var view = this.headerBackdrop;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.width;
+			newFrame.size.height = this.heightOfHeader + headerBackdropExtension;
+
+			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+			newFrame.origin.y = -headerBackdropExtension;
+
+			view.frame = newFrame;
+		}
+
 		// Home Sector
 
 	}, {
@@ -135,11 +175,9 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		value: function configureHomeSector() {
 			this.homeSector.backgroundColor = 'black';
 
-			if (this.websiteClosed) {
-				this.homeSector.currenlyActive = true;
-			} else {
-				this.homeSector.currenlyActive = false;
-			}
+			this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
+			this.homeSector.currentlyActive = this.websiteClosed;
+			this.homeSector.updateAllUI();
 		}
 	}, {
 		key: 'positionHomeSector',
@@ -161,6 +199,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			this.header.websiteClosed = this.websiteClosed;
 			this.header.selectedMenuIndex = this.mainSector.stateIndex;
+			this.header.configureDuration = 0;
 			this.header.updateAllUI();
 		}
 	}, {
@@ -228,7 +267,6 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 						positionDuration: duration,
 						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
 					}, function () {
-						applicationRoot.header.backgroundColor = 'black';
 						applicationRoot.homePageHidden = true;
 						applicationRoot.mainSector.scrollable = true;
 						applicationRoot.updateAllUI();
@@ -249,7 +287,6 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 						duration = 800;
 					}
 
-					this.header.backgroundColor = 'rgba(0, 0, 0, 0)';
 					this.homePageHidden = false;
 					this.configureHomeSector();
 					this.animatedUpdate({
@@ -323,7 +360,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			if (this.websiteClosed) {
 				this.openWebsite();
 			} else {
-				this.animatedUpdate();
+				this.updateAllUI(); // Use non-animated update because the only thing that should animate is the menu underline which has its own hardcoded positionDuration. If animated update is used then the newly selected page fades in but we want it to pop it
 			}
 		}
 	}, {

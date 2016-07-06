@@ -143,6 +143,10 @@ class ReelPage extends JABView {
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		newFrame.origin.y = this.vimeoView.bottom + this.bottomBufferForVimeoView
+		
+		if (newFrame.origin.y + newFrame.size.height < this.height) {
+			newFrame.origin.y = this.height - newFrame.size.height
+		}
 							
 		view.frame = newFrame
 		
@@ -170,6 +174,10 @@ class ReelPage extends JABView {
 				}, 50)
 			} else {
 				reelPage.readyToClose = false
+			}
+			
+			if (reelPage.readyToClose && evt.originalEvent.wheelDelta > 0) {
+				evt.preventDefault()
 			}
 		})
 	}

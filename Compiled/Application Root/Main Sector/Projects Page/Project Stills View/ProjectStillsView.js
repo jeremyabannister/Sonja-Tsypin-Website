@@ -21,12 +21,17 @@ var ProjectStillsView = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProjectStillsView).call(this, customId));
 
 		_this.projectDataBundle = projectDataBundle;
-		_this.largeStillIndex = 0;
-		_this.secondaryStillsIndicies = [];
+		_this.currentStillIndex = 0;
+
+		// Parameters
+		_this.incomingSlideDistance = 160;
+		_this.stillAnimationDelay = 3000;
 
 		// UI
-		_this.largeStillView = new InteractiveImageView('LargeStillView');
-		_this.secondaryStillsView = new ProjectSecondaryStillsView('SecondaryStillsView', _this.projectDataBundle);
+		_this.stillViews = [];
+		for (var i = 0; i < _this.projectDataBundle.stills.length; i++) {
+			_this.stillViews.push(new JABImageView());
+		}
 
 		// Initialize
 		return _this;
@@ -40,31 +45,33 @@ var ProjectStillsView = function (_JABView) {
 		key: 'init',
 		value: function init() {
 			_get(Object.getPrototypeOf(ProjectStillsView.prototype), 'init', this).call(this);
-			this.installNewDataBundle();
+
+			this.overflow = 'hidden';
 		}
+
+		//
+		// Getters and Setters
+		//
+
+	}, {
+		key: 'addAllUI',
+
 
 		//
 		// UI
 		//
 
 		// Add
-
-	}, {
-		key: 'addAllUI',
 		value: function addAllUI() {
 
-			this.addLargeStillView();
-			this.addSecondaryStillsView();
+			this.addStills();
 		}
 	}, {
-		key: 'addLargeStillView',
-		value: function addLargeStillView() {
-			this.addSubview(this.largeStillView);
-		}
-	}, {
-		key: 'addSecondaryStillsView',
-		value: function addSecondaryStillsView() {
-			this.addSubview(this.secondaryStillsView);
+		key: 'addStills',
+		value: function addStills() {
+			for (var i = 0; i < this.stillViews.length; i++) {
+				this.addSubview(this.stillViews[this.stillViews.length - 1 - i]);
+			}
 		}
 
 		// Update
@@ -74,67 +81,75 @@ var ProjectStillsView = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(ProjectStillsView.prototype), 'updateAllUI', this).call(this);
 
-			this.configureLargeStillView();
-			this.positionLargeStillView();
-
-			this.configureSecondaryStillsView();
-			this.positionSecondaryStillsView();
+			this.configureStillsViews();
+			this.positionStillsViews();
 		}
 
-		// Large Still View
+		// Stills Views
 
 	}, {
-		key: 'configureLargeStillView',
-		value: function configureLargeStillView() {
+		key: 'configureStillsViews',
+		value: function configureStillsViews() {
 
-			this.largeStillView.src = this.projectDataBundle.stills[this.largeStillIndex];
+			for (var i = 0; i < this.stillViews.length; i++) {
+				var view = this.stillViews[i];
 
-			var imageData = new ImageData();
-			imageData.title = this.projectDataBundle.metaDataBundle.title;
-			imageData.subtitle = this.projectDataBundle.metaDataBundle.subtitle;
-			imageData.year = this.projectDataBundle.metaDataBundle.year;
+				view.positionDuration = 800;
+				view.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
 
-			this.largeStillView.imageData = imageData;
+				view.configureDelay = 400;
+				view.configureDuration = view.positionDuration - view.configureDelay;
+
+				view.src = this.projectDataBundle.stills[i];
+
+				if (i == this.currentStillIndex - 1 || i == this.stillViews.length - 1 && this.currentStillIndex == 0) {
+					view.opacity = 0;
+				} else {
+					view.opacity = 1;
+				}
+			}
 		}
 	}, {
-		key: 'positionLargeStillView',
-		value: function positionLargeStillView() {
+		key: 'positionStillsViews',
+		value: function positionStillsViews() {
 
-			var widthToHeightRatio = 16.0 / 9.0;
+			for (var i = 0; i < this.stillViews.length; i++) {
 
-			var newFrame = new CGRect();
+				if (i == this.currentStillIndex || i == this.currentStillIndex - 1 || i == this.stillViews.length - 1 && this.currentStillIndex == 0 || i == this.currentStillIndex + 1 || i == 0 && this.currentStillIndex == this.stillViews.length - 1) {
+					var view = this.stillViews[i];
+					var departedView;
+					var upComingView;
 
-			newFrame.size.height = this.height;
-			newFrame.size.width = newFrame.size.height * widthToHeightRatio;
+					if (i == 0) {
+						departedView = this.stillViews[this.stillViews.length - 1];
+					} else {
+						departedView = this.stillViews[i - 1];
+					}
 
-			newFrame.origin.x = 0;
-			newFrame.origin.y = 0;
+					if (i == this.stillViews.length - 1) {
+						upComingView = this.stillViews[0];
+					} else {
+						upComingView = this.stillViews[i + 1];
+					}
 
-			this.largeStillView.frame = newFrame;
-		}
+					var newFrame = new CGRect();
 
-		// Secondary Stills View
+					newFrame.size.width = this.width;
+					newFrame.size.height = this.height;
 
-	}, {
-		key: 'configureSecondaryStillsView',
-		value: function configureSecondaryStillsView() {
+					if (i == this.currentStillIndex) {
+						newFrame.origin.x = 0;
+					} else if (i == this.currentStillIndex - 1 || i == this.stillViews.length - 1 && this.currentStillIndex == 0) {
+						newFrame.origin.x = -newFrame.size.width;
+					} else {
+						newFrame.origin.x = this.incomingSlideDistance;
+					}
 
-			this.secondaryStillsView.stillsIndicies = this.secondaryStillsIndicies;
-			this.secondaryStillsView.updateAllUI();
-		}
-	}, {
-		key: 'positionSecondaryStillsView',
-		value: function positionSecondaryStillsView() {
+					newFrame.origin.y = (this.height - newFrame.size.height) / 2;
 
-			var newFrame = new CGRect();
-
-			newFrame.size.width = this.width - this.largeStillView.width;
-			newFrame.size.height = this.height;
-
-			newFrame.origin.x = this.largeStillView.right;
-			newFrame.origin.y = 0;
-
-			this.secondaryStillsView.frame = newFrame;
+					view.frame = newFrame;
+				}
+			}
 		}
 
 		//
@@ -143,6 +158,37 @@ var ProjectStillsView = function (_JABView) {
 
 		// Stills
 
+	}, {
+		key: 'startTimerForNextStill',
+		value: function startTimerForNextStill() {
+
+			if (!this.animationsDisabled) {
+				var projectStillsView = this;
+				setTimeout(function () {
+					projectStillsView.currentStillIndex += 1;
+					if (projectStillsView.currentStillIndex == projectStillsView.stillViews.length) {
+						projectStillsView.currentStillIndex = 0;
+					}
+
+					projectStillsView.animatedUpdate(0, function () {}, function () {
+						projectStillsView.restackStills();
+						projectStillsView.startTimerForNextStill();
+					});
+				}, this.stillAnimationDelay);
+			}
+		}
+	}, {
+		key: 'restackStills',
+		value: function restackStills() {
+
+			for (var i = 0; i < this.stillViews.length; i++) {
+				var view = this.stillViews[i];
+
+				if (i == this.currentStillIndex - 1 || i == this.stillViews.length - 1 && this.currentStillIndex == 0) {
+					this.pushSubviewToBack(view);
+				}
+			}
+		}
 	}, {
 		key: 'installNewDataBundle',
 		value: function installNewDataBundle() {
@@ -214,6 +260,24 @@ var ProjectStillsView = function (_JABView) {
 		key: 'secondaryStillWasClicked',
 		value: function secondaryStillWasClicked(stillIndex) {
 			this.swapLargeStillWithSecondaryStill(stillIndex);
+		}
+	}, {
+		key: 'currentlyActive',
+		get: function get() {
+			return this._currentlyActive;
+		},
+		set: function set(newCurrentlyActive) {
+
+			var changed = newCurrentlyActive != this.currentlyActive;
+
+			if (changed) {
+				this._currentlyActive = newCurrentlyActive;
+				this.animationsDisabled = !newCurrentlyActive;
+
+				if (this.currentlyActive) {
+					// this.startTimerForNextStill()
+				}
+			}
 		}
 	}]);
 

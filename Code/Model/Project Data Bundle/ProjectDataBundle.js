@@ -6,25 +6,13 @@ class ProjectDataBundle {
 		this.stillsBundle = new ProjectStillsBundle()
 		this.videoBundle = new ProjectVideoBundle()
 
-		this.id = ''
-		this.title = ''
-		this.subtitle = ''
-		this.year = ''
-
-		this.vimeoId = ''
-		this.stills = []
-		this.mainStillIndex = 0
-		
-		this.mainStill = ''
-		this.secondaryStills = []
-
 	}
 
 
 
-
+	//
 	// Custom Getters and Setters
-
+	//
 
 	// Id
 	get id () {
