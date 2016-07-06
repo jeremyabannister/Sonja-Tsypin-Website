@@ -236,6 +236,10 @@ class ProjectsPage extends JABView {
 				}
 				newFrame.origin.y = lowestBottom + this.parameters.bottomBufferForGrid
 			}
+			
+			if (newFrame.origin.y + newFrame.size.height < this.height) {
+				newFrame.origin.y = this.height - newFrame.size.height
+			}
 		} else {
 			newFrame.origin.y = this.height - newFrame.size.height
 		}
