@@ -4,7 +4,9 @@ class ProjectInfoTab extends JABView {
 		super(customId)
 		
 		// State
-		this.title = 'POWDER ROOM'
+		this.state = {
+			projectDataBundle: null
+		}
 		
 		// UI
 		this.titleLabel = new UILabel('TitleLabel')
@@ -55,11 +57,14 @@ class ProjectInfoTab extends JABView {
 	configureTitleLabel () {
 		
 		var view = this.titleLabel
+		var dataBundle = this.state.projectDataBundle
 		
-		view.text = this.title
-		view.fontFamily = 'siteFont'
-		view.fontSize = 20
-		view.textColor = 'white'
+		if (dataBundle != null) {
+			view.text = this.state.projectDataBundle.title
+			view.fontFamily = 'siteFont'
+			view.fontSize = 20
+			view.textColor = 'white'
+		}
 		
 	}
 	

@@ -8,7 +8,7 @@ class ProjectsPage extends JABView {
 		this.state = {
 			projectDataBundles: this.assembleProjectDataBundles(),
 			currentlyActive: false,
-			comingSoon: true,
+			comingSoon: false,
 			
 			selectedProject: null,
 			selectedProjectIndex: null,
@@ -125,11 +125,15 @@ class ProjectsPage extends JABView {
 		
 		var view = this.projectInfoTab
 		
+		view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
+		
 		if (this.state.infoTabHidden) {
 			view.opacity = 0
 		} else {
 			view.opacity = 1
 		}
+		
+		view.updateAllUI()
 	}
 	
 	positionProjectInfoTab () {
