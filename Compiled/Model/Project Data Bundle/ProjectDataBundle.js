@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -11,27 +11,17 @@ var ProjectDataBundle = function () {
 		this.metaDataBundle = new ProjectMetaDataBundle();
 		this.stillsBundle = new ProjectStillsBundle();
 		this.videoBundle = new ProjectVideoBundle();
-
-		this.id = '';
-		this.title = '';
-		this.subtitle = '';
-		this.year = '';
-
-		this.vimeoId = '';
-		this.stills = [];
-		this.mainStillIndex = 0;
-
-		this.mainStill = '';
-		this.secondaryStills = [];
 	}
 
+	//
 	// Custom Getters and Setters
+	//
 
 	// Id
 
 
 	_createClass(ProjectDataBundle, [{
-		key: 'id',
+		key: "id",
 		get: function get() {
 			return this.metaDataBundle.id;
 		},
@@ -43,7 +33,7 @@ var ProjectDataBundle = function () {
 		// Title
 
 	}, {
-		key: 'title',
+		key: "title",
 		get: function get() {
 			return this.metaDataBundle.title;
 		},
@@ -55,7 +45,7 @@ var ProjectDataBundle = function () {
 		// Subtitle
 
 	}, {
-		key: 'subtitle',
+		key: "subtitle",
 		get: function get() {
 			return this.metaDataBundle.subtitle;
 		},
@@ -67,7 +57,7 @@ var ProjectDataBundle = function () {
 		// Year
 
 	}, {
-		key: 'year',
+		key: "year",
 		get: function get() {
 			return this.metaDataBundle.year;
 		},
@@ -79,7 +69,7 @@ var ProjectDataBundle = function () {
 		// Vimeo Id
 
 	}, {
-		key: 'vimeoId',
+		key: "vimeoId",
 		get: function get() {
 			return this.videoBundle.vimeoId;
 		},
@@ -91,7 +81,7 @@ var ProjectDataBundle = function () {
 		// Stills
 
 	}, {
-		key: 'stills',
+		key: "stills",
 		get: function get() {
 			return this.stillsBundle.stills;
 		},
@@ -103,7 +93,7 @@ var ProjectDataBundle = function () {
 		// Main Still Index
 
 	}, {
-		key: 'mainStillIndex',
+		key: "mainStillIndex",
 		get: function get() {
 			return this.stillsBundle.mainStillIndex;
 		},
@@ -115,7 +105,7 @@ var ProjectDataBundle = function () {
 		// Main Still
 
 	}, {
-		key: 'mainStill',
+		key: "mainStill",
 		get: function get() {
 			return this.stillsBundle.mainStill;
 		},
@@ -127,7 +117,7 @@ var ProjectDataBundle = function () {
 		// Secondary Stills
 
 	}, {
-		key: 'secondaryStills',
+		key: "secondaryStills",
 		get: function get() {
 			return this.stillsBundle.secondaryStills;
 		},

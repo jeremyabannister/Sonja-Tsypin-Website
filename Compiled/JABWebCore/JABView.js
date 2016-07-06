@@ -25,6 +25,10 @@ var JABView = function () {
 		// Subviews
 		this.subviews = [];
 
+		// State
+		this.state = {};
+		this.parameters = {};
+
 		// Animation
 		this.disableAnimationsTimer = setTimeout(function () {}, 0);
 
@@ -678,6 +682,38 @@ var JABView = function () {
 			this.masterAnimationOptions.positionDelay = newPositionDelay;
 			this.animationOptions.positionDelay = newPositionDelay;
 		}
+
+		// State
+
+	}, {
+		key: 'state',
+		get: function get() {
+			return this._state;
+		},
+		set: function set(newState) {
+			if (this.state == null) {
+				this._state = {};
+			}
+			for (var key in newState) {
+				this._state[key] = newState[key];
+			}
+		}
+
+		// Parameters
+
+	}, {
+		key: 'parameters',
+		get: function get() {
+			return this._parameters;
+		},
+		set: function set(newParameters) {
+			if (this.parameters == null) {
+				this._parameters = {};
+			}
+			for (var key in newParameters) {
+				this._parameters[key] = newParameters[key];
+			}
+		}
 	}, {
 		key: 'computedOpacity',
 		get: function get() {
@@ -761,8 +797,6 @@ var JABView = function () {
 		},
 		set: function set(newFrame) {
 
-			this.updateTransition();
-
 			var scaled = newFrame.size.width != this.width || newFrame.size.height != this.height;
 			var moved = newFrame.origin.x != this.x || newFrame.origin.y != this.y;
 			var changed = moved || scaled;
@@ -771,6 +805,7 @@ var JABView = function () {
 
 			if (changed) {
 
+				this.updateTransition();
 				this.stopPositioning();
 				$(this.selector).css({
 

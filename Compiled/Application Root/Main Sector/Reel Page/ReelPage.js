@@ -20,12 +20,14 @@ var ReelPage = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ReelPage).call(this, customId));
 
+		_this.state = {
+			readyToClose: true
+		};
 		_this.currentlyActive = null;
 		_this.comingSoon = false;
 
 		_this.scrollable = false;
 		_this.scrollFinishTimer;
-		_this.readyToClose = true;
 
 		// Parameters
 		_this.reservedTopBuffer = 0;
@@ -144,6 +146,10 @@ var ReelPage = function (_JABView) {
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
 			newFrame.origin.y = this.vimeoView.bottom + this.bottomBufferForVimeoView;
 
+			if (newFrame.origin.y + newFrame.size.height < this.height) {
+				newFrame.origin.y = this.height - newFrame.size.height;
+			}
+
 			view.frame = newFrame;
 		}
 
@@ -165,10 +171,10 @@ var ReelPage = function (_JABView) {
 				clearTimeout(reelPage.scrollFinishTimer);
 				if (reelPage.scrollTop <= 0) {
 					reelPage.scrollFinishTimer = setTimeout(function () {
-						reelPage.readyToClose = true;
+						reelPage.state.readyToClose = true;
 					}, 50);
 				} else {
-					reelPage.readyToClose = false;
+					reelPage.state.readyToClose = false;
 				}
 
 				if (reelPage.readyToClose && evt.originalEvent.wheelDelta > 0) {

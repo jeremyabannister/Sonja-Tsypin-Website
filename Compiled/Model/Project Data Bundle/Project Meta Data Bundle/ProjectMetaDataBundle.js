@@ -8,4 +8,5 @@ var ProjectMetaDataBundle = function ProjectMetaDataBundle() {
 	this.id = '';
 	this.title = '';
 	this.subtitle = '';
+	this.year = '';
 };

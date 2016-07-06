@@ -176,6 +176,7 @@ var MainSector = function (_JABView) {
 
 			view.backgroundColor = 'black';
 			view.overflow = 'auto';
+			view.parameters = { reservedTopBuffer: this.heightOfHeader };
 			view.reservedTopBuffer = this.heightOfHeader;
 
 			if (this.currentlyActivePage == view) {
@@ -184,9 +185,13 @@ var MainSector = function (_JABView) {
 					this.bringSubviewToFront(this.headerBackdrop);
 				}
 
-				view.scrollable = this.scrollable;
+				view.state.scrollable = this.scrollable;
 
-				setComingSoon(view.comingSoon);
+				if (view.state.comingSoon) {
+					view.state.scrollable = false;
+				}
+
+				setComingSoon(view.state.comingSoon);
 
 				if (this.currentlyActive) {
 					view.opacity = 1;
@@ -306,6 +311,10 @@ var MainSector = function (_JABView) {
 				newFrame.origin.y += 100;
 			}
 
+			if (!this.comingSoon) {
+				newFrame.origin.x = this.width;
+			}
+
 			this.comingSoonView.frame = newFrame;
 		}
 
@@ -340,7 +349,7 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'readyToClose',
 		get: function get() {
-			return this.currentlyActivePage.readyToClose;
+			return this.currentlyActivePage.state.readyToClose;
 		}
 	}]);
 

@@ -20,25 +20,40 @@ var ProjectsPage = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProjectsPage).call(this, customId));
 
-		_this.projectDataBundles = _this.assembleProjectDataBundles();
-		_this.currentlyActive = false;
-		_this.comingSoon = true;
+		_this.state = {
+			projectDataBundles: _this.assembleProjectDataBundles(),
+			currentlyActive: false,
+			comingSoon: true,
 
-		_this.scrollable = false;
+			selectedProject: null,
+			selectedProjectIndex: null,
+			infoTabHidden: true,
+
+			scrollable: false,
+			readyToClose: true
+		};
+
 		_this.scrollFinishTimer;
-		_this.readyToClose = true;
 
 		// Parameters
-		_this.reservedTopBuffer = 0;
-		_this.topBufferForTopProjectStillViews = 35;
-		_this.betweenBufferForProjectStillViewRows = 25;
-		_this.betweenBufferForProjectStillViewColumns = 15;
-		_this.bottomBufferForBottomRow = 50;
+		_this.parameters = {
+			reservedTopBuffer: 0,
+
+			numberOfColumns: 2,
+			topBufferForGrid: 35,
+			betweenBufferForGridRows: 10,
+			betweenBufferForGridColumns: 10,
+			bottomBufferForGrid: 50,
+
+			gridAnimationDuration: 250,
+			gridAnimationEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+		};
 
 		// UI
+		_this.projectInfoTab = new ProjectInfoTab('InfoTab');
 		_this.projectStillViews = [];
-		for (var i = 0; i < _this.projectDataBundles.length; i++) {
-			_this.projectStillViews.push(new ProjectStillView(null, _this.projectDataBundles[i]));
+		for (var i = 0; i < _this.state.projectDataBundles.length; i++) {
+			_this.projectStillViews.push(new JABImageView());
 		}
 		_this.footer = new Footer('Footer');
 		return _this;
@@ -77,8 +92,14 @@ var ProjectsPage = function (_JABView) {
 		key: 'addAllUI',
 		value: function addAllUI() {
 
+			this.addProjectInfoTab();
 			this.addProjectStillViews();
 			this.addFooter();
+		}
+	}, {
+		key: 'addProjectInfoTab',
+		value: function addProjectInfoTab() {
+			this.addSubview(this.projectInfoTab);
 		}
 	}, {
 		key: 'addProjectStillViews',
@@ -100,11 +121,53 @@ var ProjectsPage = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(ProjectsPage.prototype), 'updateAllUI', this).call(this);
 
+			this.configureProjectInfoTab();
+			this.positionProjectInfoTab();
+
 			this.configureProjectStillViews();
 			this.positionProjectStillViews();
 
 			this.configureFooter();
 			this.positionFooter();
+		}
+
+		// Project Info Tab
+
+	}, {
+		key: 'configureProjectInfoTab',
+		value: function configureProjectInfoTab() {
+
+			var view = this.projectInfoTab;
+
+			if (this.state.infoTabHidden) {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+		}
+	}, {
+		key: 'positionProjectInfoTab',
+		value: function positionProjectInfoTab() {
+			var view = this.projectInfoTab;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = (applicationRoot.contentWidth - (this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns) / this.parameters.numberOfColumns;
+			newFrame.size.height = newFrame.size.width * (9.0 / 16.0) / 2 - this.parameters.betweenBufferForGridRows;
+
+			if (this.state.selectedProject == null) {
+				newFrame.origin.y = this.height;
+			} else {
+
+				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == 0) {
+					newFrame.origin.x = this.state.selectedProject.right + this.parameters.betweenBufferForGridColumns;
+				} else {
+					newFrame.origin.x = this.state.selectedProject.x - newFrame.size.width - this.parameters.betweenBufferForGridColumns;
+				}
+
+				newFrame.origin.y = this.state.selectedProject.y;
+			}
+
+			view.frame = newFrame;
 		}
 
 		// Project Rows
@@ -116,31 +179,39 @@ var ProjectsPage = function (_JABView) {
 			for (var i = 0; i < this.projectStillViews.length; i++) {
 				var view = this.projectStillViews[i];
 
-				if (this.comingSoon) {
+				view.src = this.state.projectDataBundles[i].stills[0];
+				if (this.state.comingSoon) {
 					view.opacity = 0;
 				}
 
-				view.currentlyActive = this.currentlyActive;
+				view.positionEasingFunction = this.parameters.gridAnimationEasingFunction;
+				view.cursor = 'pointer';
+				view.clickable = true;
 			}
 		}
 	}, {
 		key: 'positionProjectStillViews',
 		value: function positionProjectStillViews() {
 
-			if (!this.comingSoon) {
+			if (!this.state.comingSoon) {
 				for (var i = 0; i < this.projectStillViews.length; i++) {
 					var view = this.projectStillViews[i];
 					var newFrame = new CGRect();
 
-					newFrame.size.width = applicationRoot.contentWidth / 2 - this.betweenBufferForProjectStillViewColumns;
+					newFrame.size.width = (applicationRoot.contentWidth - (this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns) / this.parameters.numberOfColumns;
 					newFrame.size.height = newFrame.size.width * (9.0 / 16.0);
 
-					newFrame.origin.x = (this.width - applicationRoot.contentWidth) / 2 + i % 2 * (applicationRoot.contentWidth / 2 + this.betweenBufferForProjectStillViewColumns);
-					if (i % 2 == 0) {
-						newFrame.origin.y = this.reservedTopBuffer + this.topBufferForTopProjectStillViews + i / 2 * (newFrame.size.height + this.betweenBufferForProjectStillViewRows);
-					} else {
-						newFrame.origin.y = this.reservedTopBuffer + this.topBufferForTopProjectStillViews + (i - 1) / 2 * (newFrame.size.height + this.betweenBufferForProjectStillViewRows) + 100;
+					var verticalAdjustment = 0;
+					if (this.state.selectedProject != null) {
+						if (i >= this.state.selectedProjectIndex - this.state.selectedProjectIndex % this.parameters.numberOfColumns && i != this.state.selectedProjectIndex) {
+							if (i % this.parameters.numberOfColumns != this.state.selectedProjectIndex % this.parameters.numberOfColumns) {
+								verticalAdjustment = newFrame.size.height / 2;
+							}
+						}
 					}
+
+					newFrame.origin.x = (this.width - applicationRoot.contentWidth) / 2 + i % this.parameters.numberOfColumns * (newFrame.size.width + this.parameters.betweenBufferForGridColumns);
+					newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.topBufferForGrid + Math.floor(i / this.parameters.numberOfColumns) * (newFrame.size.height + this.parameters.betweenBufferForGridRows) + verticalAdjustment;
 
 					view.frame = newFrame;
 				}
@@ -164,9 +235,22 @@ var ProjectsPage = function (_JABView) {
 
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
 
-			if (!this.comingSoon) {
+			if (!this.state.comingSoon) {
 				if (this.projectStillViews.length > 0) {
-					newFrame.origin.y = this.projectStillViews[this.projectStillViews.length - 1].bottom + this.bottomBufferForBottomRow;
+					var lowestBottom = 0;
+					for (var i = 0; i < this.parameters.numberOfColumns; i++) {
+						var index = this.projectStillViews.length - 1 - i;
+						if (this.projectStillViews.length > index) {
+							if (this.projectStillViews[index].bottom > lowestBottom) {
+								lowestBottom = this.projectStillViews[index].bottom;
+							}
+						}
+					}
+					newFrame.origin.y = lowestBottom + this.parameters.bottomBufferForGrid;
+				}
+
+				if (newFrame.origin.y + newFrame.size.height < this.height) {
+					newFrame.origin.y = this.height - newFrame.size.height;
 				}
 			} else {
 				newFrame.origin.y = this.height - newFrame.size.height;
@@ -186,7 +270,7 @@ var ProjectsPage = function (_JABView) {
 
 			$(this.selector).bind('mousewheel', function (evt) {
 
-				if (!projectsPage.scrollable) {
+				if (!projectsPage.state.scrollable) {
 					evt.preventDefault();
 				} else {
 					projectsPage.configureProjectStillViews();
@@ -195,13 +279,13 @@ var ProjectsPage = function (_JABView) {
 				clearTimeout(projectsPage.scrollFinishTimer);
 				if (projectsPage.scrollTop <= 0) {
 					projectsPage.scrollFinishTimer = setTimeout(function () {
-						projectsPage.readyToClose = true;
+						projectsPage.state.readyToClose = true;
 					}, 50);
 				} else {
-					projectsPage.readyToClose = false;
+					projectsPage.state.readyToClose = false;
 				}
 
-				if (projectsPage.readyToClose && evt.originalEvent.wheelDelta > 0) {
+				if (projectsPage.state.readyToClose && evt.originalEvent.wheelDelta > 0) {
 					evt.preventDefault();
 				}
 			});
@@ -217,62 +301,106 @@ var ProjectsPage = function (_JABView) {
 
 			var dataBundles = [];
 
-			var powderRoom = new ProjectDataBundle();
-			powderRoom.id = 'powderRoom';
-			powderRoom.title = 'POWDER ROOM';
-			powderRoom.subtitle = 'dir. SONJA TSYPIN';
-			powderRoom.year = '2016';
+			// Powder Room
+			var dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'powderRoom';
+			dataBundle.title = 'POWDER ROOM';
+			dataBundle.subtitle = 'dir. SONJA TSYPIN';
+			dataBundle.year = '2016';
 
-			powderRoom.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg'];
-			powderRoom.mainStillIndex = 2;
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/';
+			for (var i = 0; i < 4; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
 
-			dataBundles.push(powderRoom);
+			dataBundles.push(dataBundle);
 
-			var powderRoom2 = new ProjectDataBundle();
-			powderRoom2.id = 'powderRoom';
-			powderRoom2.title = 'POWDER ROOM';
-			powderRoom2.subtitle = 'dir. SONJA TSYPIN';
-			powderRoom2.year = '2016';
+			// Angels
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'angels';
+			dataBundle.title = 'ANGELS';
+			dataBundle.subtitle = 'dir. AUDREY BANKS';
+			dataBundle.year = '2015';
 
-			powderRoom2.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg'];
-			powderRoom2.mainStillIndex = 0;
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/';
+			for (var i = 0; i < 5; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
 
-			dataBundles.push(powderRoom2);
+			dataBundles.push(dataBundle);
 
-			var powderRoom3 = new ProjectDataBundle();
-			powderRoom3.id = 'powderRoom';
-			powderRoom3.title = 'POWDER ROOM';
-			powderRoom3.subtitle = 'dir. SONJA TSYPIN';
-			powderRoom3.year = '2016';
+			// Birth Day
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'birthday';
+			dataBundle.title = 'BIRTH DAY';
+			dataBundle.subtitle = 'dir. EVA EVANS';
+			dataBundle.year = '2016';
 
-			powderRoom3.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg'];
-			powderRoom3.mainStillIndex = 0;
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/';
+			for (var i = 0; i < 1; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
 
-			dataBundles.push(powderRoom3);
-
-			var powderRoom4 = new ProjectDataBundle();
-			powderRoom4.id = 'powderRoom';
-			powderRoom4.title = 'POWDER ROOM';
-			powderRoom4.subtitle = 'dir. SONJA TSYPIN';
-			powderRoom4.year = '2016';
-
-			powderRoom4.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg'];
-			powderRoom4.mainStillIndex = 0;
-
-			dataBundles.push(powderRoom4);
-
-			var powderRoom5 = new ProjectDataBundle();
-			powderRoom5.id = 'powderRoom';
-			powderRoom5.title = 'POWDER ROOM';
-			powderRoom5.subtitle = 'dir. SONJA TSYPIN';
-			powderRoom5.year = '2016';
-
-			powderRoom5.stills = ['./Resources/Images/Work Page/Project Data Bundles/Powder Room/main.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary1.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary2.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg', './Resources/Images/Work Page/Project Data Bundles/Powder Room/secondary3.jpg'];
-			powderRoom5.mainStillIndex = 0;
-
-			// dataBundles.push(powderRoom5)
+			dataBundles.push(dataBundle);
 
 			return dataBundles;
+		}
+
+		//
+		// Delegate
+		//
+
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+
+			var projectsPage = this;
+
+			if (this.state.selectedProject != null) {
+				projectsPage.state = { infoTabHidden: true }; // The first thing, no matter what, is to hide the infoTab
+				if (view != this.state.selectedProject) {
+					// If a project is currently open and now we need to open a different one
+					projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function () {
+						projectsPage.state = {
+							selectedProject: view,
+							selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+						};
+						projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function () {
+							projectsPage.updateAllUI();
+
+							projectsPage.state = { infoTabHidden: false };
+							projectsPage.animatedUpdate();
+						});
+					});
+				} else {
+					// If the currently open project has just been clicked on (close it)
+					projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function () {
+						projectsPage.state = {
+							selectedProject: null,
+							selectedProjectIndex: null
+						};
+						projectsPage.animatedUpdate();
+					});
+				}
+			} else {
+				// If no project is currently open and a project has just been selected
+				projectsPage.state = {
+					selectedProject: view,
+					selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+				};
+				projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function () {
+					projectsPage.state = { infoTabHidden: false };
+					projectsPage.animatedUpdate();
+				});
+			}
 		}
 	}]);
 

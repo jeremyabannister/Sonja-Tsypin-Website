@@ -20,6 +20,9 @@ var AboutPage = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AboutPage).call(this, customId));
 
+		_this.state = {
+			readyToClose: true
+		};
 		_this.subdued = false;
 		_this.comingSoon = false;
 
@@ -267,10 +270,10 @@ var AboutPage = function (_JABView) {
 				clearTimeout(aboutPage.scrollFinishTimer);
 				if (aboutPage.scrollTop <= 0) {
 					aboutPage.scrollFinishTimer = setTimeout(function () {
-						aboutPage.readyToClose = true;
+						aboutPage.state.readyToClose = true;
 					}, 50);
 				} else {
-					aboutPage.readyToClose = false;
+					aboutPage.state.readyToClose = false;
 				}
 			});
 		}
