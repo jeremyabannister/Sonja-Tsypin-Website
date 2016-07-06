@@ -168,7 +168,7 @@ class ProjectsPage extends JABView {
 		for (var i = 0; i < this.projectStillViews.length; i++) {
 			var view = this.projectStillViews[i]
 			
-			view.src = this.state.projectDataBundles[i].stills[0]
+			view.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex]
 			if (this.state.comingSoon) {
 				view.opacity = 0
 			}
@@ -311,7 +311,7 @@ class ProjectsPage extends JABView {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
 		}
-		dataBundle.mainStillIndex = 0
+		dataBundle.mainStillIndex = 3
 		
 
 		dataBundles.push(dataBundle)
@@ -332,7 +332,7 @@ class ProjectsPage extends JABView {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
 		}
-		dataBundle.mainStillIndex = 0
+		dataBundle.mainStillIndex = 3
 		
 
 		dataBundles.push(dataBundle)
@@ -354,6 +354,27 @@ class ProjectsPage extends JABView {
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
 		}
 		dataBundle.mainStillIndex = 0
+		
+
+		dataBundles.push(dataBundle)
+		
+		
+		
+		
+		
+		// Powder Room Duplicate
+		dataBundle = new ProjectDataBundle()
+		dataBundle.id = 'powderRoom'
+		dataBundle.title = 'POWDER ROOM'
+		dataBundle.subtitle = 'dir. SONJA TSYPIN'
+		dataBundle.year = '2016'
+		
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
+		for (var i = 0; i < 4; i++) {
+			var index = i + 1
+			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
+		}
+		dataBundle.mainStillIndex = 1
 		
 
 		dataBundles.push(dataBundle)

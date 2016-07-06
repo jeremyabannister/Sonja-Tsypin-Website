@@ -9,7 +9,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000}
 		
 		
-		this.websiteClosed = true
+		this.websiteClosed = false
 		this.websiteClosedLocked = false
 
 		// Parameters

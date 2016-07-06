@@ -9,7 +9,7 @@ class MainSector extends JABView {
 		this.websiteClosedLocked = false
 		this.scrollable = false
 		
-		this.stateIndex = 0
+		this.stateIndex = 1
 		
 		// Scrolling
 		this.scrollPosition = 0
