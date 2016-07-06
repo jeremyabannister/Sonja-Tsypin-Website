@@ -4,12 +4,14 @@ class ReelPage extends JABView {
 		super(customId)
 		
 		// State
+		this.state = {
+			readyToClose: true
+		}
 		this.currentlyActive = null
 		this.comingSoon = false
 		
 		this.scrollable = false
 		this.scrollFinishTimer
-		this.readyToClose = true
 		
 		// Parameters
 		this.reservedTopBuffer = 0
@@ -170,10 +172,10 @@ class ReelPage extends JABView {
 			clearTimeout(reelPage.scrollFinishTimer)
 			if (reelPage.scrollTop <= 0) {
 				reelPage.scrollFinishTimer = setTimeout(function () {
-					reelPage.readyToClose = true
+					reelPage.state.readyToClose = true
 				}, 50)
 			} else {
-				reelPage.readyToClose = false
+				reelPage.state.readyToClose = false
 			}
 			
 			if (reelPage.readyToClose && evt.originalEvent.wheelDelta > 0) {

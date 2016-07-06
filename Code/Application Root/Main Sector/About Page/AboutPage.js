@@ -4,6 +4,9 @@ class AboutPage extends JABView {
 		super(customId)
 		
 		// State
+		this.state = {
+			readyToClose: true
+		}
 		this.subdued = false
 		this.comingSoon = false
 		
@@ -249,10 +252,10 @@ class AboutPage extends JABView {
 			clearTimeout(aboutPage.scrollFinishTimer)
 			if (aboutPage.scrollTop <= 0) {
 				aboutPage.scrollFinishTimer = setTimeout(function () {
-					aboutPage.readyToClose = true
+					aboutPage.state.readyToClose = true
 				}, 50)
 			} else {
-				aboutPage.readyToClose = false
+				aboutPage.state.readyToClose = false
 			}
 		})
 	}

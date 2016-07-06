@@ -8,7 +8,7 @@ class ProjectsPage extends JABView {
 		this.state = {
 			projectDataBundles: this.assembleProjectDataBundles(),
 			currentlyActive: false,
-			comingSoon: false,
+			comingSoon: true,
 			
 			selectedProject: null,
 			selectedProjectIndex: null,

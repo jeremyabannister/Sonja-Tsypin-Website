@@ -72,7 +72,7 @@ class MainSector extends JABView {
 	
 	
 	get readyToClose () {
-		return this.currentlyActivePage.readyToClose
+		return this.currentlyActivePage.state.readyToClose
 	}
 	
 
@@ -212,7 +212,11 @@ class MainSector extends JABView {
 			
 			view.state.scrollable = this.scrollable
 			
-			setComingSoon(view.comingSoon)
+			if (view.state.comingSoon) {
+				view.state.scrollable = false
+			}
+			
+			setComingSoon(view.state.comingSoon)
 			
 			if (this.currentlyActive) {
 				view.opacity = 1
