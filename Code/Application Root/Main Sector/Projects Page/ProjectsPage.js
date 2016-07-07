@@ -33,8 +33,8 @@ class ProjectsPage extends JABView {
 			betweenBufferForGridColumns: 10,
 			bottomBufferForGrid: 50,
 			
-			gridAnimationDuration: 250,
-			gridAnimationEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+			gridAnimationDuration: 175,
+			gridAnimationEasingFunction: 'ease-in-out'
 		}
 		
 		
@@ -125,6 +125,7 @@ class ProjectsPage extends JABView {
 		var view = this.projectInfoTab
 		
 		view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
+		view.configureDuration = this.parameters.gridAnimationDuration
 		
 		if (this.state.infoTabHidden) {
 			view.opacity = 0
@@ -172,6 +173,7 @@ class ProjectsPage extends JABView {
 				view.opacity = 0
 			}
 			
+			view.positionDuration = this.parameters.gridAnimationDuration
 			view.positionEasingFunction = this.parameters.gridAnimationEasingFunction
 			view.cursor = 'pointer'
 			view.clickable = true
@@ -406,12 +408,12 @@ class ProjectsPage extends JABView {
 			projectsPage.state = {infoTabHidden: true} // The first thing, no matter what, is to hide the infoTab
 			if (view != this.state.selectedProject) {
 				// If a project is currently open and now we need to open a different one
-				projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function() {
+				projectsPage.animatedUpdate(null, function() {
 					projectsPage.state = {
 						selectedProject: view,
 						selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
 					}
-					projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function() {
+					projectsPage.animatedUpdate(null, function() {
 						projectsPage.updateAllUI()
 						
 						projectsPage.state = {infoTabHidden: false}
@@ -420,7 +422,7 @@ class ProjectsPage extends JABView {
 				})
 			} else {
 				// If the currently open project has just been clicked on (close it)
-				projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function() {
+				projectsPage.animatedUpdate(null, function() {
 					projectsPage.state = {
 						selectedProject: null,
 						selectedProjectIndex: null
@@ -434,7 +436,7 @@ class ProjectsPage extends JABView {
 				selectedProject: view,
 				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
 			}
-			projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function() {
+			projectsPage.animatedUpdate(null, function() {
 				projectsPage.state = {infoTabHidden: false}
 				projectsPage.animatedUpdate()
 			})
