@@ -323,7 +323,10 @@ class MainSector extends JABView {
 		var view = this.projectPage
 		
 		view.clickable = true
+		view.parameters.reservedTopBuffer = this.parameters.heightOfHeader
+		view.overflow = 'auto'
 		view.configureDuration = 200
+		view.backgroundColor = 'rgba(0,0,0, 0.6)'
 		
 		if (this.state.projectOpen) {
 			this.bringPageToFront(view)

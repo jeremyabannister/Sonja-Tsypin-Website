@@ -4,7 +4,7 @@ class Footer extends JABView {
 		super(customId)
 		
 		// State
-		this.requiredHeight = 70
+		this.requiredHeight = 50
 		
 		// Parameters
 		this.leftBufferForCopyrightLabel = 5

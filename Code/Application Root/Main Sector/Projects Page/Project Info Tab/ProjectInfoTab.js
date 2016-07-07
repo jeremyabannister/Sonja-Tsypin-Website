@@ -185,7 +185,7 @@ class ProjectInfoTab extends JABView {
 		var view = this.infoButton
 		view.src = './Resources/Images/Buttons/Info Button.png'
 		view.cursor = 'pointer'
-		
+		view.clickable = true
 	}
 	
 	positionInfoButton () {
@@ -287,6 +287,8 @@ class ProjectInfoTab extends JABView {
 	viewWasClicked (view) {
 		if (view == this.playButton) {
 			this.parent.projectInfoTabPlayButtonWasClicked(this)
+		} else if (view == this.infoButton) {
+			this.parent.projectInfoTabInfoButtonWasClicked(this)
 		}
 	}
 	

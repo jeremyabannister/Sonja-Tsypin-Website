@@ -28,7 +28,7 @@ class ProjectsPage extends JABView {
 			reservedTopBuffer: 0,
 			
 			numberOfColumns: 2,
-			topBufferForGrid: 35,
+			topBufferForGrid: 58,
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
 			bottomBufferForGrid: 50,
@@ -306,6 +306,7 @@ class ProjectsPage extends JABView {
 		dataBundle.year = '2016'
 		
 		dataBundle.vimeoId = '167824606'
+		dataBundle.vimeoHeightToWidth = (1.0/2.35)
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
@@ -348,7 +349,9 @@ class ProjectsPage extends JABView {
 		dataBundle.title = 'BIRTH DAY'
 		dataBundle.subtitle = 'dir. EVA EVANS'
 		dataBundle.year = '2016'
+		
 		dataBundle.vimeoId = '167678674'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
 		for (var i = 0; i < 1; i++) {
@@ -370,7 +373,9 @@ class ProjectsPage extends JABView {
 		dataBundle.title = 'POWDER ROOM'
 		dataBundle.subtitle = 'dir. SONJA TSYPIN'
 		dataBundle.year = '2016'
+		
 		dataBundle.vimeoId = '167824606'
+		dataBundle.vimeoHeightToWidth = (1.0/2.35)
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
@@ -440,6 +445,10 @@ class ProjectsPage extends JABView {
 	
 	// Project Info Tab
 	projectInfoTabPlayButtonWasClicked (projectInfoTab) {
+		this.parent.projectsPageWantsToDisplayProject(this, this.state.projectDataBundles[this.state.selectedProjectIndex])
+	}
+	
+	projectInfoTabInfoButtonWasClicked (projectInfoTab) {
 		this.parent.projectsPageWantsToDisplayProject(this, this.state.projectDataBundles[this.state.selectedProjectIndex])
 	}
 

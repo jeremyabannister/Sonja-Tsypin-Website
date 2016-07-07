@@ -71,6 +71,17 @@ class ProjectDataBundle {
 	}
 	
 	
+	// Vimeo Width To Height
+	get vimeoHeightToWidth () {
+		return this.videoBundle.vimeoHeightToWidth
+	}
+	
+	set vimeoHeightToWidth (newVimeoHeightToWidth) {
+		this.videoBundle.vimeoHeightToWidth = newVimeoHeightToWidth
+		this.videoBundle = this.videoBundle
+	}
+	
+	
 	// Stills
 	get stills () {
 		return this.stillsBundle.stills

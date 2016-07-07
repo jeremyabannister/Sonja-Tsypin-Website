@@ -16,7 +16,7 @@ class AboutPage extends JABView {
 		
 		// Parameters
 		this.reservedTopBuffer = 0
-		this.topBufferForBioText = 80
+		this.topBufferForBioText = 103
 		this.bottomBufferForEmailAddress = 60
 		
 		// UI

@@ -9,7 +9,11 @@ class ProjectPage extends JABView {
 		}
 		
 		// Parameters
-		this.parameters = {}
+		this.parameters = {
+			reservedTopBuffer: 0,
+			vimeoViewMinimumDistanceFromHeader: 40,
+			vimeoViewVerticalAdjustment: -4,
+		}
 		
 		// UI
 		this.vimeoView = new JABVimeoView('VimeoView')
@@ -64,23 +68,32 @@ class ProjectPage extends JABView {
 		var view = this.vimeoView
 		
 		if (this.state.projectDataBundle != null) {
-			if (this.state.projectDataBundle.vimeoId != null) {
-				view.vimeoId = this.state.projectDataBundle.vimeoId
-			}
+			view.vimeoId = this.state.projectDataBundle.vimeoId
+		} else {
+			view.vimeoId = null
 		}
 		
 	}
 	
 	positionVimeoView () {
 		
+		var aspectRatio = (9.0/16.0)
+		if (this.state.projectDataBundle != null) {
+			aspectRatio = this.state.projectDataBundle.vimeoHeightToWidth
+		}
+		
 		var view = this.vimeoView
 		var newFrame = new CGRect()
 
-		newFrame.size.width = applicationRoot.contentWidth
-		newFrame.size.height = newFrame.size.width * (9.0/16.0)
+		newFrame.size.width = applicationRoot.contentWidth * 0.9
+		newFrame.size.height = newFrame.size.width * aspectRatio
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = (this.height - newFrame.size.height)/2
+		newFrame.origin.y = this.parameters.reservedTopBuffer + (this.height - this.parameters.reservedTopBuffer - newFrame.size.height)/2 + this.parameters.vimeoViewVerticalAdjustment
+		
+		if (newFrame.origin.y < this.parameters.reservedTopBuffer + this.parameters.vimeoViewMinimumDistanceFromHeader) {
+			newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.vimeoViewMinimumDistanceFromHeader
+		}
 
 
 		view.frame = newFrame

@@ -131,7 +131,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	// Main Sector
 	configureMainSector () {
 		this.mainSector.backgroundColor = 'black'
-		this.mainSector.parameters.heightOfHeader = this.parameters.heightOfHeader
+		this.mainSector.parameters.heightOfHeader = this.header.logo.bottom
 		this.mainSector.state.currentlyActive = !this.websiteClosed
 		
 		this.mainSector.updateAllUI()
@@ -158,15 +158,14 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	positionHeaderBackdrop () {
 		
-		var headerBackdropExtension = 0
 		var view = this.headerBackdrop
 		var newFrame = new CGRect()
 							
 		newFrame.size.width = this.width
-		newFrame.size.height = this.parameters.heightOfHeader + headerBackdropExtension
+		newFrame.size.height = this.parameters.heightOfHeader
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = -headerBackdropExtension
+		newFrame.origin.y = 0
 							
 		view.frame = newFrame
 		
@@ -282,7 +281,7 @@ class ApplicationRoot extends JABApplicationRoot {
 					positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
 				}, function() {
 					applicationRoot.homePageHidden = true
-					applicationRoot.mainSector.scrollable = true
+					applicationRoot.mainSector.state.scrollable = true
 					applicationRoot.updateAllUI()
 				})
 			}
@@ -312,7 +311,7 @@ class ApplicationRoot extends JABApplicationRoot {
 					positionDuration: duration,
 					positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
 				}, function() {
-					applicationRoot.mainSector.scrollable = false
+					applicationRoot.mainSector.state.scrollable = false
 					applicationRoot.updateAllUI()
 				})
 			}
@@ -333,12 +332,12 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		if (this.websiteClosed) {
 			if (amount < 0) {
-				this.openWebsite(800)
+				this.openWebsite()
 			}
 		} else {
 			if (amount > 0) {
 				if (this.mainSector.readyToClose) {
-					this.closeWebsite(800)
+					this.closeWebsite()
 				}
 			}
 		}
