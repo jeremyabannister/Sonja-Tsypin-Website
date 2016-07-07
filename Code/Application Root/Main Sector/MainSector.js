@@ -9,6 +9,8 @@ class MainSector extends JABView {
 			currentlyActive: false,
 			pageIndex: 0,
 			projectOpen: false,
+			closingProject: false,
+			projectDataBundle: null,
 			scrollable: false,
 			
 			comingSoon: true,
@@ -23,8 +25,8 @@ class MainSector extends JABView {
 		// UI
 		this.aboutPage = new AboutPage('AboutPage')
 		this.projectsPage = new ProjectsPage('ProjectsPage')
-		this.projectPage = new ProjectPage('ProjectPage')
 		this.reelPage = new ReelPage('ReelPage')
+		this.projectPage = new ProjectPage('ProjectPage')
 		
 		this.comingSoonView = new UILabel('ComingSoonView')
 		
@@ -65,12 +67,12 @@ class MainSector extends JABView {
 	}
 	
 	get pages () {
-		return [this.reelPage, this.projectsPage, this.aboutPage]
+		return [this.reelPage, this.projectsPage, this.aboutPage, this.projectPage]
 	}
 	
 	
 	get readyToClose () {
-		return this.currentlyActivePage.state.readyToClose
+		return (this.currentlyActivePage.state.readyToClose && !this.state.projectOpen)
 	}
 	
 
@@ -83,8 +85,8 @@ class MainSector extends JABView {
 		
 		this.addAboutPage()
 		this.addProjectsPage()
-		this.addProjectPage()
 		this.addReelPage()
+		this.addProjectPage()
 		
 		this.addComingSoonView()
 		
@@ -102,12 +104,12 @@ class MainSector extends JABView {
 		this.addSubview(this.projectsPage)
 	}
 	
-	addProjectPage () {
-		this.addSubview(this.projectPage)
-	}
-	
 	addReelPage () {
 		this.addSubview(this.reelPage)
+	}
+	
+	addProjectPage () {
+		this.addSubview(this.projectPage)
 	}
 	
 	
@@ -134,11 +136,11 @@ class MainSector extends JABView {
 		this.configureProjectsPage()
 		this.positionProjectsPage()
 		
-		this.configureProjectPage()
-		this.positionProjectPage()
-		
 		this.configureReelPage()
 		this.positionReelPage()
+		
+		this.configureProjectPage()
+		this.positionProjectPage()
 		
 		
 		
@@ -162,16 +164,13 @@ class MainSector extends JABView {
 		view.reservedTopBuffer = this.parameters.heightOfHeader
 		
 		if (this.currentlyActivePage == view) {
-			if (!this.state.projectOpen) {
-				if (!this.subviewIsAboveSubviews(view, [this.reelPage, this.projectsPage])) {
-					this.insertSubviewAboveSubviews(view, [this.reelPage, this.projectsPage])
-					this.retainPermanentFrontViews()
-				}
-				
-				view.scrollable = this.state.scrollable
-			}
 			
+			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+				this.bringPageToFront(view)
+			}
+			view.scrollable = this.state.scrollable
 			setComingSoon(view.comingSoon)
+			
 			if (this.state.currentlyActive) {
 				view.opacity = 1
 			} else {
@@ -180,7 +179,6 @@ class MainSector extends JABView {
 		} else {
 			view.opacity = 0
 		}
-		
 		
 		
 		view.updateAllUI()
@@ -201,6 +199,7 @@ class MainSector extends JABView {
 
 
 
+
 	// Projects Page
 	configureProjectsPage () {
 		
@@ -209,24 +208,23 @@ class MainSector extends JABView {
 		view.backgroundColor = 'black'
 		view.overflow = 'auto'
 		view.parameters = {reservedTopBuffer: this.parameters.heightOfHeader}
-		if (this.state.projectOpen) {
-			view.blur = 20
-		} else {
-			view.blur = 0
-		}
 		
 		if (this.currentlyActivePage == view) {
-			if (!this.state.projectOpen) {
-				if (!this.subviewIsAboveSubviews(view, [this.reelPage, this.aboutPage])) {
-					this.insertSubviewAboveSubviews(view, [this.reelPage, this.aboutPage])
-					this.retainPermanentFrontViews()
-				}
-				
-				view.state.scrollable = this.state.scrollable
-				if (view.state.comingSoon) {
-					view.state.scrollable = false
-				}
+			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+				this.bringPageToFront(view)
 			}
+			
+			view.state.scrollable = this.state.scrollable
+			if (view.state.comingSoon) {
+				view.state.scrollable = false
+			}
+			
+			if (this.state.projectOpen) {
+				view.blur = 20
+			} else {
+				view.blur = 0
+			}
+
 			
 			
 			
@@ -234,16 +232,12 @@ class MainSector extends JABView {
 			
 			if (this.state.currentlyActive) {
 				view.opacity = 1
-				view.currentlyActive = true
 			} else {
 				view.opacity = 0
-				view.currentlyActive = false
 			}
 		} else {
 			view.opacity = 0
-			view.currentlyActive = false
 		}
-		
 		
 		
 		view.updateAllUI()
@@ -266,33 +260,6 @@ class MainSector extends JABView {
 	
 	
 	
-	// Project Page
-	configureProjectPage () {
-		
-		var view = this.projectPage
-		
-		if (this.state.projectOpen) {
-			if (!this.subviewIsAboveSubviews(view, this.pages)) {
-				this.insertSubviewAboveSubviews(view, this.pages)
-				this.retainPermanentFrontViews()
-			}
-			view.opacity = 1
-		} else {
-			view.opacity = 0
-			this.pushSubviewToBack(view)
-		}
-		
-		view.clickable = true
-	}
-	
-	positionProjectPage () {
-		
-		var view = this.projectPage
-		var newFrame = this.bounds
-		
-		view.frame = newFrame
-	}
-	
 	
 	
 	
@@ -308,21 +275,16 @@ class MainSector extends JABView {
 		view.reservedTopBuffer = this.parameters.heightOfHeader
 		
 		if (this.currentlyActivePage == view) {
-			if (!this.state.projectOpen) {
-				if (!this.subviewIsAboveSubviews(view, [this.projectsPage, this.aboutPage])) {
-					this.insertSubviewAboveSubviews(view, [this.projectsPage, this.aboutPage])
-					this.retainPermanentFrontViews()
-				}
+			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+				this.bringPageToFront(view)
 			}
 			
-			if (this.state.currentlyActive) {
-				view.currentlyActive = true
+			if (!this.state.projectOpen) {
+				view.currentlyActive = this.state.currentlyActive
+				view.scrollable = this.state.scrollable
 			} else {
 				view.currentlyActive = false
 			}
-			setComingSoon(view.comingSoon)
-			
-			view.scrollable = this.state.scrollable
 			
 			if (this.state.currentlyActive) {
 				view.opacity = 1
@@ -350,6 +312,40 @@ class MainSector extends JABView {
 		
 		view.frame = newFrame
 		
+	}
+	
+	
+	
+	
+	// Project Page
+	configureProjectPage () {
+		
+		var view = this.projectPage
+		
+		view.clickable = true
+		view.configureDuration = 200
+		
+		if (this.state.projectOpen) {
+			this.bringPageToFront(view)
+			view.opacity = 1
+			view.configureDelay = 0
+			
+			view.state.projectDataBundle = this.state.projectDataBundle
+		} else {
+			view.opacity = 0
+			view.configureDelay = 200
+		}
+		
+		this.projectPage.updateAllUI()
+		
+	}
+	
+	positionProjectPage () {
+		
+		var view = this.projectPage
+		var newFrame = this.bounds
+		
+		view.frame = newFrame
 	}
 	
 	
@@ -417,12 +413,20 @@ class MainSector extends JABView {
 	// Actions
 	//
 	
-	
-	retainPermanentFrontViews () {
+	bringPageToFront (page) {
 		
-		this.bringSubviewToFront(this.headerBackdrop)
+		var otherPages = []
+		for (var i = 0; i < this.pages.length; i++) {
+			if (this.pages[i] != page) {
+				otherPages.push(this.pages[i])
+			}
+		}
 		
+		if (!this.subviewIsAboveSubviews(page, otherPages)) {
+			this.insertSubviewAboveSubviews(page, otherPages)
+		}
 	}
+	
 	
 
 
@@ -434,14 +438,24 @@ class MainSector extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		if (view == this.projectPage) {
-			this.state = {projectOpen: false}
-			this.animatedUpdate()
+			this.state = {
+				projectOpen: false,
+				closingProject: true
+			}
+			var mainSector = this
+			this.animatedUpdate(null, function() {
+				mainSector.state = {closingProject: false}
+				mainSector.animatedUpdate()
+			})
 		}
 	}
 	
 	// Projects Page
 	projectsPageWantsToDisplayProject (projectsPage, project) {
-		this.state = {projectOpen: true}
+		this.state = {
+			projectOpen: true,
+			projectDataBundle: project,
+		}
 		this.animatedUpdate()
 	}
 

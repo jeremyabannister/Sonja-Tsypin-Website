@@ -7,7 +7,6 @@ class ProjectsPage extends JABView {
 		// State
 		this.state = {
 			projectDataBundles: this.assembleProjectDataBundles(),
-			currentlyActive: false,
 			comingSoon: false,
 			
 			selectedProject: null,
@@ -306,6 +305,8 @@ class ProjectsPage extends JABView {
 		dataBundle.subtitle = 'dir. SONJA TSYPIN'
 		dataBundle.year = '2016'
 		
+		dataBundle.vimeoId = '167824606'
+		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
 			var index = i + 1
@@ -347,6 +348,7 @@ class ProjectsPage extends JABView {
 		dataBundle.title = 'BIRTH DAY'
 		dataBundle.subtitle = 'dir. EVA EVANS'
 		dataBundle.year = '2016'
+		dataBundle.vimeoId = '167678674'
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
 		for (var i = 0; i < 1; i++) {
@@ -368,6 +370,7 @@ class ProjectsPage extends JABView {
 		dataBundle.title = 'POWDER ROOM'
 		dataBundle.subtitle = 'dir. SONJA TSYPIN'
 		dataBundle.year = '2016'
+		dataBundle.vimeoId = '167824606'
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
