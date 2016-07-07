@@ -9,11 +9,13 @@ class ApplicationRoot extends JABApplicationRoot {
 		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000}
 		
 		
-		this.websiteClosed = false
+		this.websiteClosed = true
 		this.websiteClosedLocked = false
 
 		// Parameters
-		this.heightOfHeader = 110
+		this.parameters = {
+			heightOfHeader: 110,
+		}
 
 		if (this.laboratoryEnabled) {
 			this.laboratory = new Laboratory('Laboratory')
@@ -85,6 +87,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	
 	
+	
 	addLaboratory () {
 		this.addSubview(this.laboratory)
 	}
@@ -117,6 +120,7 @@ class ApplicationRoot extends JABApplicationRoot {
 			
 			this.configureHeader()
 			this.positionHeader()
+			
 		}
 
 	}
@@ -127,8 +131,8 @@ class ApplicationRoot extends JABApplicationRoot {
 	// Main Sector
 	configureMainSector () {
 		this.mainSector.backgroundColor = 'black'
-		this.mainSector.heightOfHeader = this.heightOfHeader
-		this.mainSector.currentlyActive = !this.websiteClosed
+		this.mainSector.parameters.heightOfHeader = this.parameters.heightOfHeader
+		this.mainSector.state.currentlyActive = !this.websiteClosed
 		
 		this.mainSector.updateAllUI()
 	}
@@ -159,7 +163,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		var newFrame = new CGRect()
 							
 		newFrame.size.width = this.width
-		newFrame.size.height = this.heightOfHeader + headerBackdropExtension
+		newFrame.size.height = this.parameters.heightOfHeader + headerBackdropExtension
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		newFrame.origin.y = -headerBackdropExtension
@@ -195,19 +199,32 @@ class ApplicationRoot extends JABApplicationRoot {
 	configureHeader () {
 		
 		this.header.websiteClosed = this.websiteClosed
-		this.header.selectedMenuIndex = this.mainSector.stateIndex
+		this.header.selectedMenuIndex = this.mainSector.state.pageIndex
 		this.header.configureDuration = 0
 		this.header.updateAllUI()
 		
 	}
 
 	positionHeader () {
-		this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader)
+		this.header.frame = new CGRect(0, 0, this.width, this.parameters.heightOfHeader)
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 
-
+	// Laboratory
 	configureLaboratory () {
 
 		this.laboratory.backgroundColor = 'white'
@@ -345,7 +362,10 @@ class ApplicationRoot extends JABApplicationRoot {
 
 	headerDidSelectPage (pageIndex) {
 		
-		this.mainSector.stateIndex = pageIndex
+		this.mainSector.state = {
+			pageIndex: pageIndex,
+			projectOpen: false
+		}
 		
 		if (this.websiteClosed) {
 			this.openWebsite()

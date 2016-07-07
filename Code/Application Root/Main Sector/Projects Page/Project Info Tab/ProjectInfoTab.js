@@ -122,6 +122,7 @@ class ProjectInfoTab extends JABView {
 		
 		this.playButton.src = './Resources/Images/Buttons/Play Button.png'
 		this.playButton.cursor = 'pointer'
+		this.playButton.clickable = true
 		
 	}
 	
@@ -280,5 +281,13 @@ class ProjectInfoTab extends JABView {
 	//
 	// Delegate
 	//
+	
+	
+	// JABView
+	viewWasClicked (view) {
+		if (view == this.playButton) {
+			this.parent.projectInfoTabPlayButtonWasClicked(this)
+		}
+	}
 	
 }

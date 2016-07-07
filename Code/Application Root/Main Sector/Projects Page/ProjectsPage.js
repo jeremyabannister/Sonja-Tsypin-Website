@@ -431,7 +431,13 @@ class ProjectsPage extends JABView {
 				projectsPage.animatedUpdate()
 			})
 		}
-		
+	}
+	
+	
+	
+	// Project Info Tab
+	projectInfoTabPlayButtonWasClicked (projectInfoTab) {
+		this.parent.projectsPageWantsToDisplayProject(this, this.state.projectDataBundles[this.state.selectedProjectIndex])
 	}
 
 }
