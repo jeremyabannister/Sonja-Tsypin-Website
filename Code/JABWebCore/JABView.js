@@ -51,7 +51,9 @@ class JABView {
 
 		// Position
 		this.frame = new CGRect()
-
+		
+		// Shape
+		this.clipPath = 'none'
 
 		// Configuration
 		this.opacity = 1
@@ -897,7 +899,24 @@ class JABView {
 			'cursor': newCursor,
 		})
 	}
-
+	
+	
+	// Animation
+	get animation () {
+		return this._animation
+	}
+	
+	set animation (newAnimation) {
+		this._animation = newAnimation
+		
+		$(this.selector).css({
+			'animation': newAnimation
+		})
+	}
+	
+	
+	
+	
 
 
 

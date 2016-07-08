@@ -31,6 +31,33 @@ function isPropertySupported(property)
 // Animation
 var defaultAnimationDuration = 400
 
+class CSSAnimationEngine  {
+	
+	constructor () {
+		
+		this.animations = {}
+		
+	}
+	
+	
+	updateStyleSheet () {
+		var animationListString = ''
+		for (var key in this.animations) {
+			animationListString += this.animations[key] + ' '
+		}
+		
+		$('#css-animations').text(animationListString)
+	}
+	
+	
+	addAnimation (name, animationString) {
+		this.animations[name] = animationString
+	}
+	
+}
+
+var globalCSSAnimationEngine = new CSSAnimationEngine()
+
 
 
 // Stopwatch

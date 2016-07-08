@@ -13,7 +13,7 @@ class Laboratory extends JABView {
 
 
 		this.defaultTimeInterval = 2000
-		this.specificTimeIntervals = [1000]
+		this.specificTimeIntervals = []
 
 		this.numberOfExperiments = 0 // Actual value is set in runExperiment which is run on the next line
 
@@ -91,14 +91,21 @@ class Laboratory extends JABView {
 	// View 1
 	configureView1 () {
 		this.view1.red()
-		this.view1.configureDuration = 500
 		
 	}
 	
 	positionView1 () {
 		
-		this.view1.width = 100
-		this.view1.height = 100
+		var view = this.view1
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = 200
+		newFrame.size.height = 200
+
+		newFrame.origin.x = 300
+		newFrame.origin.y = 100
+							
+		view.frame = newFrame
 		
 		
 	}
@@ -123,8 +130,6 @@ class Laboratory extends JABView {
 				
 		this.view2.frame = newFrame
 		
-		console.log(this.view1.font.sizeOfString(this.view1.text))
-		
 	}
 
 
@@ -139,29 +144,25 @@ class Laboratory extends JABView {
 	
 	runExperiment (experimentNumber) {
 		
-		this.numberOfExperiments = 3
+		this.numberOfExperiments = 2
 		console.log("<<<<<<<<<< Launching Experiment #" + experimentNumber + ' >>>>>>>>>>')
 		
 		if (experimentNumber == 1) {
 			
-			$(this.selector).append("<div id='aaaaaa'></div>")
-			$('#aaaaaa').css({
-				display: 'inline-block',
-				  width: '250px',
-				  height: '250px',
-				  'background-color': 'orange',
-				  cursor: 'pointer',
-				  '-webkit-clip-path': 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
-				  animation: 'polygons 4s alternate infinite'
-			})
+			
+			$('#css-animations').text("@keyframes polygon {25% {-webkit-clip-path: polygon(20% 0%, 100% 38%, 70% 90%, 0% 100%); background: pink; } 50% { -webkit-clip-path: polygon(0 46%, 100% 15%, 55% 74%, 0 100%); background: orange; } 75% { -webkit-clip-path: polygon(100% 38%, 100% 38%, 66% 100%, 0 53%); background: cornflowerblue; }}")
+			
+			
+			$('#css-animations').text($('#css-animations').text() + "@keyframes polygons {25% {-webkit-clip-path: polygon(20% 0%, 100% 38%, 70% 90%, 0% 100%); background: pink; } 50% { -webkit-clip-path: polygon(0 46%, 100% 15%, 55% 74%, 0 100%); background: orange; } 75% { -webkit-clip-path: polygon(100% 38%, 0% 0%, 66% 100%, 0 53%); background: cornflowerblue; }}")
 			
 			
 		} else if (experimentNumber == 2) {
 			
+			this.view1.animation = 'polygon 3s'
 			
 		} else if (experimentNumber == 3) {
 			
-			console.log(this.view1.selector)
+			
 		}
 	}
 	

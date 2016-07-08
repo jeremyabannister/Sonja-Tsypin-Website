@@ -90,8 +90,7 @@ body {
 
 
 
-
-/* Laboratory */
+/* Laboratory 
 @keyframes polygons {
   25% {
     -webkit-clip-path: polygon(20% 0%, 100% 38%, 70% 90%, 0% 100%);
@@ -106,3 +105,4 @@ body {
     background: cornflowerblue;
   }
 }
+*/
