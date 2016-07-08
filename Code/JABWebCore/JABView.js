@@ -743,10 +743,35 @@ class JABView {
 	get bounds () {
 		return new CGRect(0, 0, this.width, this.height)
 	}
+	
+	
+	
+	
+	
+	
+	//
+	// Shape
+	//
+	
+	// Clip Path
+	get clipPath () {
+		return this._clipPath
+	}
+	
+	set clipPath (newClipPath) {
+		this._clipPath = newClipPath
+		
+		$(this.selector).css({
+			'clip-path': newClipPath,
+			'-webkit-clip-path': newClipPath
+		})
+	}
 
 
-
-
+	
+	//
+	// Configuration
+	//
 
 
 	// Opacity

@@ -90,19 +90,13 @@ body {
 
 
 
-/* Laboratory 
-@keyframes polygons {
-  25% {
-    -webkit-clip-path: polygon(20% 0%, 100% 38%, 70% 90%, 0% 100%);
-    background: pink;
-  }
-  50% {
-    -webkit-clip-path: polygon(0 46%, 100% 15%, 55% 74%, 0 100%);
-    background: orange;
-  }
-  75% {
-    -webkit-clip-path: polygon(100% 38%, 100% 38%, 66% 100%, 0 53%);
-    background: cornflowerblue;
-  }
+/* Laboratory */
+@keyframes test {
+	0% {
+		-webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);
+	}
+	100% {
+		-webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);
+	}
 }
-*/
+

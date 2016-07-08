@@ -99,8 +99,8 @@ class Laboratory extends JABView {
 		var view = this.view1
 		var newFrame = new CGRect()
 							
-		newFrame.size.width = 200
-		newFrame.size.height = 200
+		newFrame.size.width = 100
+		newFrame.size.height = 100
 
 		newFrame.origin.x = 300
 		newFrame.origin.y = 100
@@ -108,6 +108,7 @@ class Laboratory extends JABView {
 		view.frame = newFrame
 		
 		
+		view.clipPath = 'polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px)'
 	}
 	
 	
@@ -144,21 +145,22 @@ class Laboratory extends JABView {
 	
 	runExperiment (experimentNumber) {
 		
+		var view1 = this.view1
+		var view2 = this.view2
+		
 		this.numberOfExperiments = 2
 		console.log("<<<<<<<<<< Launching Experiment #" + experimentNumber + ' >>>>>>>>>>')
 		
 		if (experimentNumber == 1) {
 			
 			
-			$('#css-animations').text("@keyframes polygon {25% {-webkit-clip-path: polygon(20% 0%, 100% 38%, 70% 90%, 0% 100%); background: pink; } 50% { -webkit-clip-path: polygon(0 46%, 100% 15%, 55% 74%, 0 100%); background: orange; } 75% { -webkit-clip-path: polygon(100% 38%, 100% 38%, 66% 100%, 0 53%); background: cornflowerblue; }}")
+			view1.animation = 'test 10s ease'
+			view1.clipPath = 'polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px)'
 			
-			
-			$('#css-animations').text($('#css-animations').text() + "@keyframes polygons {25% {-webkit-clip-path: polygon(20% 0%, 100% 38%, 70% 90%, 0% 100%); background: pink; } 50% { -webkit-clip-path: polygon(0 46%, 100% 15%, 55% 74%, 0 100%); background: orange; } 75% { -webkit-clip-path: polygon(100% 38%, 0% 0%, 66% 100%, 0 53%); background: cornflowerblue; }}")
 			
 			
 		} else if (experimentNumber == 2) {
 			
-			this.view1.animation = 'polygon 3s'
 			
 		} else if (experimentNumber == 3) {
 			
