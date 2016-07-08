@@ -177,6 +177,7 @@ class ProjectsPage extends JABView {
 			view.positionEasingFunction = this.parameters.gridAnimationEasingFunction
 			view.cursor = 'pointer'
 			view.clickable = true
+			
 		}
 
 	}

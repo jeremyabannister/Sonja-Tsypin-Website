@@ -8,12 +8,12 @@ class Laboratory extends JABView {
 		this.big = false
 
 		// UI
-    	this.view1 = new UILabel()
+    	this.view1 = new UILabel('View1')
     	this.view2 = new JABView('View2', this)
 
 
-		this.defaultTimeInterval = 1000
-		this.specificTimeIntervals = [26]
+		this.defaultTimeInterval = 2000
+		this.specificTimeIntervals = [1000]
 
 		this.numberOfExperiments = 0 // Actual value is set in runExperiment which is run on the next line
 
@@ -91,16 +91,14 @@ class Laboratory extends JABView {
 	// View 1
 	configureView1 () {
 		this.view1.red()
-		this.view1.text = 'SONJA TSYPIN'
-		this.view1.fontFamily = 'siteFont'
-		this.view1.positionDuration = 1000
+		this.view1.configureDuration = 500
 		
 	}
 	
 	positionView1 () {
 		
-		this.view1.width = 'auto'
-		this.view1.height = 'auto'
+		this.view1.width = 100
+		this.view1.height = 100
 		
 		
 	}
@@ -146,18 +144,24 @@ class Laboratory extends JABView {
 		
 		if (experimentNumber == 1) {
 			
-			
+			$(this.selector).append("<div id='aaaaaa'></div>")
+			$('#aaaaaa').css({
+				display: 'inline-block',
+				  width: '250px',
+				  height: '250px',
+				  'background-color': 'orange',
+				  cursor: 'pointer',
+				  '-webkit-clip-path': 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
+				  animation: 'polygons 4s alternate infinite'
+			})
 			
 			
 		} else if (experimentNumber == 2) {
 			
-			this.view1.width = 300
-			this.view1.x += 500
-			
 			
 		} else if (experimentNumber == 3) {
 			
-			
+			console.log(this.view1.selector)
 		}
 	}
 	

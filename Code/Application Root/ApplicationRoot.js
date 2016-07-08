@@ -206,6 +206,8 @@ class ApplicationRoot extends JABApplicationRoot {
 
 	positionHeader () {
 		this.header.frame = new CGRect(0, 0, this.width, this.parameters.heightOfHeader)
+		
+		this.configureMainSector() // This is done because the mainSector's heightOfHeader parameter is dependent on the logo in the header which doesn't get positioned until after the parameter is given to the mainSector
 	}
 	
 	

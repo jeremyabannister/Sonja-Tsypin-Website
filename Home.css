@@ -86,18 +86,23 @@ body {
 
 
 
-/* Animations  */
-@keyframes bounce {
-	
-	
-	0% {
-	    transform:translate3d(0px, 0px, 0px);
-	}
-	50% {
-		/*transform: translate3d(10px, -10px, 0px);*/
-	}
-	100% {
-	    transform:translate3d(0px, 0px, 0px);
-	}
-	
+
+
+
+
+
+/* Laboratory */
+@keyframes polygons {
+  25% {
+    -webkit-clip-path: polygon(20% 0%, 100% 38%, 70% 90%, 0% 100%);
+    background: pink;
+  }
+  50% {
+    -webkit-clip-path: polygon(0 46%, 100% 15%, 55% 74%, 0 100%);
+    background: orange;
+  }
+  75% {
+    -webkit-clip-path: polygon(100% 38%, 100% 38%, 66% 100%, 0 53%);
+    background: cornflowerblue;
+  }
 }
