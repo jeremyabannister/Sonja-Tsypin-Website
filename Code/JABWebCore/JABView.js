@@ -63,11 +63,11 @@ class JABView {
 		this.position = 'absolute'
 		this.overflow = 'visible'
 		this.cursor = 'auto'
-		
+		this.animation = 'none'
 	
 	
 		// Other
-		this.clickable = false		
+		this.clickable = false
 		
 
 	}
