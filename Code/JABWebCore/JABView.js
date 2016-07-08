@@ -459,7 +459,6 @@ class JABView {
 	}
 	
 	
-	
 	// Computed Properties
 	get computedOpacity () {
 		return $(this.selector).css('opacity')
