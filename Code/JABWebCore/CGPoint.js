@@ -12,5 +12,32 @@ class CGPoint {
 		this.x = x
 		this.y = y
 	}
+	
+	
+	get containsOnlyValidValues () {
+		
+		if (this.x == null) {
+			return false
+		}
+		
+		if (this.y == null) {
+			return false
+		}
+		
+		return true
+	}
+	
+	
+	isEqualToPoint(point) {
+		if (point instanceof CGPoint) {
+			if (this.containsOnlyValidValues && point.containsOnlyValidValues) {
+				if (this.x == point.x && this.y == point.y) {
+					return true
+				}
+			}
+		}
+		
+		return false
+	}
 }
 
