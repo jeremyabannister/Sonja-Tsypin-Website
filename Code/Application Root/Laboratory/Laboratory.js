@@ -13,7 +13,7 @@ class Laboratory extends JABView {
 
 
 		this.defaultTimeInterval = 2000
-		this.specificTimeIntervals = []
+		this.specificTimeIntervals = [2000, 300] // First one specifies start delay and is necessary
 
 		this.numberOfExperiments = 0 // Actual value is set in runExperiment which is run on the next line
 
@@ -90,7 +90,10 @@ class Laboratory extends JABView {
 
 	// View 1
 	configureView1 () {
-		this.view1.red()
+		
+		var view = this.view1
+		view.red()
+		view.shapeDuration = 800
 		
 	}
 	
@@ -108,7 +111,7 @@ class Laboratory extends JABView {
 		view.frame = newFrame
 		
 		
-		view.clipPath = 'polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px)'
+		view.clipPath = new Polygon([0, 0, 100, 90, 40, 60, 0, 12])
 	}
 	
 	
@@ -148,27 +151,35 @@ class Laboratory extends JABView {
 		var view1 = this.view1
 		var view2 = this.view2
 		
-		this.numberOfExperiments = 2
+		this.numberOfExperiments = 3
 		console.log("<<<<<<<<<< Launching Experiment #" + experimentNumber + ' >>>>>>>>>>')
 		
 		if (experimentNumber == 1) {
 			
-			
-			view1.animation = 'test 10s ease'
-			view1.clipPath = 'polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px)'
+			console.log('changing first')
+			view1.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100])
 			
 			
 			
 		} else if (experimentNumber == 2) {
 			
+			console.log('changing second')
+			view1.stopClipPath()
+			view1.clipPath = new Polygon([0, 0, 9, 0, 100, 100, 0, 100])
+			
 			
 		} else if (experimentNumber == 3) {
 			
-			
+			console.log('changing third')
+			view1.clipPath = new Polygon([0, 0, 70, 0, 100, 100, 0, 100])
 		}
 	}
 	
+	// @keyframes test {0% {-webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% {-webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);}}
 	
+	
+	
+	// @keyframes View1---Laboratory---ApplicationRoot { 0% { clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px); -webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% { clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px); -webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);} }
 }
 
 
