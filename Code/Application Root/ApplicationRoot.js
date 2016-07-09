@@ -30,7 +30,16 @@ class ApplicationRoot extends JABApplicationRoot {
 		}
 		
 		
-		// Initialize
+		
+	}
+	
+	//
+	// Init
+	//
+	
+	init () {
+		super.init()
+		
 	}
 
 	
@@ -46,6 +55,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	set contentWidth (newContentWidth) {
 		this._contentWidth = newContentWidth
 	}
+	
 	
 	
 	//

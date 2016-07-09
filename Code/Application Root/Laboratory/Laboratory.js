@@ -93,8 +93,8 @@ class Laboratory extends JABView {
 		
 		var view = this.view1
 		view.red()
-		view.shapeDuration = 800
 		
+		view.shapeDuration = 800
 	}
 	
 	positionView1 () {
@@ -152,7 +152,7 @@ class Laboratory extends JABView {
 		var view2 = this.view2
 		
 		this.numberOfExperiments = 3
-		console.log("<<<<<<<<<< Launching Experiment #" + experimentNumber + ' >>>>>>>>>>')
+		console.log('<<<<<<<<<< Launching Experiment #' + experimentNumber + ' >>>>>>>>>>')
 		
 		if (experimentNumber == 1) {
 			
@@ -173,6 +173,8 @@ class Laboratory extends JABView {
 			console.log('changing third')
 			view1.clipPath = new Polygon([0, 0, 70, 0, 100, 100, 0, 100])
 		}
+		
+		console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>')
 	}
 	
 	// @keyframes test {0% {-webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% {-webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);}}

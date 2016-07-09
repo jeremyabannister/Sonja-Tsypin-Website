@@ -1047,15 +1047,20 @@ class JABView {
 	set clipPath (newClipPath) {
 		
 		var changed = true
+		var sameNumberOfPoints = false
 		if (this.clipPath instanceof Polygon && newClipPath instanceof Polygon) {
 			changed = !this.clipPath.isEqualToPolygon(newClipPath)
+			if (this.clipPath.points.length == newClipPath.points.length) {
+				sameNumberOfPoints = true
+			}
 		}
+		
 		
 		if (changed) {
 			
 			this.stopClipPath()
 			
-			if (this.shapeDuration != 0 && this.shapeDuration != null) {
+			if (this.shapeDuration != 0 && this.shapeDuration != null && this.clipPath != null && sameNumberOfPoints) {
 				
 				globalCSSAnimationEngine.addAnimation(this.id, globalCSSAnimationEngine.polygonMorphAnimationStringWithName(this.id, this.clipPath, newClipPath))
 				
@@ -1068,7 +1073,7 @@ class JABView {
 			}
 			
 			var timeoutDuration = 0
-			if (this.clipPath != null) {
+			if (this.clipPath != null && sameNumberOfPoints) {
 				timeoutDuration = this.longestShapeAnimationTimeOfSelfAndSubviews()
 			}
 			
@@ -1077,7 +1082,6 @@ class JABView {
 			
 			var thisView = this
 			this.clipPathSetTimer = setTimeout(function() {
-				
 				thisView.animation = 'none'
 				$(thisView.selector).css({
 					'clip-path': newClipPath.polygonString,
