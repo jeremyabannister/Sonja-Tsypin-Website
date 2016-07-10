@@ -51,9 +51,9 @@ var ProjectsPage = function (_JABView) {
 
 		// UI
 		_this.projectInfoTab = new ProjectInfoTab('InfoTab');
-		_this.projectStillViews = [];
+		_this.projectPanes = [];
 		for (var i = 0; i < _this.state.projectDataBundles.length; i++) {
-			_this.projectStillViews.push(new JABImageView());
+			_this.projectPanes.push(new JABImageView());
 		}
 		_this.footer = new Footer('Footer');
 		return _this;
@@ -93,7 +93,7 @@ var ProjectsPage = function (_JABView) {
 		value: function addAllUI() {
 
 			this.addProjectInfoTab();
-			this.addProjectStillViews();
+			this.addProjectPanes();
 			this.addFooter();
 		}
 	}, {
@@ -102,10 +102,10 @@ var ProjectsPage = function (_JABView) {
 			this.addSubview(this.projectInfoTab);
 		}
 	}, {
-		key: 'addProjectStillViews',
-		value: function addProjectStillViews() {
-			for (var i = 0; i < this.projectStillViews.length; i++) {
-				this.addSubview(this.projectStillViews[i]);
+		key: 'addProjectPanes',
+		value: function addProjectPanes() {
+			for (var i = 0; i < this.projectPanes.length; i++) {
+				this.addSubview(this.projectPanes[i]);
 			}
 		}
 	}, {
@@ -124,8 +124,8 @@ var ProjectsPage = function (_JABView) {
 			this.configureProjectInfoTab();
 			this.positionProjectInfoTab();
 
-			this.configureProjectStillViews();
-			this.positionProjectStillViews();
+			this.configureProjectPanes();
+			this.positionProjectPanes();
 
 			this.configureFooter();
 			this.positionFooter();
@@ -173,11 +173,11 @@ var ProjectsPage = function (_JABView) {
 		// Project Rows
 
 	}, {
-		key: 'configureProjectStillViews',
-		value: function configureProjectStillViews() {
+		key: 'configureProjectPanes',
+		value: function configureProjectPanes() {
 
-			for (var i = 0; i < this.projectStillViews.length; i++) {
-				var view = this.projectStillViews[i];
+			for (var i = 0; i < this.projectPanes.length; i++) {
+				var view = this.projectPanes[i];
 
 				view.src = this.state.projectDataBundles[i].stills[0];
 				if (this.state.comingSoon) {
@@ -190,12 +190,12 @@ var ProjectsPage = function (_JABView) {
 			}
 		}
 	}, {
-		key: 'positionProjectStillViews',
-		value: function positionProjectStillViews() {
+		key: 'positionProjectPanes',
+		value: function positionProjectPanes() {
 
 			if (!this.state.comingSoon) {
-				for (var i = 0; i < this.projectStillViews.length; i++) {
-					var view = this.projectStillViews[i];
+				for (var i = 0; i < this.projectPanes.length; i++) {
+					var view = this.projectPanes[i];
 					var newFrame = new CGRect();
 
 					newFrame.size.width = (applicationRoot.contentWidth - (this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns) / this.parameters.numberOfColumns;
@@ -236,13 +236,13 @@ var ProjectsPage = function (_JABView) {
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
 
 			if (!this.state.comingSoon) {
-				if (this.projectStillViews.length > 0) {
+				if (this.projectPanes.length > 0) {
 					var lowestBottom = 0;
 					for (var i = 0; i < this.parameters.numberOfColumns; i++) {
-						var index = this.projectStillViews.length - 1 - i;
-						if (this.projectStillViews.length > index) {
-							if (this.projectStillViews[index].bottom > lowestBottom) {
-								lowestBottom = this.projectStillViews[index].bottom;
+						var index = this.projectPanes.length - 1 - i;
+						if (this.projectPanes.length > index) {
+							if (this.projectPanes[index].bottom > lowestBottom) {
+								lowestBottom = this.projectPanes[index].bottom;
 							}
 						}
 					}
@@ -273,7 +273,7 @@ var ProjectsPage = function (_JABView) {
 				if (!projectsPage.state.scrollable) {
 					evt.preventDefault();
 				} else {
-					projectsPage.configureProjectStillViews();
+					projectsPage.configureProjectPanes();
 				}
 
 				clearTimeout(projectsPage.scrollFinishTimer);
@@ -371,7 +371,7 @@ var ProjectsPage = function (_JABView) {
 					projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function () {
 						projectsPage.state = {
 							selectedProject: view,
-							selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+							selectedProjectIndex: projectsPage.projectPanes.indexOf(view)
 						};
 						projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function () {
 							projectsPage.updateAllUI();
@@ -394,7 +394,7 @@ var ProjectsPage = function (_JABView) {
 				// If no project is currently open and a project has just been selected
 				projectsPage.state = {
 					selectedProject: view,
-					selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+					selectedProjectIndex: projectsPage.projectPanes.indexOf(view)
 				};
 				projectsPage.animatedUpdate(projectsPage.parameters.gridAnimationDuration, function () {
 					projectsPage.state = { infoTabHidden: false };

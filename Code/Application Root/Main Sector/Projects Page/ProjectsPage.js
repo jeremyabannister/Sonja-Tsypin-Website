@@ -9,11 +9,15 @@ class ProjectsPage extends JABView {
 			projectDataBundles: this.assembleProjectDataBundles(),
 			comingSoon: false,
 			
+			scrollable: false,
+			readyToClose: true,
+			
 			selectedProject: null,
 			selectedProjectIndex: null,
 			
-			scrollable: false,
-			readyToClose: true,
+			
+			currentInfoTab: null,
+			queuedInfoTab: null,
 		}
 		
 		
@@ -33,19 +37,24 @@ class ProjectsPage extends JABView {
 			bottomBufferForGrid: 50,
 			
 			gridAnimationDuration: 250,
-			gridAnimationEasingFunction: 'ease-in-out'
+			gridAnimationEasingFunction: 'ease-in-out',
+			
+			truePositionsOfProjectPanes: [],
 		}
 		
 		
 		// UI
 		this.projectInfoTab = new ProjectInfoTab('ProjectInfoTab')
 		this.projectInfoTabBackup = new ProjectInfoTab('ProjectInfoTabBackup')
-		this.projectStillViews = []
+		this.projectPanes = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
-			this.projectStillViews.push(new ProjectImageView())
+			this.projectPanes.push(new ProjectImageView())
+			this.parameters.truePositionsOfProjectPanes.push(new CGRect())
 		}
 		this.footer = new Footer('Footer')
 		
+		
+		this.state.queuedInfoTab = this.projectInfoTab
 	}
 	
 	
@@ -78,7 +87,7 @@ class ProjectsPage extends JABView {
 		
 		this.addProjectInfoTab()
 		this.addProjectInfoTabBackup()
-		this.addProjectStillViews()
+		this.addProjectPanes()
 		this.addFooter()
 		
 	}
@@ -93,9 +102,9 @@ class ProjectsPage extends JABView {
 		this.addSubview(this.projectInfoTabBackup)
 	}
 	
-	addProjectStillViews () {
-		for (var i = 0; i < this.projectStillViews.length; i++) {
-			this.addSubview(this.projectStillViews[i])
+	addProjectPanes () {
+		for (var i = 0; i < this.projectPanes.length; i++) {
+			this.addSubview(this.projectPanes[i])
 		}
 	}
 	
@@ -111,6 +120,8 @@ class ProjectsPage extends JABView {
 		super.updateAllUI()
 		
 		
+		this.manageProjectInfoTabs()
+		
 		this.configureProjectInfoTab()
 		this.positionProjectInfoTab()
 		
@@ -118,8 +129,8 @@ class ProjectsPage extends JABView {
 		this.positionProjectInfoTabBackup()
 		
 
-		this.configureProjectStillViews()
-		this.positionProjectStillViews()
+		this.configureProjectPanes()
+		this.positionProjectPanes()
 		
 		this.configureFooter()
 		this.positionFooter()
@@ -127,6 +138,16 @@ class ProjectsPage extends JABView {
 	}
 
 	
+	
+	
+	// Project Info Tabs
+	manageProjectInfoTabs () {
+		
+		if (this.state.queuedInfoTab == null) {
+			this.state.queuedInfoTab = this.projectInfoTab
+		}
+		
+	}
 	
 	
 	// Project Info Tab
@@ -223,10 +244,10 @@ class ProjectsPage extends JABView {
 
 
 	// Project Rows
-	configureProjectStillViews () {
+	configureProjectPanes () {
 
-		for (var i = 0; i < this.projectStillViews.length; i++) {
-			var view = this.projectStillViews[i]
+		for (var i = 0; i < this.projectPanes.length; i++) {
+			var view = this.projectPanes[i]
 			
 			view.state.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex]
 			if (this.state.comingSoon) {
@@ -255,11 +276,11 @@ class ProjectsPage extends JABView {
 
 	}
 
-	positionProjectStillViews () {
+	positionProjectPanes () {
 
 		if (!this.state.comingSoon) {
-			for (var i = 0; i < this.projectStillViews.length; i++) {
-				var view = this.projectStillViews[i]
+			for (var i = 0; i < this.projectPanes.length; i++) {
+				var view = this.projectPanes[i]
 				var newFrame = new CGRect()
 				
 				newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
@@ -280,6 +301,12 @@ class ProjectsPage extends JABView {
 				newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.topBufferForGrid + (Math.floor(i/this.parameters.numberOfColumns) * (newFrame.size.height + this.parameters.betweenBufferForGridRows)) + verticalAdjustment
 				
 				view.frame = newFrame
+				
+				
+				// Keep track of where the project panes are supposed to be when they are not shifted to make room for info tab. This is done so that incoming info tab can be placed relative to where the project pane will be, not where it is in its currently shifted position
+				var truePosition = newFrame.copy()
+				truePosition.y -= verticalAdjustment
+				this.parameters.truePositionsOfProjectPanes[i] = truePosition
 				
 			}
 		}
@@ -305,13 +332,13 @@ class ProjectsPage extends JABView {
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		
 		if (!this.state.comingSoon) {
-			if (this.projectStillViews.length > 0) {
+			if (this.projectPanes.length > 0) {
 				var lowestBottom = 0
 				for (var i = 0; i < this.parameters.numberOfColumns; i++) {
-					var index = this.projectStillViews.length - 1 - i
-					if (this.projectStillViews.length > index) {
-						if (this.projectStillViews[index].bottom > lowestBottom) {
-							lowestBottom = this.projectStillViews[index].bottom
+					var index = this.projectPanes.length - 1 - i
+					if (this.projectPanes.length > index) {
+						if (this.projectPanes[index].bottom > lowestBottom) {
+							lowestBottom = this.projectPanes[index].bottom
 						}
 					}
 				}
@@ -347,7 +374,7 @@ class ProjectsPage extends JABView {
 			if (!projectsPage.state.scrollable) {
 				evt.preventDefault()
 			} else {
-				projectsPage.configureProjectStillViews()
+				projectsPage.configureProjectPanes()
 			}
 			
 			clearTimeout(projectsPage.scrollFinishTimer)
@@ -481,17 +508,15 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
-		
-		var projectsPage = this
+
 		
 		if (this.state.selectedProject != null) {
 			if (view != this.state.selectedProject) {
 				// If a project is currently open and now we need to open a different one
 				this.state = {
 					selectedProject: view,
-					selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+					selectedProjectIndex: this.projectPanes.indexOf(view)
 				}
-				this.positionProjectInfoTab()
 				this.animatedUpdate()
 			} else {
 				// If the currently open project has just been clicked on (close it)
@@ -505,9 +530,8 @@ class ProjectsPage extends JABView {
 			// If no project is currently open and a project has just been selected
 			this.state = {
 				selectedProject: view,
-				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view),
+				selectedProjectIndex: this.projectPanes.indexOf(view),
 			}
-			this.positionProjectInfoTab()
 			this.animatedUpdate()
 		}
 	}
