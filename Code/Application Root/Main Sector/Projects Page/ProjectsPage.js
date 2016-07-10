@@ -11,7 +11,6 @@ class ProjectsPage extends JABView {
 			
 			selectedProject: null,
 			selectedProjectIndex: null,
-			infoTabHidden: true,
 			
 			scrollable: false,
 			readyToClose: true,
@@ -39,7 +38,8 @@ class ProjectsPage extends JABView {
 		
 		
 		// UI
-		this.projectInfoTab = new ProjectInfoTab('InfoTab')
+		this.projectInfoTab = new ProjectInfoTab('ProjectInfoTab')
+		this.projectInfoTabBackup = new ProjectInfoTab('ProjectInfoTabBackup')
 		this.projectStillViews = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
 			this.projectStillViews.push(new ProjectImageView())
@@ -77,6 +77,7 @@ class ProjectsPage extends JABView {
 	addAllUI () {
 		
 		this.addProjectInfoTab()
+		this.addProjectInfoTabBackup()
 		this.addProjectStillViews()
 		this.addFooter()
 		
@@ -86,6 +87,10 @@ class ProjectsPage extends JABView {
 	
 	addProjectInfoTab () {
 		this.addSubview(this.projectInfoTab)
+	}
+	
+	addProjectInfoTabBackup () {
+		this.addSubview(this.projectInfoTabBackup)
 	}
 	
 	addProjectStillViews () {
@@ -108,6 +113,10 @@ class ProjectsPage extends JABView {
 		
 		this.configureProjectInfoTab()
 		this.positionProjectInfoTab()
+		
+		this.configureProjectInfoTabBackup()
+		this.positionProjectInfoTabBackup()
+		
 
 		this.configureProjectStillViews()
 		this.positionProjectStillViews()
@@ -129,7 +138,7 @@ class ProjectsPage extends JABView {
 		view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 		view.configureDuration = this.parameters.gridAnimationDuration
 		
-		if (this.state.infoTabHidden) {
+		if (this.state.selectedProject == null) {
 			view.opacity = 0
 		} else {
 			view.opacity = 1
@@ -162,6 +171,53 @@ class ProjectsPage extends JABView {
 							
 		view.frame = newFrame
 	}
+	
+	
+	// Project Info Tab Backup
+	configureProjectInfoTabBackup () {
+		
+		var view = this.projectInfoTabBackup
+		
+		view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
+		view.configureDuration = this.parameters.gridAnimationDuration
+		
+		if (this.state.selectedProject == null) {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
+		
+		view.updateAllUI()
+	}
+	
+	positionProjectInfoTabBackup () {
+		var view = this.projectInfoTabBackup
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
+		newFrame.size.height = (newFrame.size.width * (9.0/16.0))/2 - this.parameters.betweenBufferForGridRows
+		
+		
+		if (this.state.selectedProject == null) {
+			newFrame.origin.y = this.height
+		} else {
+			
+			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == 0) {
+				newFrame.origin.x = this.state.selectedProject.right + this.parameters.betweenBufferForGridColumns
+			} else {
+				newFrame.origin.x = this.state.selectedProject.x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
+			}
+			
+			newFrame.origin.y = this.state.selectedProject.y
+		}
+		
+							
+		view.frame = newFrame
+	}
+	
+	
+	
+	
 	
 	
 
@@ -429,41 +485,30 @@ class ProjectsPage extends JABView {
 		var projectsPage = this
 		
 		if (this.state.selectedProject != null) {
-			projectsPage.state = {infoTabHidden: true} // The first thing, no matter what, is to hide the infoTab
 			if (view != this.state.selectedProject) {
 				// If a project is currently open and now we need to open a different one
-				projectsPage.animatedUpdate(null, function() {
-					projectsPage.state = {
-						selectedProject: view,
-						selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
-					}
-					projectsPage.animatedUpdate(null, function() {
-						projectsPage.updateAllUI()
-						
-						projectsPage.state = {infoTabHidden: false}
-						projectsPage.animatedUpdate()
-					})
-				})
+				this.state = {
+					selectedProject: view,
+					selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+				}
+				this.positionProjectInfoTab()
+				this.animatedUpdate()
 			} else {
 				// If the currently open project has just been clicked on (close it)
-				projectsPage.animatedUpdate(null, function() {
-					projectsPage.state = {
-						selectedProject: null,
-						selectedProjectIndex: null,
-					}
-					projectsPage.animatedUpdate()
-				})
+				this.state = {
+					selectedProject: null,
+					selectedProjectIndex: null,
+				}
+				this.animatedUpdate()
 			}
 		} else {
 			// If no project is currently open and a project has just been selected
-			projectsPage.state = {
+			this.state = {
 				selectedProject: view,
 				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view),
 			}
-			projectsPage.animatedUpdate(null, function() {
-				projectsPage.state = {infoTabHidden: false}
-				projectsPage.animatedUpdate()
-			})
+			this.positionProjectInfoTab()
+			this.animatedUpdate()
 		}
 	}
 	
