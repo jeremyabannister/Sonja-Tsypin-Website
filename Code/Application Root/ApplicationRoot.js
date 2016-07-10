@@ -6,11 +6,7 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// State
 		this.laboratoryEnabled = false
-<<<<<<< Updated upstream
 		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
-=======
-		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000}
->>>>>>> Stashed changes
 		
 		
 		this.websiteClosed = false
