@@ -12,9 +12,10 @@ class ProjectsPage extends JABView {
 			selectedProject: null,
 			selectedProjectIndex: null,
 			infoTabHidden: true,
+			tabRevealed: false,
 			
 			scrollable: false,
-			readyToClose: true
+			readyToClose: true,
 		}
 		
 		
@@ -40,11 +41,13 @@ class ProjectsPage extends JABView {
 		
 		// UI
 		this.projectInfoTab = new ProjectInfoTab('InfoTab')
+		this.tab = new JABImageView('Tab')
 		this.projectStillViews = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
 			this.projectStillViews.push(new JABImageView())
 		}
 		this.footer = new Footer('Footer')
+		
 	}
 	
 	
@@ -76,6 +79,7 @@ class ProjectsPage extends JABView {
 	addAllUI () {
 		
 		this.addProjectInfoTab()
+		this.addTab()
 		this.addProjectStillViews()
 		this.addFooter()
 		
@@ -85,6 +89,10 @@ class ProjectsPage extends JABView {
 	
 	addProjectInfoTab () {
 		this.addSubview(this.projectInfoTab)
+	}
+	
+	addTab () {
+		this.addSubview(this.tab)
 	}
 	
 	addProjectStillViews () {
@@ -97,7 +105,7 @@ class ProjectsPage extends JABView {
 	addFooter () {
 		this.addSubview(this.footer)
 	}
-
+	
 
 	
 	// Update
@@ -107,6 +115,9 @@ class ProjectsPage extends JABView {
 		
 		this.configureProjectInfoTab()
 		this.positionProjectInfoTab()
+		
+		this.configureTab()
+		this.positionTab()
 
 		this.configureProjectStillViews()
 		this.positionProjectStillViews()
@@ -121,6 +132,7 @@ class ProjectsPage extends JABView {
 	
 	// Project Info Tab
 	configureProjectInfoTab () {
+		
 		
 		var view = this.projectInfoTab
 		
@@ -159,6 +171,44 @@ class ProjectsPage extends JABView {
 		
 							
 		view.frame = newFrame
+	}
+	
+	
+	
+	// Tab
+	configureTab () {
+		
+		var view = this.tab
+		view.src = './Resources/Images/Projects Page/Project Data Bundles/1/still4-flipped.jpg'
+		
+	}
+	
+	positionTab () {
+		
+		var view = this.tab
+		var newFrame = new CGRect()
+
+		newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
+		newFrame.size.height = newFrame.size.width * (9.0/16.0)
+
+		newFrame.origin.x = -1000
+		newFrame.origin.y = -1000
+		if (this.state.selectedProject != null) {
+			if (this.state.tabRevealed) {
+				newFrame.origin.x = this.state.selectedProject.right
+				newFrame.origin.y = this.state.selectedProject.y
+			} else {
+				newFrame.origin.x = this.state.selectedProject.right - newFrame.size.width
+				newFrame.origin.y = this.state.selectedProject.y
+			}
+		}
+		
+
+
+		view.frame = newFrame
+		
+		view.clipPath = new Polygon([0, 0, 20, 0, 0, 20])
+		
 	}
 
 
@@ -207,8 +257,11 @@ class ProjectsPage extends JABView {
 				newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.topBufferForGrid + (Math.floor(i/this.parameters.numberOfColumns) * (newFrame.size.height + this.parameters.betweenBufferForGridRows)) + verticalAdjustment
 				
 				view.frame = newFrame
+				
 			}
 		}
+		
+		this.positionTab()
 	}
 	
 	
@@ -254,6 +307,9 @@ class ProjectsPage extends JABView {
 		view.frame = newFrame
 		
 	}
+	
+	
+	
 	
 	
 	
@@ -403,6 +459,7 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
+		
 		var projectsPage = this
 		
 		if (this.state.selectedProject != null) {
@@ -426,7 +483,7 @@ class ProjectsPage extends JABView {
 				projectsPage.animatedUpdate(null, function() {
 					projectsPage.state = {
 						selectedProject: null,
-						selectedProjectIndex: null
+						selectedProjectIndex: null,
 					}
 					projectsPage.animatedUpdate()
 				})
@@ -435,8 +492,11 @@ class ProjectsPage extends JABView {
 			// If no project is currently open and a project has just been selected
 			projectsPage.state = {
 				selectedProject: view,
-				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view),
+				tabRevealed: false
 			}
+			this.positionTab()
+			projectsPage.state = {tabRevealed: true}
 			projectsPage.animatedUpdate(null, function() {
 				projectsPage.state = {infoTabHidden: false}
 				projectsPage.animatedUpdate()

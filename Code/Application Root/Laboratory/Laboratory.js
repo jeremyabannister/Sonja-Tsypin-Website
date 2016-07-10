@@ -13,7 +13,7 @@ class Laboratory extends JABView {
 
 
 		this.defaultTimeInterval = 2000
-		this.specificTimeIntervals = [2000, 300] // First one specifies start delay and is necessary
+		this.specificTimeIntervals = [2000, 1000] // First one specifies start delay and is necessary
 
 		this.numberOfExperiments = 0 // Actual value is set in runExperiment which is run on the next line
 
@@ -112,27 +112,35 @@ class Laboratory extends JABView {
 		
 		
 		view.clipPath = new Polygon([0, 0, 100, 90, 40, 60, 0, 12])
+		
+		
 	}
 	
 	
 	
 	configureView2 () {
 		
-		this.view2.blue()
+		var view = this.view2
+		view.blue()
+		// view.shapeDuration = 800
+		
 	}
 	
 	positionView2 () {
 		
+		var view = this.view2
 		var newFrame = new CGRect()
 				
-		newFrame.size.width = 127
-		newFrame.size.height = 20
+		newFrame.size.width = 100
+		newFrame.size.height = 100
 				
-		newFrame.origin.x = 0
-		newFrame.origin.y = 40
+		newFrame.origin.x = 600
+		newFrame.origin.y = 200
 				
 				
-		this.view2.frame = newFrame
+		view.frame = newFrame
+		
+		// view.clipPath = new Polygon([0, 0, 40, 30, 87, 0, 9, 100])
 		
 	}
 
@@ -156,22 +164,21 @@ class Laboratory extends JABView {
 		
 		if (experimentNumber == 1) {
 			
-			console.log('changing first')
 			view1.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100])
-			
+			// view2.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100])
 			
 			
 		} else if (experimentNumber == 2) {
 			
-			console.log('changing second')
-			view1.stopClipPath()
 			view1.clipPath = new Polygon([0, 0, 9, 0, 100, 100, 0, 100])
+			// view2.clipPath = new Polygon([0, 90, 50, 0, 23, 16, 40, 100])
 			
 			
 		} else if (experimentNumber == 3) {
 			
-			console.log('changing third')
 			view1.clipPath = new Polygon([0, 0, 70, 0, 100, 100, 0, 100])
+			// view2.clipPath = new Polygon([0, 94, 15, 47, 0, 0, 100, 100])
+			
 		}
 		
 		console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>')

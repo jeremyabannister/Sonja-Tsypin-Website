@@ -5,7 +5,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		super(customId)
 
 		// State
-		this.laboratoryEnabled = true
+		this.laboratoryEnabled = false
 		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000}
 		
 		

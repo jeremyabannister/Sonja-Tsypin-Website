@@ -11,6 +11,7 @@ class Polygon {
 		// new Polygon([new CGPoint(0, 0), new CGPoint(1, 1)])
 		// new Polygon([[0, 0], [1, 1]])
 		// new Polygon([0, 0, 1, 1])
+		// new Polygon('polygon(0 0, 1 1)')
 		if (points instanceof Array) {
 			if (points.length > 0) {
 				if (points[0] instanceof CGPoint) {

@@ -1046,6 +1046,8 @@ class JABView {
 	
 	set clipPath (newClipPath) {
 		
+		this.stopClipPath()
+		
 		var changed = true
 		var sameNumberOfPoints = false
 		if (this.clipPath instanceof Polygon && newClipPath instanceof Polygon) {
@@ -1055,9 +1057,7 @@ class JABView {
 			}
 		}
 		
-		
 		if (changed) {
-			
 			this.stopClipPath()
 			
 			if (this.shapeDuration != 0 && this.shapeDuration != null && this.clipPath != null && sameNumberOfPoints) {
@@ -1076,6 +1076,7 @@ class JABView {
 			if (this.clipPath != null && sameNumberOfPoints) {
 				timeoutDuration = this.longestShapeAnimationTimeOfSelfAndSubviews()
 			}
+			
 			
 			
 			this._clipPath = newClipPath

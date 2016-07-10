@@ -15,8 +15,8 @@ class ProjectInfoTab extends JABView {
 			rightBufferForPlayButton: 20,
 			topBufferForPlayButton: 10,
 			
-			leftBufferForTitleLabel: 20,
-			topBufferForTitleLabel: 15,
+			leftBufferForTitleLabel: 30,
+			topBufferForTitleLabel: 0,
 			bufferBetweenTitleLabelAndSubtitleLabel: 3,
 			bufferBetweenSubtitleLabelAndYearLabel: 3,
 			
@@ -186,6 +186,7 @@ class ProjectInfoTab extends JABView {
 		view.src = './Resources/Images/Buttons/Info Button.png'
 		view.cursor = 'pointer'
 		view.clickable = true
+		view.opacity = 0
 	}
 	
 	positionInfoButton () {
