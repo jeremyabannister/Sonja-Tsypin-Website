@@ -9,8 +9,10 @@ function updateSizeClassForWidth (width) {
 				sizeClass = 's'
 			} else if (width < 1200) {
 				sizeClass = 'm'
-			} else {
+			} else if (width < 1500) {
 				sizeClass = 'l'
+			} else {
+				sizeClass = 'xl'
 			}
 		} else {
 			updateSizeClassForWidth(-width)

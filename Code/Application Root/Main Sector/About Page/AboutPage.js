@@ -105,7 +105,7 @@ class AboutPage extends JABView {
 	configureBioText () {
 		
 		
-		this.bioText.text = "<i>Sonja Tsypin is a director and cinematographer based in New York and Los Angeles. Sonja's most recent short film, POWDER ROOM (2016), recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja's other recent work as Director of Photography includes upcoming narrative feature-length film ANGELS [2016, dir. Audrey Banks], short psychological drama BIRTH DAY [2016, dir. Eva Evans] and short horror film THEODORE [2015, dir. Ondine Vi\u00f1ao]. Sonja's directing work includes CONTACT ESTERINA [2014], a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and THE MURDER [2014], a short film remake of Alfred Hitchcock\'s \"Blackmail.\" Sonja comes from a background in fine art; she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master's Degree in cinematography.</i>"
+		this.bioText.text = "<i>Sonja Tsypin is a director and cinematographer based in New York and Los Angeles. Sonja's most recent short film, POWDER ROOM (2016), recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja's other recent work as Director of Photography includes upcoming narrative feature-length film ANGELS [2016, dir. Audrey Banks], short psychological drama BIRTH DAY [2016, dir. Eva Evans] and short horror film THEODORE [2015, dir. Ondine Vi\u00f1ao]. Sonja's directing work includes CONTACT ESTERINA [2014], a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and THE MURDER [2014], a short film remake of Alfred Hitchcock\'s \"Blackmail.\" Sonja comes from a background in fine art (view work <a href='http://www.sonjatsypin.weebly.com'>here</a>); she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master's Degree in cinematography.</i>"
 		this.bioText.textColor = 'white'
 		this.bioText.fontSize = 13
 		this.bioText.fontFamily = 'siteFont'
@@ -171,7 +171,7 @@ class AboutPage extends JABView {
 	// Email Address
 	configureEmailAddress () {
 		
-		this.emailAddress.text = "e-mail &nbsp;:: &nbsp;sonjatsypin@gmail.com"
+		this.emailAddress.text = "contact &nbsp;:: &nbsp;sonjatsypin@gmail.com"
 		this.emailAddress.textColor = 'white'
 		this.emailAddress.fontSize = 13
 		this.emailAddress.fontFamily = 'siteFont'

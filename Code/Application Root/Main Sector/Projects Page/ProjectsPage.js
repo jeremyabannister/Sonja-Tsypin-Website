@@ -28,7 +28,7 @@ class ProjectsPage extends JABView {
 		this.parameters = {
 			reservedTopBuffer: 0,
 			
-			numberOfColumns: 2,
+			numberOfColumns: 3,
 			topBufferForGrid: 58,
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
