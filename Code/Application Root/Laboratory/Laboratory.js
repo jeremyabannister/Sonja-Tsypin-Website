@@ -13,7 +13,7 @@ class Laboratory extends JABView {
 
 
 		this.defaultTimeInterval = 2000
-		this.specificTimeIntervals = [1000]
+		this.specificTimeIntervals = [2000, 1000] // First one specifies start delay and is necessary
 
 		this.numberOfExperiments = 0 // Actual value is set in runExperiment which is run on the next line
 
@@ -90,15 +90,28 @@ class Laboratory extends JABView {
 
 	// View 1
 	configureView1 () {
-		this.view1.red()
-		this.view1.configureDuration = 500
 		
+		var view = this.view1
+		view.red()
+		
+		view.shapeDuration = 800
 	}
 	
 	positionView1 () {
 		
-		this.view1.width = 100
-		this.view1.height = 100
+		var view = this.view1
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = 100
+		newFrame.size.height = 100
+
+		newFrame.origin.x = 300
+		newFrame.origin.y = 100
+							
+		view.frame = newFrame
+		
+		
+		view.clipPath = new Polygon([0, 0, 100, 90, 40, 60, 0, 12])
 		
 		
 	}
@@ -107,23 +120,27 @@ class Laboratory extends JABView {
 	
 	configureView2 () {
 		
-		this.view2.blue()
+		var view = this.view2
+		view.blue()
+		// view.shapeDuration = 800
+		
 	}
 	
 	positionView2 () {
 		
+		var view = this.view2
 		var newFrame = new CGRect()
 				
-		newFrame.size.width = 127
-		newFrame.size.height = 20
+		newFrame.size.width = 100
+		newFrame.size.height = 100
 				
-		newFrame.origin.x = 0
-		newFrame.origin.y = 40
+		newFrame.origin.x = 600
+		newFrame.origin.y = 200
 				
 				
-		this.view2.frame = newFrame
+		view.frame = newFrame
 		
-		console.log(this.view1.font.sizeOfString(this.view1.text))
+		// view.clipPath = new Polygon([0, 0, 40, 30, 87, 0, 9, 100])
 		
 	}
 
@@ -139,33 +156,39 @@ class Laboratory extends JABView {
 	
 	runExperiment (experimentNumber) {
 		
+		var view1 = this.view1
+		var view2 = this.view2
+		
 		this.numberOfExperiments = 3
-		console.log("<<<<<<<<<< Launching Experiment #" + experimentNumber + ' >>>>>>>>>>')
+		console.log('<<<<<<<<<< Launching Experiment #' + experimentNumber + ' >>>>>>>>>>')
 		
 		if (experimentNumber == 1) {
 			
-			$(this.selector).append("<div id='aaaaaa'></div>")
-			$('#aaaaaa').css({
-				display: 'inline-block',
-				  width: '250px',
-				  height: '250px',
-				  'background-color': 'orange',
-				  cursor: 'pointer',
-				  '-webkit-clip-path': 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
-				  animation: 'polygons 4s alternate infinite'
-			})
+			view1.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100])
+			// view2.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100])
 			
 			
 		} else if (experimentNumber == 2) {
 			
+			view1.clipPath = new Polygon([0, 0, 9, 0, 100, 100, 0, 100])
+			// view2.clipPath = new Polygon([0, 90, 50, 0, 23, 16, 40, 100])
+			
 			
 		} else if (experimentNumber == 3) {
 			
-			console.log(this.view1.selector)
+			view1.clipPath = new Polygon([0, 0, 70, 0, 100, 100, 0, 100])
+			// view2.clipPath = new Polygon([0, 94, 15, 47, 0, 0, 100, 100])
+			
 		}
+		
+		console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>')
 	}
 	
+	// @keyframes test {0% {-webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% {-webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);}}
 	
+	
+	
+	// @keyframes View1---Laboratory---ApplicationRoot { 0% { clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px); -webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% { clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px); -webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);} }
 }
 
 

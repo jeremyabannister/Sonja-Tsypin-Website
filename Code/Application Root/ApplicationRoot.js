@@ -6,10 +6,12 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// State
 		this.laboratoryEnabled = false
-		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000}
+		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
+		this.state = {
+			headerBackdropHidden: false,
+		}
 		
-		
-		this.websiteClosed = true
+		this.websiteClosed = false
 		this.websiteClosedLocked = false
 
 		// Parameters
@@ -30,7 +32,16 @@ class ApplicationRoot extends JABApplicationRoot {
 		}
 		
 		
-		// Initialize
+		
+	}
+	
+	//
+	// Init
+	//
+	
+	init () {
+		super.init()
+		
 	}
 
 	
@@ -46,6 +57,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	set contentWidth (newContentWidth) {
 		this._contentWidth = newContentWidth
 	}
+	
 	
 	
 	//
@@ -146,13 +158,14 @@ class ApplicationRoot extends JABApplicationRoot {
 	// Header Backdrop
 	configureHeaderBackdrop () {
 		
-		if (isPropertySupported('-webkit-backdrop-filter')) {
-			this.headerBackdrop.backgroundColor = 'rgba(0, 0, 0, 0.6)'
-			this.headerBackdrop.backdropBlur = 10
-		} else {
-			this.headerBackdrop.backgroundColor = 'black'
-		}
+		var view = this.headerBackdrop
+		view.backgroundColor = 'black'
 		
+		if (this.state.headerBackdropHidden) {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
 		
 	}
 	
@@ -350,6 +363,26 @@ class ApplicationRoot extends JABApplicationRoot {
 	//
 	// Delegate
 	//
+	
+	
+	// Main Sector
+	mainSectorWantsToDisplayProject (mainSector) {
+		
+		this.state = {
+			headerBackdropHidden: true
+		}
+		
+		this.animatedUpdate()
+		
+	}
+	
+	
+	mainSectorWantsToCloseProject (mainSector) {
+		this.state = {headerBackdropHidden: false}
+		
+		this.animatedUpdate()
+	}
+	
 	
 	// Home Sector
 	homeSectorEnterButtonWasClicked () {

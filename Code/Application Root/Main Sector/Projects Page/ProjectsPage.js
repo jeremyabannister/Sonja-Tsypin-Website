@@ -14,7 +14,7 @@ class ProjectsPage extends JABView {
 			infoTabHidden: true,
 			
 			scrollable: false,
-			readyToClose: true
+			readyToClose: true,
 		}
 		
 		
@@ -33,7 +33,7 @@ class ProjectsPage extends JABView {
 			betweenBufferForGridColumns: 10,
 			bottomBufferForGrid: 50,
 			
-			gridAnimationDuration: 175,
+			gridAnimationDuration: 250,
 			gridAnimationEasingFunction: 'ease-in-out'
 		}
 		
@@ -42,9 +42,10 @@ class ProjectsPage extends JABView {
 		this.projectInfoTab = new ProjectInfoTab('InfoTab')
 		this.projectStillViews = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
-			this.projectStillViews.push(new JABImageView())
+			this.projectStillViews.push(new ProjectImageView())
 		}
 		this.footer = new Footer('Footer')
+		
 	}
 	
 	
@@ -97,7 +98,7 @@ class ProjectsPage extends JABView {
 	addFooter () {
 		this.addSubview(this.footer)
 	}
-
+	
 
 	
 	// Update
@@ -121,6 +122,7 @@ class ProjectsPage extends JABView {
 	
 	// Project Info Tab
 	configureProjectInfoTab () {
+		
 		
 		var view = this.projectInfoTab
 		
@@ -160,6 +162,8 @@ class ProjectsPage extends JABView {
 							
 		view.frame = newFrame
 	}
+	
+	
 
 
 	// Project Rows
@@ -168,16 +172,29 @@ class ProjectsPage extends JABView {
 		for (var i = 0; i < this.projectStillViews.length; i++) {
 			var view = this.projectStillViews[i]
 			
-			view.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex]
+			view.state.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex]
 			if (this.state.comingSoon) {
 				view.opacity = 0
 			}
 			
+			view.overflow = 'hidden'
 			view.positionDuration = this.parameters.gridAnimationDuration
 			view.positionEasingFunction = this.parameters.gridAnimationEasingFunction
 			view.cursor = 'pointer'
 			view.clickable = true
 			
+			if (this.state.selectedProject != null) {
+				if (view == this.state.selectedProject) {
+					view.state.covered = false
+				} else {
+					view.state.covered = true
+				}
+			} else {
+				view.state.covered = false
+			}
+			
+			
+			view.updateAllUI()
 		}
 
 	}
@@ -207,8 +224,10 @@ class ProjectsPage extends JABView {
 				newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.topBufferForGrid + (Math.floor(i/this.parameters.numberOfColumns) * (newFrame.size.height + this.parameters.betweenBufferForGridRows)) + verticalAdjustment
 				
 				view.frame = newFrame
+				
 			}
 		}
+		
 	}
 	
 	
@@ -254,6 +273,9 @@ class ProjectsPage extends JABView {
 		view.frame = newFrame
 		
 	}
+	
+	
+	
 	
 	
 	
@@ -305,7 +327,7 @@ class ProjectsPage extends JABView {
 		var dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'powderRoom'
 		dataBundle.title = 'POWDER ROOM'
-		dataBundle.subtitle = 'dir. SONJA TSYPIN'
+		dataBundle.subtitle = 'dir. SONJA TSYPIN | SHORT | 2016'
 		dataBundle.year = '2016'
 		
 		dataBundle.vimeoId = '167824606'
@@ -403,6 +425,7 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
+		
 		var projectsPage = this
 		
 		if (this.state.selectedProject != null) {
@@ -426,7 +449,7 @@ class ProjectsPage extends JABView {
 				projectsPage.animatedUpdate(null, function() {
 					projectsPage.state = {
 						selectedProject: null,
-						selectedProjectIndex: null
+						selectedProjectIndex: null,
 					}
 					projectsPage.animatedUpdate()
 				})
@@ -435,7 +458,7 @@ class ProjectsPage extends JABView {
 			// If no project is currently open and a project has just been selected
 			projectsPage.state = {
 				selectedProject: view,
-				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view),
 			}
 			projectsPage.animatedUpdate(null, function() {
 				projectsPage.state = {infoTabHidden: false}

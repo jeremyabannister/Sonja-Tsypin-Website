@@ -7,7 +7,7 @@ class MainSector extends JABView {
 		// State
 		this.state = {
 			currentlyActive: false,
-			pageIndex: 0,
+			pageIndex: 1,
 			projectOpen: false,
 			closingProject: false,
 			projectDataBundle: null,
@@ -441,6 +441,7 @@ class MainSector extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		if (view == this.projectPage) {
+			this.parent.mainSectorWantsToCloseProject(this)
 			this.state = {
 				projectOpen: false,
 				closingProject: true
@@ -459,7 +460,7 @@ class MainSector extends JABView {
 			projectOpen: true,
 			projectDataBundle: project,
 		}
-		this.animatedUpdate()
+		this.parent.mainSectorWantsToDisplayProject(this)
 	}
 
 
