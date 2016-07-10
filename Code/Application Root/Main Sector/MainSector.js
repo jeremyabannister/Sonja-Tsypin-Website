@@ -7,7 +7,7 @@ class MainSector extends JABView {
 		// State
 		this.state = {
 			currentlyActive: false,
-			pageIndex: 0,
+			pageIndex: 2,
 			projectOpen: false,
 			closingProject: false,
 			projectDataBundle: null,

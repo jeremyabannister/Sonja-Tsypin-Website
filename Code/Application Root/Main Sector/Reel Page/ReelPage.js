@@ -16,7 +16,7 @@ class ReelPage extends JABView {
 		// Parameters
 		this.reservedTopBuffer = 0
 		this.topBufferForVimeoView = 58
-		this.bottomBufferForVimeoView = 60
+		this.bottomBufferForVimeoView = 20
 		
 		// UI
 		this.vimeoView = new JABVimeoView('VimeoView')
