@@ -4,12 +4,14 @@ class ProjectImageView extends JABView {
 		super(customId)
 		
 		// State
-		this.src = ''
+		this.state = {
+			src: '',
+			covered: false,
+		}
 		
 		// UI
-		this.centerImageView = new JABImageView('CenterImageView')
-		this.leftImageView = new JABImageView('LeftImageView')
-		this.rightImageView = new JABImageView('RightImageView')
+		this.imageView = new JABImageView('ImageView')
+		this.cover = new JABView('Cover')
 		
 	}
 	
@@ -36,23 +38,18 @@ class ProjectImageView extends JABView {
 	// Add
 	addAllUI () {
 		
-		this.addCenterImageView()
-		this.addLeftImageView()
-		this.addRightImageView()
+		this.addImageView()
+		this.addCover()
 		
 	}
 	
 	
-	addCenterImageView () {
-		this.addSubview(this.centerImageView)
+	addImageView () {
+		this.addSubview(this.imageView)
 	}
 	
-	addLeftImageView () {
-		this.addSubview(this.leftImageView)
-	}
-	
-	addRightImageView () {
-		this.addSubview(this.rightImageView)
+	addCover () {
+		this.addSubview(this.cover)
 	}
 	
 	
@@ -63,49 +60,84 @@ class ProjectImageView extends JABView {
 		super.updateAllUI()
 		
 		
-		this.configureCenterImageView()
-		this.positionCenterImageView()
+		this.configureImageView()
+		this.positionImageView()
 		
-		this.configureLeftImageView()
-		this.positionLeftImageView()
 		
-		this.configureRightImageView()
-		this.positionRightImageView()
+		this.configureCover()
+		this.positionCover()
+		
 	}
 	
 	
 	// Center Image View
-	configureCenterImageView () {
+	configureImageView () {
 		
-		var view = this.centerImageView
+		var view = this.imageView
 		
-	}
-	
-	positionCenterImageView () {
+		view.src = this.state.src
+		view.configureDuration = 150
+		view.positionDuration = 150
 		
-	}
-	
-	
-	
-	// Left Image View
-	configureLeftImageView () {
+		if (this.state.covered) {
+			view.blur = 5
+		} else {
+			view.blur = 0
+		}
 		
-	}
-	
-	positionLeftImageView () {
 		
 	}
 	
-	
-	
-	// Right Image View
-	configureRightImageView () {
+	positionImageView () {
+		
+		var view = this.imageView
+		var newFrame = new CGRect()
+		
+		if (this.state.covered) {
+			newFrame.size.width = this.width * 1.01
+			newFrame.size.height = this.height * 1.01
+		} else {
+			newFrame.size.width = this.width
+			newFrame.size.height = this.height
+		}
+
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = (this.height - newFrame.size.height)/2
+							
+		view.frame = newFrame
 		
 	}
 	
-	positionRightImageView () {
+	
+	
+	// Cover
+	configureCover () {
+		
+		var view = this.cover
+		
+		view.configureDuration = 300
+		view.backgroundColor = 'black'
+		
+		if (this.state.covered) {
+			// view.opacity = 0.8
+		} else {
+			view.opacity = 0
+		}
 		
 	}
+	
+	positionCover () {
+		
+		var view = this.cover
+		var newFrame = this.bounds
+							
+		view.frame = newFrame
+	}
+	
+	
+	
+	
+	
 	
 	
 	//

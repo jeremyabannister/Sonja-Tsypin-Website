@@ -8,9 +8,9 @@ class UILabel extends JABView {
 		this.font = new UIFont()
 		this.textColor = '#000000'
 		this.textAlign = null
-		
+		this.wordBreak = null
 
-		
+		this.hyphenate = false
 
 		// UI
 	}
@@ -97,8 +97,50 @@ class UILabel extends JABView {
 			})
 		}
 	}
-
-
+	
+	
+	// Word Break
+	get wordBreak () {
+		return this._wordBreak
+	}
+	
+	set wordBreak (newWordBreak) {
+		this._wordBreak = newWordBreak
+		
+		if (newWordBreak != null) {
+			$(this.selector).css({
+				'word-break': newWordBreak
+			})
+		}
+	}
+	
+	
+	
+	// Hyphenate
+	get hyphenate () {
+		return this._hyphenate
+	}
+	
+	set hyphenate (newHyphenate) {
+		this._hyphenate = newHyphenate
+		
+		if (newHyphenate) {
+			$(this.selector).css({
+				'-webkit-hyphens': 'auto',
+				'-moz-hyphens': 'auto',
+				'-ms-hyphens': 'auto',
+				'hyphens': 'auto'
+			})
+		} else {
+			$(this.selector).css({
+				'-webkit-hyphens': 'none',
+				'-moz-hyphens': 'none',
+				'-ms-hyphens': 'none',
+				'hyphens': 'none'
+			})
+		}
+	}
+	
 
 
 

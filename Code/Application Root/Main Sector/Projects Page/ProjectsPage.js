@@ -12,7 +12,6 @@ class ProjectsPage extends JABView {
 			selectedProject: null,
 			selectedProjectIndex: null,
 			infoTabHidden: true,
-			tabRevealed: false,
 			
 			scrollable: false,
 			readyToClose: true,
@@ -28,23 +27,22 @@ class ProjectsPage extends JABView {
 		this.parameters = {
 			reservedTopBuffer: 0,
 			
-			numberOfColumns: 3,
+			numberOfColumns: 2,
 			topBufferForGrid: 58,
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
 			bottomBufferForGrid: 50,
 			
-			gridAnimationDuration: 175,
+			gridAnimationDuration: 250,
 			gridAnimationEasingFunction: 'ease-in-out'
 		}
 		
 		
 		// UI
 		this.projectInfoTab = new ProjectInfoTab('InfoTab')
-		this.tab = new JABImageView('Tab')
 		this.projectStillViews = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
-			this.projectStillViews.push(new JABImageView())
+			this.projectStillViews.push(new ProjectImageView())
 		}
 		this.footer = new Footer('Footer')
 		
@@ -79,7 +77,6 @@ class ProjectsPage extends JABView {
 	addAllUI () {
 		
 		this.addProjectInfoTab()
-		this.addTab()
 		this.addProjectStillViews()
 		this.addFooter()
 		
@@ -89,10 +86,6 @@ class ProjectsPage extends JABView {
 	
 	addProjectInfoTab () {
 		this.addSubview(this.projectInfoTab)
-	}
-	
-	addTab () {
-		this.addSubview(this.tab)
 	}
 	
 	addProjectStillViews () {
@@ -115,9 +108,6 @@ class ProjectsPage extends JABView {
 		
 		this.configureProjectInfoTab()
 		this.positionProjectInfoTab()
-		
-		this.configureTab()
-		this.positionTab()
 
 		this.configureProjectStillViews()
 		this.positionProjectStillViews()
@@ -174,42 +164,6 @@ class ProjectsPage extends JABView {
 	}
 	
 	
-	
-	// Tab
-	configureTab () {
-		
-		var view = this.tab
-		view.src = './Resources/Images/Projects Page/Project Data Bundles/1/still4-flipped.jpg'
-		
-	}
-	
-	positionTab () {
-		
-		var view = this.tab
-		var newFrame = new CGRect()
-
-		newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
-		newFrame.size.height = newFrame.size.width * (9.0/16.0)
-
-		newFrame.origin.x = -1000
-		newFrame.origin.y = -1000
-		if (this.state.selectedProject != null) {
-			if (this.state.tabRevealed) {
-				newFrame.origin.x = this.state.selectedProject.right
-				newFrame.origin.y = this.state.selectedProject.y
-			} else {
-				newFrame.origin.x = this.state.selectedProject.right - newFrame.size.width
-				newFrame.origin.y = this.state.selectedProject.y
-			}
-		}
-		
-
-
-		view.frame = newFrame
-		
-		view.clipPath = new Polygon([0, 0, 20, 0, 0, 20])
-		
-	}
 
 
 	// Project Rows
@@ -218,16 +172,29 @@ class ProjectsPage extends JABView {
 		for (var i = 0; i < this.projectStillViews.length; i++) {
 			var view = this.projectStillViews[i]
 			
-			view.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex]
+			view.state.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex]
 			if (this.state.comingSoon) {
 				view.opacity = 0
 			}
 			
+			view.overflow = 'hidden'
 			view.positionDuration = this.parameters.gridAnimationDuration
 			view.positionEasingFunction = this.parameters.gridAnimationEasingFunction
 			view.cursor = 'pointer'
 			view.clickable = true
 			
+			if (this.state.selectedProject != null) {
+				if (view == this.state.selectedProject) {
+					view.state.covered = false
+				} else {
+					view.state.covered = true
+				}
+			} else {
+				view.state.covered = false
+			}
+			
+			
+			view.updateAllUI()
 		}
 
 	}
@@ -261,7 +228,6 @@ class ProjectsPage extends JABView {
 			}
 		}
 		
-		this.positionTab()
 	}
 	
 	
@@ -361,7 +327,7 @@ class ProjectsPage extends JABView {
 		var dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'powderRoom'
 		dataBundle.title = 'POWDER ROOM'
-		dataBundle.subtitle = 'dir. SONJA TSYPIN'
+		dataBundle.subtitle = 'dir. SONJA TSYPIN | SHORT | 2016'
 		dataBundle.year = '2016'
 		
 		dataBundle.vimeoId = '167824606'
@@ -493,10 +459,7 @@ class ProjectsPage extends JABView {
 			projectsPage.state = {
 				selectedProject: view,
 				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view),
-				tabRevealed: false
 			}
-			this.positionTab()
-			projectsPage.state = {tabRevealed: true}
 			projectsPage.animatedUpdate(null, function() {
 				projectsPage.state = {infoTabHidden: false}
 				projectsPage.animatedUpdate()

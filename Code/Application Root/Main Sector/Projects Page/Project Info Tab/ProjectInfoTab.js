@@ -12,24 +12,29 @@ class ProjectInfoTab extends JABView {
 		// Parameters
 		this.parameters = {
 			sizeOfPlayButton: 80,
-			rightBufferForPlayButton: 20,
-			topBufferForPlayButton: 10,
+			leftBufferForPlayButton: 12,
+			bottomBufferForPlayButton: 5,
 			
-			leftBufferForTitleLabel: 30,
+			leftBufferForTitleLabel: 10,
 			topBufferForTitleLabel: 0,
 			bufferBetweenTitleLabelAndSubtitleLabel: 3,
 			bufferBetweenSubtitleLabelAndYearLabel: 3,
 			
-			sizeOfInfoButton: 20,
+			sizeOfInfoButton: 15,
 			bufferBetweenTitleLabelAndInfoButton: 4,
 		}
 		
 		// UI
+		this.leftDivider = new JABView('LeftDivider')
+		this.rightDivider = new JABView('RightDivider')
+		
 		this.playButton = new JABImageView('PlayButton')
 		this.titleLabel = new UILabel('TitleLabel')
 		this.infoButton = new JABImageView('InfoButton')
 		this.subtitleLabel = new UILabel('SubtitleLabel')
 		this.yearLabel = new UILabel('YearLabel')
+		
+		this.descriptionLabel = new UILabel('DescriptionLabel')
 		
 	}
 	
@@ -53,6 +58,9 @@ class ProjectInfoTab extends JABView {
 	// Add
 	addAllUI () {
 		
+		this.addLeftDivider()
+		this.addRightDivider()
+		
 		this.addPlayButton()
 		
 		this.addTitleLabel()
@@ -60,7 +68,19 @@ class ProjectInfoTab extends JABView {
 		this.addSubtitleLabel()
 		this.addYearLabel()
 		
+		this.addDescriptionLabel()
+		
 	}
+	
+	
+	addLeftDivider () {
+		this.addSubview(this.leftDivider)
+	}
+	
+	addRightDivider () {
+		this.addSubview(this.rightDivider)
+	}
+	
 	
 	
 	addPlayButton () {
@@ -87,9 +107,27 @@ class ProjectInfoTab extends JABView {
 	}
 	
 	
+	
+	addDescriptionLabel () {
+		this.addSubview(this.descriptionLabel)
+	}
+	
+	
 	// Update
 	updateAllUI () {
 		super.updateAllUI()
+		
+		
+		this.parameters.sizeOfPlayButton = this.height * 0.5
+		
+		
+		
+		this.configureLeftDivider()
+		this.positionLeftDivider()
+		
+		
+		this.configureRightDivider()
+		this.positionRightDivider()
 		
 		
 		
@@ -112,7 +150,67 @@ class ProjectInfoTab extends JABView {
 		
 		this.configureYearLabel()
 		this.positionYearLabel()
+		
+		
+		
+		
+		
+		this.configureDescriptionLabel()
+		this.positionDescriptionLabel()
 	}
+	
+	
+	
+	// Left Divider
+	configureLeftDivider () {
+		
+		var view = this.leftDivider
+		
+		view.backgroundColor = 'white'
+		
+	}
+	
+	positionLeftDivider () {
+		
+		var view = this.leftDivider
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = this.width
+		newFrame.size.height = 1
+
+		newFrame.origin.x = 0
+		newFrame.origin.y = this.height - newFrame.size.height
+							
+		view.frame = newFrame
+	}
+	
+	
+	
+	// Right Divider
+	
+	configureRightDivider () {
+		
+		var view = this.rightDivider
+		
+		view.backgroundColor = 'white'
+	}
+	
+	positionRightDivider () {
+		
+		var view = this.rightDivider
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = 1
+		newFrame.size.height = this.height
+
+		newFrame.origin.x = this.width - newFrame.size.width
+		newFrame.origin.y = 0
+							
+		view.frame = newFrame
+	}
+  	
+	
+	
 	
 	
 	
@@ -134,8 +232,8 @@ class ProjectInfoTab extends JABView {
 		newFrame.size.width = this.parameters.sizeOfPlayButton
 		newFrame.size.height = newFrame.size.width
 
-		newFrame.origin.x = this.width - newFrame.size.width - this.parameters.rightBufferForPlayButton
-		newFrame.origin.y = (this.height - newFrame.size.height)/2
+		newFrame.origin.x = this.width - newFrame.size.width - 23
+		newFrame.origin.y = (this.height - this.leftDivider.height - newFrame.size.height)/2
 							
 		view.frame = newFrame
 		
@@ -156,6 +254,7 @@ class ProjectInfoTab extends JABView {
 			view.text = this.state.projectDataBundle.title
 			view.fontFamily = 'siteFont'
 			view.fontSize = 20
+			view.letterSpacing = 1.5
 			view.textColor = 'white'
 		}
 		
@@ -197,8 +296,8 @@ class ProjectInfoTab extends JABView {
 		newFrame.size.width = this.parameters.sizeOfInfoButton
 		newFrame.size.height = newFrame.size.width
 
-		newFrame.origin.x = this.titleLabel.x
-		newFrame.origin.y = this.height - newFrame.size.height - 2
+		newFrame.origin.x = this.titleLabel.right + 10
+		newFrame.origin.y = this.titleLabel.y + (this.titleLabel.height - newFrame.size.height)/2
 							
 		view.frame = newFrame
 	}
@@ -214,8 +313,9 @@ class ProjectInfoTab extends JABView {
 		if (dataBundle != null) {
 			view.text = this.state.projectDataBundle.subtitle
 			view.fontFamily = 'siteFont'
-			view.fontSize = 12
-			view.textColor = 'white'
+			view.fontSize = 13
+			view.letterSpacing = 1.5
+			view.textColor = '#ffffff'
 		}
 		
 	}
@@ -243,10 +343,13 @@ class ProjectInfoTab extends JABView {
 		var view = this.yearLabel
 		var dataBundle = this.state.projectDataBundle
 		
+		view.opacity = 0
+		
 		if (dataBundle != null) {
 			view.text = this.state.projectDataBundle.year
 			view.fontFamily = 'siteFont'
 			view.fontSize = 14
+			view.letterSpacing = 1.5
 			view.textColor = 'white'
 		}
 		
@@ -262,10 +365,47 @@ class ProjectInfoTab extends JABView {
 		newFrame.size.height = size.height
 
 		newFrame.origin.x = this.subtitleLabel.x
-		newFrame.origin.y = this.subtitleLabel.bottom + this.parameters.bufferBetweenSubtitleLabelAndYearLabel
+		newFrame.origin.y = this.height - newFrame.size.height
 							
 		view.frame = newFrame
 	}
+	
+	
+	
+	
+	
+	
+	// Description Label
+	configureDescriptionLabel () {
+		
+		var view = this.descriptionLabel
+		
+		view.text = "A wildly popular online personality who hasn't left her apartment in four years has her tiny world turned upside down when a stranger forces himself into her peculiar space."
+		view.fontFamily = 'siteFont'
+		view.fontSize = 11
+		view.hyphenate = true
+		
+		view.textColor = '#aaaaaa'
+	}
+	
+	positionDescriptionLabel () {
+		
+		var view = this.descriptionLabel
+		var newFrame = new CGRect()
+		
+		newFrame.size.width = 300
+		var size = view.font.sizeOfString(view.font.text, newFrame.size.width)
+							
+		
+		newFrame.size.height = size.height
+
+		newFrame.origin.x = this.titleLabel.x
+		newFrame.origin.y = this.subtitleLabel.bottom + this.parameters.bufferBetweenTitleLabelAndSubtitleLabel + 4
+							
+		view.frame = newFrame
+	}
+	
+	
 	
 	
 	
