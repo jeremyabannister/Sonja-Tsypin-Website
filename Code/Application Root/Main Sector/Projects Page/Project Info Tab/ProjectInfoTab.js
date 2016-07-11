@@ -7,6 +7,7 @@ class ProjectInfoTab extends JABView {
 		this.state = {
 			projectDataBundle: null,
 			leftHanded: false,
+			usedAtleastOnce: false,
 		}
 		
 		
@@ -170,6 +171,7 @@ class ProjectInfoTab extends JABView {
 		var view = this.sideLine
 		
 		view.backgroundColor = 'white'
+		view.positionDuration = 0
 	}
 	
 	positionSideLine () {
@@ -200,9 +202,11 @@ class ProjectInfoTab extends JABView {
 	// Play Button
 	configurePlayButton () {
 		
-		this.playButton.src = './Resources/Images/Buttons/Play Button.png'
-		this.playButton.cursor = 'pointer'
-		this.playButton.clickable = true
+		var view = this.playButton
+		view.src = './Resources/Images/Buttons/Play Button.png'
+		view.cursor = 'pointer'
+		view.clickable = true
+		view.positionDuration = 0
 		
 	}
 	
@@ -323,6 +327,12 @@ class ProjectInfoTab extends JABView {
 		view.fontSize = 11
 		view.hyphenate = true
 		view.positionDuration = 0
+		
+		if (this.state.leftHanded) {
+			view.textAlign = 'right'
+		} else {
+			view.textAlign = 'left'
+		}
 		
 		view.textColor = '#aaaaaa'
 	}

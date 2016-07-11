@@ -30,7 +30,7 @@ class ProjectsPage extends JABView {
 		this.parameters = {
 			reservedTopBuffer: 0,
 			
-			numberOfColumns: 3,
+			numberOfColumns: 2,
 			topBufferForGrid: 58,
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
@@ -148,16 +148,21 @@ class ProjectsPage extends JABView {
 		view.configureDuration = this.parameters.gridAnimationDuration
 		
 		if (this.state.selectedProject == null || view != this.state.currentInfoTab) {
-			view.opacity = 0
+			// view.opacity = 0
 		} else {
+			view.state.usedAtLeastOnce = true
 			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 			view.opacity = 1
 			
 			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
-				view.state.leftHanded = true
+				// view.state.leftHanded = true
 			} else {
 				view.state.leftHanded = false
 			}
+		}
+		
+		if (!view.state.usedAtLeastOnce) {
+			view.opacity = 0
 		}
 		
 		view.updateAllUI()
@@ -202,17 +207,22 @@ class ProjectsPage extends JABView {
 		view.configureDuration = this.parameters.gridAnimationDuration
 		
 		if (this.state.selectedProject == null || view != this.state.currentInfoTab) {
-			view.opacity = 0
+			// view.opacity = 0
 		} else {
+			view.state.usedAtLeastOnce = true
 			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 			view.opacity = 1
 			
 			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
 				console.log('here')
-				view.state.leftHanded = true
+				// view.state.leftHanded = true
 			} else {
 				view.state.leftHanded = false
 			}
+		}
+		
+		if (!view.state.usedAtLeastOnce) {
+			view.opacity = 0
 		}
 		
 		view.updateAllUI()
@@ -266,6 +276,7 @@ class ProjectsPage extends JABView {
 				view.opacity = 0
 			}
 			
+			view.backgroundColor = 'black'
 			view.overflow = 'hidden'
 			view.positionDuration = this.parameters.gridAnimationDuration
 			view.positionEasingFunction = this.parameters.gridAnimationEasingFunction
