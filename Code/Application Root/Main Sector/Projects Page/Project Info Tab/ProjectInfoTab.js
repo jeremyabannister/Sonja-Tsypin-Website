@@ -249,6 +249,7 @@ class ProjectInfoTab extends JABView {
 		
 		var view = this.titleLabel
 		var dataBundle = this.state.projectDataBundle
+		view.positionDuration = 0
 		
 		if (dataBundle != null) {
 			view.text = this.state.projectDataBundle.title
@@ -310,8 +311,10 @@ class ProjectInfoTab extends JABView {
 		var view = this.subtitleLabel
 		var dataBundle = this.state.projectDataBundle
 		
+		view.positionDuration = 0
+		
 		if (dataBundle != null) {
-			view.text = this.state.projectDataBundle.subtitle
+			view.text = 'dir. ' + this.state.projectDataBundle.director + ' | ' + this.state.projectDataBundle.movieType + ' | ' + this.state.projectDataBundle.year
 			view.fontFamily = 'siteFont'
 			view.fontSize = 13
 			view.letterSpacing = 1.5
@@ -344,6 +347,7 @@ class ProjectInfoTab extends JABView {
 		var dataBundle = this.state.projectDataBundle
 		
 		view.opacity = 0
+		view.positionDuration = 0
 		
 		if (dataBundle != null) {
 			view.text = this.state.projectDataBundle.year
@@ -384,6 +388,7 @@ class ProjectInfoTab extends JABView {
 		view.fontFamily = 'siteFont'
 		view.fontSize = 11
 		view.hyphenate = true
+		view.positionDuration = 0
 		
 		view.textColor = '#aaaaaa'
 	}

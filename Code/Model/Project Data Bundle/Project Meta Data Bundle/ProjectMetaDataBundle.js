@@ -4,7 +4,8 @@ class ProjectMetaDataBundle {
 
 		this.id = ''
 		this.title = ''
-		this.subtitle = ''
+		this.director = ''
+		this.movieType = ''
 		this.year = ''
 	}
 

@@ -37,13 +37,24 @@ class ProjectDataBundle {
 	}
 
 
-	// Subtitle
-	get subtitle () {
-		return this.metaDataBundle.subtitle
+	// Director
+	get director () {
+		return this.metaDataBundle.director
 	}
 
-	set subtitle (newSubtitle) {
-		this.metaDataBundle.subtitle = newSubtitle
+	set director (newDirector) {
+		this.metaDataBundle.director = newDirector
+		this.metaDataBundle = this.metaDataBundle
+	}
+	
+	
+	// Movie Type
+	get movieType () {
+		return this.metaDataBundle.movieType
+	}
+
+	set movieType (newMovieType) {
+		this.metaDataBundle.movieType = newMovieType
 		this.metaDataBundle = this.metaDataBundle
 	}
 

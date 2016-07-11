@@ -145,12 +145,12 @@ class ProjectsPage extends JABView {
 		
 		var view = this.projectInfoTab
 		
-		view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 		view.configureDuration = this.parameters.gridAnimationDuration
 		
 		if (this.state.selectedProject == null || view != this.state.currentInfoTab) {
 			view.opacity = 0
 		} else {
+			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 			view.opacity = 1
 		}
 		
@@ -166,6 +166,7 @@ class ProjectsPage extends JABView {
 		
 		
 		if (this.state.selectedProject == null) {
+			newFrame.origin.x = view.x
 			newFrame.origin.y = view.y
 		} else {
 			if (view == this.state.currentInfoTab) {
@@ -176,6 +177,9 @@ class ProjectsPage extends JABView {
 				}
 				
 				newFrame.origin.y = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].y
+			} else {
+				newFrame.origin.x = view.x
+				newFrame.origin.y = view.y
 			}
 		}
 		
@@ -189,12 +193,12 @@ class ProjectsPage extends JABView {
 		
 		var view = this.projectInfoTabBackup
 		
-		view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 		view.configureDuration = this.parameters.gridAnimationDuration
 		
 		if (this.state.selectedProject == null || view != this.state.currentInfoTab) {
 			view.opacity = 0
 		} else {
+			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 			view.opacity = 1
 		}
 		
@@ -210,6 +214,7 @@ class ProjectsPage extends JABView {
 		
 		
 		if (this.state.selectedProject == null) {
+			newFrame.origin.x = view.x
 			newFrame.origin.y = view.y
 		} else {
 			if (view == this.state.currentInfoTab) {
@@ -220,6 +225,9 @@ class ProjectsPage extends JABView {
 				}
 				
 				newFrame.origin.y = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].y
+			} else {
+				newFrame.origin.x = view.x
+				newFrame.origin.y = view.y
 			}
 		}
 		
@@ -401,7 +409,8 @@ class ProjectsPage extends JABView {
 		var dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'powderRoom'
 		dataBundle.title = 'POWDER ROOM'
-		dataBundle.subtitle = 'dir. SONJA TSYPIN | SHORT | 2016'
+		dataBundle.director = 'SONJA TSYPIN'
+		dataBundle.movieType = 'SHORT'
 		dataBundle.year = '2016'
 		
 		dataBundle.vimeoId = '167824606'
@@ -425,8 +434,9 @@ class ProjectsPage extends JABView {
 		dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'angels'
 		dataBundle.title = 'ANGELS'
-		dataBundle.subtitle = 'dir. AUDREY BANKS'
-		dataBundle.year = '2015'
+		dataBundle.director = 'AUDREY BANKS'
+		dataBundle.movieType = 'FEATURE'
+		dataBundle.year = '2016'
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
@@ -446,7 +456,8 @@ class ProjectsPage extends JABView {
 		dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'birthday'
 		dataBundle.title = 'BIRTH DAY'
-		dataBundle.subtitle = 'dir. EVA EVANS'
+		dataBundle.director = 'EVA EVANS'
+		dataBundle.movieType = 'SHORT'
 		dataBundle.year = '2016'
 		
 		dataBundle.vimeoId = '167678674'
@@ -470,7 +481,8 @@ class ProjectsPage extends JABView {
 		dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'powderRoom'
 		dataBundle.title = 'POWDER ROOM'
-		dataBundle.subtitle = 'dir. SONJA TSYPIN'
+		dataBundle.director = 'SONJA TSYPIN'
+		dataBundle.movieType = 'SHORT'
 		dataBundle.year = '2016'
 		
 		dataBundle.vimeoId = '167824606'
@@ -507,6 +519,14 @@ class ProjectsPage extends JABView {
 		}
 	}
 	
+	positionCurrentInfoTab () {
+		if (this.state.currentInfoTab == this.projectInfoTab) {
+			this.positionProjectInfoTab()
+		} else if (this.state.currentInfoTab == this.projectInfoTabBackup) {
+			this.positionProjectInfoTabBackup()
+		}
+	}
+	
 	//
 	// Delegate
 	//
@@ -523,6 +543,8 @@ class ProjectsPage extends JABView {
 					selectedProject: view,
 					selectedProjectIndex: this.projectPanes.indexOf(view)
 				}
+				this.switchCurrentInfoTab()
+				this.positionCurrentInfoTab()
 				this.animatedUpdate()
 			} else {
 				// If the currently open project has just been clicked on (close it)
@@ -539,8 +561,7 @@ class ProjectsPage extends JABView {
 				selectedProjectIndex: this.projectPanes.indexOf(view),
 			}
 			this.switchCurrentInfoTab()
-			this.positionProjectInfoTab()
-			this.positionProjectInfoTabBackup()
+			this.positionCurrentInfoTab()
 			this.animatedUpdate()
 		}
 	}
