@@ -30,7 +30,7 @@ class ProjectsPage extends JABView {
 		this.parameters = {
 			reservedTopBuffer: 0,
 			
-			numberOfColumns: 2,
+			numberOfColumns: 3,
 			topBufferForGrid: 58,
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
@@ -152,6 +152,12 @@ class ProjectsPage extends JABView {
 		} else {
 			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 			view.opacity = 1
+			
+			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
+				view.state.leftHanded = true
+			} else {
+				view.state.leftHanded = false
+			}
 		}
 		
 		view.updateAllUI()
@@ -170,7 +176,7 @@ class ProjectsPage extends JABView {
 			newFrame.origin.y = view.y
 		} else {
 			if (view == this.state.currentInfoTab) {
-				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == 0) {
+				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
 					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].right + this.parameters.betweenBufferForGridColumns
 				} else {
 					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
@@ -200,6 +206,13 @@ class ProjectsPage extends JABView {
 		} else {
 			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
 			view.opacity = 1
+			
+			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
+				console.log('here')
+				view.state.leftHanded = true
+			} else {
+				view.state.leftHanded = false
+			}
 		}
 		
 		view.updateAllUI()
@@ -218,7 +231,7 @@ class ProjectsPage extends JABView {
 			newFrame.origin.y = view.y
 		} else {
 			if (view == this.state.currentInfoTab) {
-				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == 0) {
+				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
 					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].right + this.parameters.betweenBufferForGridColumns
 				} else {
 					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
@@ -285,12 +298,17 @@ class ProjectsPage extends JABView {
 				newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
 				newFrame.size.height = newFrame.size.width * (9.0/16.0)
 				
-				
 				var verticalAdjustment = 0
 				if (this.state.selectedProject != null) {
-					if (i >= this.state.selectedProjectIndex - (this.state.selectedProjectIndex % this.parameters.numberOfColumns) && i != this.state.selectedProjectIndex) {
-						if (i % this.parameters.numberOfColumns != this.state.selectedProjectIndex % this.parameters.numberOfColumns) {
-							verticalAdjustment = newFrame.size.height/2
+					if (i >= this.state.selectedProjectIndex - (this.state.selectedProjectIndex % this.parameters.numberOfColumns)) {
+						if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
+							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) + 1) {
+								verticalAdjustment = newFrame.size.height/2
+							}
+						} else {
+							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) - 1) {
+								verticalAdjustment = newFrame.size.height/2
+							}
 						}
 					}
 				}
@@ -534,7 +552,7 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
-
+		console.log('clicked!!!!!!!!!!!!!')
 		
 		if (this.state.selectedProject != null) {
 			if (view != this.state.selectedProject) {
