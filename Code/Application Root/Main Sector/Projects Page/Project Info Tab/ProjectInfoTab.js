@@ -27,6 +27,7 @@ class ProjectInfoTab extends JABView {
 		this.bottomLine = new JABView('BottomLine')
 		this.sideLine = new JABView('SideLine')
 		
+		this.noVideoMessageLabel = new UILabel('NoVideoMessageLabel')
 		this.playButton = new JABImageView('PlayButton')
 		
 		this.titleLabel = new UILabel('TitleLabel')
@@ -58,6 +59,7 @@ class ProjectInfoTab extends JABView {
 		this.addBottomLine()
 		this.addSideLine()
 		
+		this.addNoVideoMessageLabel()
 		this.addPlayButton()
 		
 		this.addTitleLabel()
@@ -77,6 +79,10 @@ class ProjectInfoTab extends JABView {
 	
 	
 	
+	
+	addNoVideoMessageLabel () {
+		this.addSubview(this.noVideoMessageLabel)
+	}
 	
 	addPlayButton () {
 		this.addSubview(this.playButton)
@@ -118,6 +124,8 @@ class ProjectInfoTab extends JABView {
 		
 		
 		
+		this.configureNoVideoMessageLabel()
+		this.positionNoVideoMessageLabel()
 		
 		this.configurePlayButton()
 		this.positionPlayButton()
@@ -199,14 +207,64 @@ class ProjectInfoTab extends JABView {
 	
 	
 	
+	
+	// No Video Message
+	configureNoVideoMessageLabel () {
+		
+		var view = this.noVideoMessageLabel
+		var dataBundle = this.state.projectDataBundle
+		view.configureDuration = 0
+		
+		if (dataBundle != null) {
+			if (dataBundle.noVideoMessage != null) {
+				
+				view.opacity = 1
+				
+				view.text = this.state.projectDataBundle.noVideoMessage
+				view.fontFamily = 'siteFont'
+				view.fontSize = 12
+				view.textColor = 'white'
+				view.textAlign = 'center'
+				
+			} else {
+				view.opacity = 0
+			}
+		}
+	}
+	
+	positionNoVideoMessageLabel () {
+		var view = this.noVideoMessageLabel
+		var newFrame = new CGRect()
+		var size = view.font.sizeOfString(view.text, 80)
+		
+		newFrame.size.width = size.width
+		newFrame.size.height = size.height
+
+		newFrame.origin.x = this.width - newFrame.size.width - 12
+		newFrame.origin.y = (this.height - newFrame.size.height)/2
+							
+		view.frame = newFrame
+	}
+	
+	
 	// Play Button
 	configurePlayButton () {
 		
 		var view = this.playButton
 		view.src = './Resources/Images/Buttons/Play Button.png'
 		view.cursor = 'pointer'
-		view.clickable = true
 		view.positionDuration = 0
+		view.configureDuration = 0
+		
+		if (this.state.projectDataBundle != null) {
+			if (this.state.projectDataBundle.noVideoMessage == null) {
+				view.opacity = 1
+				view.clickable = true
+			} else {
+				view.opacity = 0
+				view.clickable = false
+			}
+		}
 		
 	}
 	
@@ -322,7 +380,10 @@ class ProjectInfoTab extends JABView {
 		
 		var view = this.descriptionLabel
 		
-		view.text = "A wildly popular online personality who hasn't left her apartment in four years has her tiny world turned upside down when a stranger forces himself into her peculiar space."
+		var dataBundle = this.state.projectDataBundle
+		if (dataBundle != null) {
+			view.text = this.state.projectDataBundle.description
+		}
 		view.fontFamily = 'siteFont'
 		view.fontSize = 11
 		view.hyphenate = true

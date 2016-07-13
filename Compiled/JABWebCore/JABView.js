@@ -31,6 +31,7 @@ var JABView = function () {
 
 		// Animation
 		this.disableAnimationsTimer = setTimeout(function () {}, 0);
+		this.clipPathSetTimer = setTimeout(function () {}, 0);
 
 		this.masterAnimationOptions = { // Master animation options retains the information about which slots should inherit (indicated by null) and which are fixed to a value, while animationOptions holds the actual current values to be used for animation
 			configureDuration: null,
@@ -39,7 +40,11 @@ var JABView = function () {
 
 			positionDuration: null,
 			positionEasingFunction: null,
-			positionDelay: null
+			positionDelay: null,
+
+			shapeDuration: null,
+			shapeEasingFunction: null,
+			shapeDelay: null
 		};
 		this.animationOptions = {
 			configureDuration: null,
@@ -48,12 +53,19 @@ var JABView = function () {
 
 			positionDuration: null,
 			positionEasingFunction: null,
-			positionDelay: null
+			positionDelay: null,
+
+			shapeDuration: null,
+			shapeEasingFunction: null,
+			shapeDelay: null
 		};
 		this.willingToInheritAnimationOptions = true;
 
 		// Position
 		this.frame = new CGRect();
+
+		// Shape
+		this.clipPath = 'none';
 
 		// Configuration
 		this.opacity = 1;
@@ -65,6 +77,7 @@ var JABView = function () {
 		this.position = 'absolute';
 		this.overflow = 'visible';
 		this.cursor = 'auto';
+		this.animation = 'none';
 
 		// Other
 		this.clickable = false;
@@ -313,13 +326,21 @@ var JABView = function () {
 			});
 		}
 
+		//
 		// Computed Properties
+		//
+
+		// Configure
 
 	}, {
 		key: 'stopOpacity',
 
 
+		//
 		// Stopping Animations
+		//
+
+		// Configure
 		value: function stopOpacity() {
 			$(this.selector).css({
 				opacity: this.computedOpacity
@@ -364,6 +385,9 @@ var JABView = function () {
 			this.stopBackgroundColor();
 			this.stopBorderRadius();
 		}
+
+		// Position
+
 	}, {
 		key: 'stopX',
 		value: function stopX() {
@@ -410,14 +434,52 @@ var JABView = function () {
 			this.stopTranslation();
 			this.stopResizing();
 		}
+
+		// Shape
+
+	}, {
+		key: 'stopClipPath',
+		value: function stopClipPath() {
+			clearTimeout(this.clipPathSetTimer);
+			$(this.selector).css({
+				'animation-play-state': 'paused',
+				'-webkit-animation-play-state': 'paused'
+			});
+			$(this.selector).css({
+				'clip-path': this.computedClipPath,
+				'-webkit-clip-path': this.computedClipPath
+			});
+			this._clipPath = new Polygon(this.computedClipPath);
+			this.animation = 'none';
+			$(this.selector).css({
+				'animation-play-state': 'running',
+				'-webkit-animation-play-state': 'running'
+			});
+		}
+	}, {
+		key: 'stopShape',
+		value: function stopShape() {
+			this.stopClipPath();
+		}
 	}, {
 		key: 'stopAllAnimation',
 		value: function stopAllAnimation() {
 			this.stopConfiguration();
 			this.stopPositioning();
+			this.stopShape();
 		}
 
-		// Frame
+		//
+		//
+		// Configuration
+		//
+		//
+
+		//
+		// Animatable
+		//
+
+		// Opacity
 
 	}, {
 		key: 'red',
@@ -503,17 +565,19 @@ var JABView = function () {
 
 	}, {
 		key: 'animatedUpdate',
-		value: function animatedUpdate(options, configureCompletion, positionCompletion) {
+		value: function animatedUpdate(options, configureCompletion, positionCompletion, shapeCompletion) {
 
 			if (typeof options == 'number') {
 				options = {
 					configureDuration: options,
-					positionDuration: options
+					positionDuration: options,
+					shapeDuration: options
 				};
 			} else if (options == null) {
 				options = {
 					configureDuration: defaultAnimationDuration,
-					positionDuration: defaultAnimationDuration
+					positionDuration: defaultAnimationDuration,
+					shapeDuration: defaultAnimationDuration
 				};
 			}
 
@@ -524,6 +588,7 @@ var JABView = function () {
 
 			var longestConfigureTime = this.longestConfigureAnimationTimeOfSelfAndSubviews();
 			var longestPositionTime = this.longestPositionAnimationTimeOfSelfAndSubviews();
+			var longestShapeTime = this.longestShapeAnimationTimeOfSelfAndSubviews();
 			var disableDuration = greaterOfTwo(longestConfigureTime, longestPositionTime);
 
 			var thisView = this;
@@ -535,7 +600,11 @@ var JABView = function () {
 
 					positionDuration: 0,
 					positionEasingFunction: 'ease-in-out',
-					positionDelay: 0
+					positionDelay: 0,
+
+					shapeDuration: 0,
+					shapeEasingFunction: 'ease-in-out',
+					shapeDelay: 0
 				});
 			}, disableDuration);
 
@@ -545,6 +614,10 @@ var JABView = function () {
 
 			if (positionCompletion == null) {
 				positionCompletion = function positionCompletion() {};
+			}
+
+			if (shapeCompletion == null) {
+				shapeCompletion = function shapeCompletion() {};
 				longestConfigureTime = disableDuration; // If there is only one completion passed then ensure that it occurs at the end of all animations
 			}
 
@@ -555,6 +628,10 @@ var JABView = function () {
 			setTimeout(function () {
 				positionCompletion();
 			}, longestPositionTime);
+
+			setTimeout(function () {
+				shapeCompletion();
+			}, longestShapeTime);
 		}
 	}, {
 		key: 'longestConfigureAnimationTimeOfSelfAndSubviews',
@@ -574,6 +651,17 @@ var JABView = function () {
 			var longestTime = (this.animationOptions.positionDelay || 0) + (this.animationOptions.positionDuration || 0);
 			for (var i = 0; i < this.subviews.length; i++) {
 				longestTime = greaterOfTwo(longestTime, this.subviews[i].longestPositionAnimationTimeOfSelfAndSubviews());
+			}
+
+			return longestTime;
+		}
+	}, {
+		key: 'longestShapeAnimationTimeOfSelfAndSubviews',
+		value: function longestShapeAnimationTimeOfSelfAndSubviews() {
+
+			var longestTime = (this.animationOptions.shapeDelay || 0) + (this.animationOptions.shapeDuration || 0);
+			for (var i = 0; i < this.subviews.length; i++) {
+				longestTime = greaterOfTwo(longestTime, this.subviews[i].longestShapeAnimationTimeOfSelfAndSubviews());
 			}
 
 			return longestTime;
@@ -628,6 +716,9 @@ var JABView = function () {
 			this._animationOptions = newAnimationOptions;
 			this.updateTransition();
 		}
+
+		// Configure Animation Options
+
 	}, {
 		key: 'configureDuration',
 		get: function get() {
@@ -655,6 +746,9 @@ var JABView = function () {
 			this.masterAnimationOptions.configureDelay = newConfigureDelay;
 			this.animationOptions.configureDelay = newConfigureDelay;
 		}
+
+		// Position Animation Options
+
 	}, {
 		key: 'positionDuration',
 		get: function get() {
@@ -681,6 +775,36 @@ var JABView = function () {
 		set: function set(newPositionDelay) {
 			this.masterAnimationOptions.positionDelay = newPositionDelay;
 			this.animationOptions.positionDelay = newPositionDelay;
+		}
+
+		// Shape Animation Options
+
+	}, {
+		key: 'shapeDuration',
+		get: function get() {
+			return this.animationOptions.shapeDuration;
+		},
+		set: function set(newShapeDuration) {
+			this.masterAnimationOptions.shapeDuration = newShapeDuration;
+			this.animationOptions.shapeDuration = newShapeDuration;
+		}
+	}, {
+		key: 'shapeEasingFunction',
+		get: function get() {
+			return this.animationOptions.shapeEasingFunction;
+		},
+		set: function set(newShapeEasingFunction) {
+			this.masterAnimationOptions.shapeEasingFunction = newShapeEasingFunction;
+			this.animationOptions.shapeEasingFunction = newShapeEasingFunction;
+		}
+	}, {
+		key: 'shapeDelay',
+		get: function get() {
+			return this.animationOptions.shapeDelay;
+		},
+		set: function set(newShapeDelay) {
+			this.masterAnimationOptions.shapeDelay = newShapeDelay;
+			this.animationOptions.shapeDelay = newShapeDelay;
 		}
 
 		// State
@@ -759,6 +883,9 @@ var JABView = function () {
 		get: function get() {
 			return $(this.selector).css('-webkit-backdrop-blur');
 		}
+
+		// Position
+
 	}, {
 		key: 'computedX',
 		get: function get() {
@@ -787,6 +914,187 @@ var JABView = function () {
 		get: function get() {
 			return $(this.selector).css('height');
 		}
+
+		// Shape
+
+	}, {
+		key: 'computedClipPath',
+		get: function get() {
+			return $(this.selector).css('-webkit-clip-path');
+		}
+	}, {
+		key: 'opacity',
+		get: function get() {
+			return this._opacity;
+		},
+		set: function set(newOpacity) {
+
+			this._opacity = newOpacity;
+
+			this.updateTransition();
+			this.stopOpacity();
+			$(this.selector).css({
+				opacity: newOpacity
+			});
+		}
+
+		// Background Color
+
+	}, {
+		key: 'backgroundColor',
+		get: function get() {
+			return this._backgroundColor;
+		},
+		set: function set(newBackgroundColor) {
+			this._backgroundColor = newBackgroundColor;
+
+			this.updateTransition();
+			this.stopBackgroundColor();
+			$(this.selector).css({
+				'background-color': newBackgroundColor
+			});
+		}
+
+		// Border Radius
+
+	}, {
+		key: 'borderRadius',
+		get: function get() {
+			return this._borderRadius;
+		},
+		set: function set(newBorderRadius) {
+			this._borderRadius = newBorderRadius;
+
+			this.updateTransition();
+			this.stopBorderRadius();
+			$(this.selector).css({
+				'border-radius': newBorderRadius
+			});
+		}
+
+		// Blur
+
+	}, {
+		key: 'blur',
+		get: function get() {
+			return this._blur;
+		},
+		set: function set(newBlur) {
+			this._blur = newBlur;
+
+			this.updateTransition();
+			this.stopBlur();
+			$(this.selector).css({
+				'-webkit-filter': 'blur(' + newBlur + 'px)',
+				'-moz-filter': 'blur(' + newBlur + 'px)',
+				'-o-filter': 'blur(' + newBlur + 'px)',
+				'-ms-filter': 'blur(' + newBlur + 'px)',
+				'filter': 'blur(' + newBlur + 'px)'
+			});
+		}
+	}, {
+		key: 'backdropBlur',
+		get: function get() {
+			return this._backdropBlur;
+		},
+		set: function set(newBackdropBlur) {
+			this._backdropBlur = newBackdropBlur;
+
+			this.updateTransition();
+			this.stopBackdropBlur();
+			$(this.selector).css({
+				'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
+			});
+		}
+
+		//
+		// Non-Animatable
+		//
+
+		// ZIndex
+
+	}, {
+		key: 'zIndex',
+		get: function get() {
+			return this._zIndex;
+		},
+		set: function set(newZIndex) {
+
+			this._zIndex = newZIndex;
+			$(this.selector).css({
+				'z-index': newZIndex
+			});
+		}
+
+		// Position
+
+	}, {
+		key: 'position',
+		get: function get() {
+			return this._position;
+		},
+		set: function set(newPosition) {
+			this._position = newPosition;
+			$(this.selector).css({
+				'position': newPosition
+			});
+		}
+
+		// Overflow
+
+	}, {
+		key: 'overflow',
+		get: function get() {
+			return this._overflow;
+		},
+		set: function set(newOverflow) {
+			this._overflow = newOverflow;
+
+			$(this.selector).css({
+				'overflow': newOverflow
+			});
+		}
+
+		// Cursor
+
+	}, {
+		key: 'cursor',
+		get: function get() {
+			return this._cursor;
+		},
+		set: function set(newCursor) {
+			this._cursor = newCursor;
+
+			$(this.selector).css({
+				'cursor': newCursor
+			});
+
+			$(this.selector).find('*').css({
+				'cursor': newCursor
+			});
+		}
+
+		// Animation
+
+	}, {
+		key: 'animation',
+		get: function get() {
+			return this._animation;
+		},
+		set: function set(newAnimation) {
+			this._animation = newAnimation;
+
+			$(this.selector).css({
+				'animation': newAnimation
+			});
+		}
+
+		//
+		//
+		// Position
+		//
+		//
+
 	}, {
 		key: 'frame',
 		get: function get() {
@@ -905,154 +1213,61 @@ var JABView = function () {
 			return new CGRect(0, 0, this.width, this.height);
 		}
 
-		// Opacity
+		//
+		//
+		// Shape
+		//
+		//
+
+		// Clip Path
 
 	}, {
-		key: 'opacity',
+		key: 'clipPath',
 		get: function get() {
-			return this._opacity;
+			return this._clipPath;
 		},
-		set: function set(newOpacity) {
+		set: function set(newClipPath) {
 
-			this._opacity = newOpacity;
+			this.stopClipPath();
 
-			this.updateTransition();
-			this.stopOpacity();
-			$(this.selector).css({
-				opacity: newOpacity
-			});
-		}
+			var changed = true;
+			var sameNumberOfPoints = false;
+			if (this.clipPath instanceof Polygon && newClipPath instanceof Polygon) {
+				changed = !this.clipPath.isEqualToPolygon(newClipPath);
+				if (this.clipPath.points.length == newClipPath.points.length) {
+					sameNumberOfPoints = true;
+				}
+			}
 
-		// Background Color
+			if (changed) {
+				this.stopClipPath();
 
-	}, {
-		key: 'backgroundColor',
-		get: function get() {
-			return this._backgroundColor;
-		},
-		set: function set(newBackgroundColor) {
-			this._backgroundColor = newBackgroundColor;
+				if (this.shapeDuration != 0 && this.shapeDuration != null && this.clipPath != null && sameNumberOfPoints) {
 
-			this.updateTransition();
-			this.stopBackgroundColor();
-			$(this.selector).css({
-				'background-color': newBackgroundColor
-			});
-		}
+					globalCSSAnimationEngine.addAnimation(this.id, globalCSSAnimationEngine.polygonMorphAnimationStringWithName(this.id, this.clipPath, newClipPath));
 
-		// Border Radius
+					var easingFunction = this.shapeEasingFunction || 'ease-in-out';
+					var delay = this.shapeDelay || 0;
 
-	}, {
-		key: 'borderRadius',
-		get: function get() {
-			return this._borderRadius;
-		},
-		set: function set(newBorderRadius) {
-			this._borderRadius = newBorderRadius;
+					this.animation = this.id + ' ' + this.shapeDuration + 'ms ' + easingFunction + ' ' + delay + 'ms';
+				}
 
-			this.updateTransition();
-			this.stopBorderRadius();
-			$(this.selector).css({
-				'border-radius': newBorderRadius
-			});
-		}
+				var timeoutDuration = 0;
+				if (this.clipPath != null && sameNumberOfPoints) {
+					timeoutDuration = this.longestShapeAnimationTimeOfSelfAndSubviews();
+				}
 
-		// Blur
+				this._clipPath = newClipPath;
 
-	}, {
-		key: 'blur',
-		get: function get() {
-			return this._blur;
-		},
-		set: function set(newBlur) {
-			this._blur = newBlur;
-
-			this.updateTransition();
-			this.stopBlur();
-			$(this.selector).css({
-				'-webkit-filter': 'blur(' + newBlur + 'px)',
-				'-moz-filter': 'blur(' + newBlur + 'px)',
-				'-o-filter': 'blur(' + newBlur + 'px)',
-				'-ms-filter': 'blur(' + newBlur + 'px)',
-				'filter': 'blur(' + newBlur + 'px)'
-			});
-		}
-	}, {
-		key: 'backdropBlur',
-		get: function get() {
-			return this._backdropBlur;
-		},
-		set: function set(newBackdropBlur) {
-			this._backdropBlur = newBackdropBlur;
-
-			this.updateTransition();
-			this.stopBackdropBlur();
-			$(this.selector).css({
-				'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
-			});
-		}
-
-		// ZIndex
-
-	}, {
-		key: 'zIndex',
-		get: function get() {
-			return this._zIndex;
-		},
-		set: function set(newZIndex) {
-
-			this._zIndex = newZIndex;
-			$(this.selector).css({
-				'z-index': newZIndex
-			});
-		}
-
-		// Position
-
-	}, {
-		key: 'position',
-		get: function get() {
-			return this._position;
-		},
-		set: function set(newPosition) {
-			this._position = newPosition;
-			$(this.selector).css({
-				'position': newPosition
-			});
-		}
-
-		// Overflow
-
-	}, {
-		key: 'overflow',
-		get: function get() {
-			return this._overflow;
-		},
-		set: function set(newOverflow) {
-			this._overflow = newOverflow;
-
-			$(this.selector).css({
-				'overflow': newOverflow
-			});
-		}
-
-		// Cursor
-
-	}, {
-		key: 'cursor',
-		get: function get() {
-			return this._cursor;
-		},
-		set: function set(newCursor) {
-			this._cursor = newCursor;
-
-			$(this.selector).css({
-				'cursor': newCursor
-			});
-
-			$(this.selector).find('*').css({
-				'cursor': newCursor
-			});
+				var thisView = this;
+				this.clipPathSetTimer = setTimeout(function () {
+					thisView.animation = 'none';
+					$(thisView.selector).css({
+						'clip-path': newClipPath.polygonString,
+						'-webkit-clip-path': newClipPath.polygonString
+					});
+				}, timeoutDuration);
+			}
 		}
 	}, {
 		key: 'clickable',

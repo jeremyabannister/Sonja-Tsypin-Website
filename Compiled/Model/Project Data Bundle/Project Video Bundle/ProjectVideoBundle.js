@@ -6,4 +6,5 @@ var ProjectVideoBundle = function ProjectVideoBundle() {
 	_classCallCheck(this, ProjectVideoBundle);
 
 	this.vimeoID = '';
+	this.vimeoHeightToWidth = 1;
 };

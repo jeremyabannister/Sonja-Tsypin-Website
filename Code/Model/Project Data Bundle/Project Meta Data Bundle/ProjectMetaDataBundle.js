@@ -7,6 +7,11 @@ class ProjectMetaDataBundle {
 		this.director = ''
 		this.movieType = ''
 		this.year = ''
+		
+		this.description = ''
+		
+		
+		this.noVideoMessgae = null
 	}
 
 

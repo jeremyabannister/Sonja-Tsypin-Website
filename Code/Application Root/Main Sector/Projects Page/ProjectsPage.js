@@ -441,6 +441,7 @@ class ProjectsPage extends JABView {
 		dataBundle.director = 'SONJA TSYPIN'
 		dataBundle.movieType = 'SHORT'
 		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Jessica Kay Park, John Patrick Maddock</span><br/>A wildly popular online personality who hasn't left her apartment in four years has her tiny world turned upside down when a stranger forces himself into her peculiar space."
 		
 		dataBundle.vimeoId = '167824606'
 		dataBundle.vimeoHeightToWidth = (1.0/2.35)
@@ -450,10 +451,41 @@ class ProjectsPage extends JABView {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
 		}
-		dataBundle.mainStillIndex = 3
+		dataBundle.mainStillIndex = 2
 		
 
 		dataBundles.push(dataBundle)
+		
+		
+		
+		
+		
+		
+		
+		
+		// Birth Day
+		dataBundle = new ProjectDataBundle()
+		dataBundle.id = 'birthday'
+		dataBundle.title = 'BIRTH DAY'
+		dataBundle.director = 'EVA EVANS'
+		dataBundle.movieType = 'SHORT'
+		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory."
+		
+		dataBundle.vimeoId = '172178428'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
+		
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
+		for (var i = 0; i < 2; i++) {
+			var index = i + 1
+			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
+		}
+		dataBundle.mainStillIndex = 0
+		
+
+		dataBundles.push(dataBundle)
+		
+		
 		
 		
 		
@@ -466,6 +498,8 @@ class ProjectsPage extends JABView {
 		dataBundle.director = 'AUDREY BANKS'
 		dataBundle.movieType = 'FEATURE'
 		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Moni Bell, Eva Evans, Gabriel Sommer, Joanna Janetakis</span><br/>A man who goes by 'Sir' is holding a mansion full of beautiful women prisoner when a new arrival threatens his power."
+		dataBundle.noVideoMessage = 'TRAILER COMING SOON'
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
@@ -479,20 +513,44 @@ class ProjectsPage extends JABView {
 		
 		
 		
-		
-		
-		// Birth Day
+		// Theodore
 		dataBundle = new ProjectDataBundle()
-		dataBundle.id = 'birthday'
-		dataBundle.title = 'BIRTH DAY'
-		dataBundle.director = 'EVA EVANS'
+		dataBundle.id = 'theodore'
+		dataBundle.title = 'THEODORE'
+		dataBundle.director = 'ONDINE VI\u00d1AO'
 		dataBundle.movieType = 'SHORT'
-		dataBundle.year = '2016'
+		dataBundle.year = '2015'
+		dataBundle.description = "<span style='color:white'>Starring Camillia Hartman, Dexter Zimet</span><br/>A romantic rural retreat takes a terrifying turn after a local offers some chilling advice."
 		
-		dataBundle.vimeoId = '167678674'
+		dataBundle.vimeoId = '139578681'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/4/'
+		for (var i = 0; i < 1; i++) {
+			var index = i + 1
+			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
+		}
+		dataBundle.mainStillIndex = 0
+		
+
+		dataBundles.push(dataBundle)
+		
+		
+		
+		
+		// Found Guilty
+		dataBundle = new ProjectDataBundle()
+		dataBundle.id = 'foundGuilty'
+		dataBundle.title = 'FOUND GUILTY'
+		dataBundle.director = 'SONJA TSYPIN'
+		dataBundle.movieType = 'SHORT'
+		dataBundle.year = '2014'
+		dataBundle.description = '<span style="color:white">Starring Tuva Hildebrand</span><br/>In a short film remake of the famous murder scene from Alfred Hitchcock\'s "Blackmail," a woman must come to terms with herself after commiting an unthinkable crime out of self-defense.'
+		
+		dataBundle.vimeoId = '99426346'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
+		
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/5/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -506,26 +564,29 @@ class ProjectsPage extends JABView {
 		
 		
 		
-		// Powder Room Duplicate
+		
+		// As Long As I Have You
 		dataBundle = new ProjectDataBundle()
-		dataBundle.id = 'powderRoom'
-		dataBundle.title = 'POWDER ROOM'
-		dataBundle.director = 'SONJA TSYPIN'
-		dataBundle.movieType = 'SHORT'
+		dataBundle.id = 'asLongAsIHaveYou'
+		dataBundle.title = 'AS LONG AS I HAVE YOU'
+		dataBundle.director = 'ONDINE VI\u00d1AO'
+		dataBundle.movieType = 'MUSIC VIDEO'
 		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Annalisa Plumb</span><br/>An experimental video to the track 'As Long As I Have You' by Elvis Presley."
 		
-		dataBundle.vimeoId = '167824606'
-		dataBundle.vimeoHeightToWidth = (1.0/2.35)
+		dataBundle.vimeoId = '152982438'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
-		for (var i = 0; i < 4; i++) {
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
+		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
 		}
-		dataBundle.mainStillIndex = 1
+		dataBundle.mainStillIndex = 0
 		
 
 		dataBundles.push(dataBundle)
+		
 		
 		
 

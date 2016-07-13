@@ -7,7 +7,7 @@ class MainSector extends JABView {
 		// State
 		this.state = {
 			currentlyActive: false,
-			pageIndex: 1,
+			pageIndex: 0,
 			projectOpen: false,
 			closingProject: false,
 			projectDataBundle: null,
@@ -88,7 +88,7 @@ class MainSector extends JABView {
 		this.addReelPage()
 		this.addProjectPage()
 		
-		this.addComingSoonView()
+		// this.addComingSoonView()
 		
 	}
 	
@@ -144,8 +144,8 @@ class MainSector extends JABView {
 		
 		
 		
-		this.configureComingSoonView()
-		this.positionComingSoonView()
+		// this.configureComingSoonView()
+		// this.positionComingSoonView()
 
 	}
 	
@@ -446,6 +446,7 @@ class MainSector extends JABView {
 				projectOpen: false,
 				closingProject: true
 			}
+			this.projectPage.vimeoView.pause()
 			var mainSector = this
 			this.animatedUpdate(null, function() {
 				mainSector.state = {closingProject: false}

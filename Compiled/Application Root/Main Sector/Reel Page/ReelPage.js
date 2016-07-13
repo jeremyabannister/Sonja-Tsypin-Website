@@ -31,8 +31,8 @@ var ReelPage = function (_JABView) {
 
 		// Parameters
 		_this.reservedTopBuffer = 0;
-		_this.topBufferForVimeoView = 20;
-		_this.bottomBufferForVimeoView = 60;
+		_this.topBufferForVimeoView = 58;
+		_this.bottomBufferForVimeoView = 20;
 
 		// UI
 		_this.vimeoView = new JABVimeoView('VimeoView');

@@ -24,11 +24,11 @@ var Laboratory = function (_JABView) {
 		_this.big = false;
 
 		// UI
-		_this.view1 = new UILabel();
+		_this.view1 = new UILabel('View1');
 		_this.view2 = new JABView('View2', _this);
 
-		_this.defaultTimeInterval = 1000;
-		_this.specificTimeIntervals = [26];
+		_this.defaultTimeInterval = 2000;
+		_this.specificTimeIntervals = [2000, 1000]; // First one specifies start delay and is necessary
 
 		_this.numberOfExperiments = 0; // Actual value is set in runExperiment which is run on the next line
 
@@ -104,39 +104,53 @@ var Laboratory = function (_JABView) {
 	}, {
 		key: 'configureView1',
 		value: function configureView1() {
-			this.view1.red();
-			this.view1.text = 'SONJA TSYPIN';
-			this.view1.fontFamily = 'siteFont';
-			this.view1.positionDuration = 1000;
+
+			var view = this.view1;
+			view.red();
+
+			view.shapeDuration = 800;
 		}
 	}, {
 		key: 'positionView1',
 		value: function positionView1() {
 
-			this.view1.width = 'auto';
-			this.view1.height = 'auto';
+			var view = this.view1;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = 100;
+			newFrame.size.height = 100;
+
+			newFrame.origin.x = 300;
+			newFrame.origin.y = 100;
+
+			view.frame = newFrame;
+
+			view.clipPath = new Polygon([0, 0, 100, 90, 40, 60, 0, 12]);
 		}
 	}, {
 		key: 'configureView2',
 		value: function configureView2() {
 
-			this.view2.blue();
+			var view = this.view2;
+			view.blue();
+			// view.shapeDuration = 800
 		}
 	}, {
 		key: 'positionView2',
 		value: function positionView2() {
 
+			var view = this.view2;
 			var newFrame = new CGRect();
 
-			newFrame.size.width = 127;
-			newFrame.size.height = 20;
+			newFrame.size.width = 100;
+			newFrame.size.height = 100;
 
-			newFrame.origin.x = 0;
-			newFrame.origin.y = 40;
+			newFrame.origin.x = 600;
+			newFrame.origin.y = 200;
 
-			this.view2.frame = newFrame;
+			view.frame = newFrame;
 
-			console.log(this.view1.font.sizeOfString(this.view1.text));
+			// view.clipPath = new Polygon([0, 0, 40, 30, 87, 0, 9, 100])
 		}
 
 		//
@@ -152,15 +166,33 @@ var Laboratory = function (_JABView) {
 		key: 'runExperiment',
 		value: function runExperiment(experimentNumber) {
 
+			var view1 = this.view1;
+			var view2 = this.view2;
+
 			this.numberOfExperiments = 3;
-			console.log("<<<<<<<<<< Launching Experiment #" + experimentNumber + ' >>>>>>>>>>');
+			console.log('<<<<<<<<<< Launching Experiment #' + experimentNumber + ' >>>>>>>>>>');
 
-			if (experimentNumber == 1) {} else if (experimentNumber == 2) {
+			if (experimentNumber == 1) {
 
-				this.view1.width = 300;
-				this.view1.x += 500;
-			} else if (experimentNumber == 3) {}
+				view1.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100]);
+				// view2.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100])
+			} else if (experimentNumber == 2) {
+
+				view1.clipPath = new Polygon([0, 0, 9, 0, 100, 100, 0, 100]);
+				// view2.clipPath = new Polygon([0, 90, 50, 0, 23, 16, 40, 100])
+			} else if (experimentNumber == 3) {
+
+				view1.clipPath = new Polygon([0, 0, 70, 0, 100, 100, 0, 100]);
+				// view2.clipPath = new Polygon([0, 94, 15, 47, 0, 0, 100, 100])
+			}
+
+			console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>');
 		}
+
+		// @keyframes test {0% {-webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% {-webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);}}
+
+		// @keyframes View1---Laboratory---ApplicationRoot { 0% { clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px); -webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% { clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px); -webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);} }
+
 	}]);
 
 	return Laboratory;

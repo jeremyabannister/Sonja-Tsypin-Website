@@ -68,6 +68,37 @@ class ProjectDataBundle {
 		this.metaDataBundle.year = newYear
 		this.metaDataBundle = this.metaDataBundle
 	}
+	
+	
+	// Description
+	get description () {
+		return this.metaDataBundle.description
+	}
+	
+	set description (newDescription) {
+		this.metaDataBundle.description = newDescription
+		this.metaDataBundle = this.metaDataBundle
+	}
+	
+	
+	
+	
+	// No Video Message
+	get noVideoMessage () {
+		return this.metaDataBundle.noVideoMessage
+	}
+	
+	set noVideoMessage (newNoVideoMessage) {
+		this.metaDataBundle.noVideoMessage = newNoVideoMessage
+		this.metaDataBundle = this.metaDataBundle
+	}
+	
+	
+	
+	
+	
+	
+	
 
 
 
