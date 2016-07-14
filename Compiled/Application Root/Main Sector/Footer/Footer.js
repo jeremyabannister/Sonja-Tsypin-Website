@@ -107,7 +107,7 @@ var Footer = function (_JABView) {
 
 			var view = this.copyrightLabel;
 
-			view.text = 'SONJA TSYPIN <span style=\'color:ffff00\'>©</span> 2016';
+			view.text = 'SONJA TSYPIN <span style=\'color:ffff00\'>\u00a9</span> 2016';
 			view.textColor = 'white';
 			view.fontFamily = 'siteFont';
 			view.fontWeight = 'bold';

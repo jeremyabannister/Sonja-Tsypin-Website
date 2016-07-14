@@ -34,8 +34,6 @@ var ProjectsPage = function (_JABView) {
 			queuedInfoTab: null
 		};
 
-		_this.scrollFinishTimer;
-
 		// Parameters
 		_this.parameters = {
 			reservedTopBuffer: 0,
@@ -45,6 +43,7 @@ var ProjectsPage = function (_JABView) {
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
 			bottomBufferForGrid: 50,
+			heightOfProjectInfoTabsAsFractionOfProjectPaneHeight: 0.5, // Relative to height of project panes, set below
 
 			gridAnimationDuration: 250,
 			gridAnimationEasingFunction: 'ease-in-out',
@@ -52,17 +51,27 @@ var ProjectsPage = function (_JABView) {
 			truePositionsOfProjectPanes: []
 		};
 
+		// Timers
+		_this.scrollFinishTimer;
+
 		// UI
+
 		_this.projectInfoTab = new ProjectInfoTab('ProjectInfoTab');
 		_this.projectInfoTabBackup = new ProjectInfoTab('ProjectInfoTabBackup');
+
 		_this.projectPanes = [];
 		for (var i = 0; i < _this.state.projectDataBundles.length; i++) {
 			_this.projectPanes.push(new ProjectImageView());
 			_this.parameters.truePositionsOfProjectPanes.push(new CGRect());
 		}
+
+		_this.projectInfoTabs = [];
+		for (var i = 0; i < _this.state.projectDataBundles.length; i++) {
+			_this.projectInfoTabs.push(new ProjectInfoTab());
+		}
+
 		_this.footer = new Footer('Footer');
 
-		_this.state.queuedInfoTab = _this.projectInfoTab;
 		return _this;
 	}
 
@@ -76,6 +85,8 @@ var ProjectsPage = function (_JABView) {
 			_get(Object.getPrototypeOf(ProjectsPage.prototype), 'init', this).call(this);
 
 			this.startEventListeners();
+
+			this.state.queuedInfoTab = this.projectInfoTab;
 		}
 
 		//
@@ -99,9 +110,11 @@ var ProjectsPage = function (_JABView) {
 		key: 'addAllUI',
 		value: function addAllUI() {
 
-			this.addProjectInfoTab();
-			this.addProjectInfoTabBackup();
+			// this.addProjectInfoTab()
+			// this.addProjectInfoTabBackup()
+
 			this.addProjectPanes();
+			this.addProjectInfoTabs();
 			this.addFooter();
 		}
 	}, {
@@ -122,6 +135,13 @@ var ProjectsPage = function (_JABView) {
 			}
 		}
 	}, {
+		key: 'addProjectInfoTabs',
+		value: function addProjectInfoTabs() {
+			for (var i = 0; i < this.projectInfoTabs.length; i++) {
+				this.addSubview(this.projectInfoTabs[i]);
+			}
+		}
+	}, {
 		key: 'addFooter',
 		value: function addFooter() {
 			this.addSubview(this.footer);
@@ -134,14 +154,17 @@ var ProjectsPage = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(ProjectsPage.prototype), 'updateAllUI', this).call(this);
 
-			this.configureProjectInfoTab();
-			this.positionProjectInfoTab();
+			// this.configureProjectInfoTab()
+			// this.positionProjectInfoTab()
 
-			this.configureProjectInfoTabBackup();
-			this.positionProjectInfoTabBackup();
+			// this.configureProjectInfoTabBackup()
+			// this.positionProjectInfoTabBackup()
 
 			this.configureProjectPanes();
 			this.positionProjectPanes();
+
+			this.configureProjectInfoTabs();
+			this.positionProjectInfoTabs();
 
 			this.configureFooter();
 			this.positionFooter();
@@ -225,7 +248,6 @@ var ProjectsPage = function (_JABView) {
 				view.opacity = 1;
 
 				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
-					console.log('here');
 					// view.state.leftHanded = true
 				} else {
 					view.state.leftHanded = false;
@@ -268,7 +290,7 @@ var ProjectsPage = function (_JABView) {
 			view.frame = newFrame;
 		}
 
-		// Project Rows
+		// Project Panes
 
 	}, {
 		key: 'configureProjectPanes',
@@ -319,11 +341,11 @@ var ProjectsPage = function (_JABView) {
 						if (i >= this.state.selectedProjectIndex - this.state.selectedProjectIndex % this.parameters.numberOfColumns) {
 							if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
 								if (i % this.parameters.numberOfColumns == this.state.selectedProjectIndex % this.parameters.numberOfColumns + 1) {
-									verticalAdjustment = newFrame.size.height / 2;
+									verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows;
 								}
 							} else {
 								if (i % this.parameters.numberOfColumns == this.state.selectedProjectIndex % this.parameters.numberOfColumns - 1) {
-									verticalAdjustment = newFrame.size.height / 2;
+									verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows;
 								}
 							}
 						}
@@ -339,6 +361,61 @@ var ProjectsPage = function (_JABView) {
 					truePosition.y -= verticalAdjustment;
 					this.parameters.truePositionsOfProjectPanes[i] = truePosition;
 				}
+			}
+		}
+
+		// Project Info Tabs
+
+	}, {
+		key: 'configureProjectInfoTabs',
+		value: function configureProjectInfoTabs() {
+
+			for (var i = 0; i < this.projectInfoTabs.length; i++) {
+
+				var view = this.projectInfoTabs[i];
+				var correspondingProjectPane = this.projectPanes[i];
+
+				if (!this.subviewIsBelowSubviews(view, this.projectPanes)) {
+					// This should only be true the first time
+					this.pushSubviewToBack(view);
+				}
+
+				view.state.projectDataBundle = this.state.projectDataBundles[i];
+				view.configureDuration = this.parameters.gridAnimationDuration;
+
+				if (this.state.selectedProject == correspondingProjectPane) {
+					view.opacity = 1;
+				} else {
+					view.opacity = 0;
+				}
+
+				view.updateAllUI();
+			}
+		}
+	}, {
+		key: 'positionProjectInfoTabs',
+		value: function positionProjectInfoTabs() {
+
+			for (var i = 0; i < this.projectInfoTabs.length; i++) {
+
+				var view = this.projectInfoTabs[i];
+				var correspondingProjectPane = this.projectPanes[i];
+				var correspondingTruePosition = this.parameters.truePositionsOfProjectPanes[i];
+
+				var newFrame = new CGRect();
+
+				newFrame.size.width = correspondingTruePosition.width;
+				newFrame.size.height = correspondingTruePosition.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight;
+
+				if (i % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
+					newFrame.origin.x = correspondingTruePosition.x - newFrame.size.width - this.parameters.betweenBufferForGridColumns;
+				} else {
+					newFrame.origin.x = correspondingTruePosition.right + this.parameters.betweenBufferForGridColumns;
+				}
+
+				newFrame.origin.y = correspondingTruePosition.y;
+
+				view.frame = newFrame;
 			}
 		}
 
@@ -590,8 +667,6 @@ var ProjectsPage = function (_JABView) {
 		key: 'viewWasClicked',
 		value: function viewWasClicked(view) {
 
-			console.log('clicked!!!!!!!!!!!!!');
-
 			if (this.state.selectedProject != null) {
 				if (view != this.state.selectedProject) {
 					// If a project is currently open and now we need to open a different one
@@ -599,8 +674,8 @@ var ProjectsPage = function (_JABView) {
 						selectedProject: view,
 						selectedProjectIndex: this.projectPanes.indexOf(view)
 					};
-					this.switchCurrentInfoTab();
-					this.positionCurrentInfoTab();
+					// this.switchCurrentInfoTab()
+					// this.positionCurrentInfoTab()
 					this.animatedUpdate();
 				} else {
 					// If the currently open project has just been clicked on (close it)
@@ -616,8 +691,8 @@ var ProjectsPage = function (_JABView) {
 					selectedProject: view,
 					selectedProjectIndex: this.projectPanes.indexOf(view)
 				};
-				this.switchCurrentInfoTab();
-				this.positionCurrentInfoTab();
+				// this.switchCurrentInfoTab()
+				// this.positionCurrentInfoTab()
 				this.animatedUpdate();
 			}
 		}

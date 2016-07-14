@@ -19,11 +19,6 @@ class ProjectsPage extends JABView {
 			currentInfoTab: null,
 			queuedInfoTab: null,
 		}
-		
-		
-		
-		
-		this.scrollFinishTimer
 
 		
 		// Parameters
@@ -35,6 +30,7 @@ class ProjectsPage extends JABView {
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
 			bottomBufferForGrid: 50,
+			heightOfProjectInfoTabsAsFractionOfProjectPaneHeight: 0.5, // Relative to height of project panes, set below
 			
 			gridAnimationDuration: 250,
 			gridAnimationEasingFunction: 'ease-in-out',
@@ -43,18 +39,36 @@ class ProjectsPage extends JABView {
 		}
 		
 		
+		// Timers
+		this.scrollFinishTimer
+		
+		
+		
 		// UI
+		
+		
 		this.projectInfoTab = new ProjectInfoTab('ProjectInfoTab')
 		this.projectInfoTabBackup = new ProjectInfoTab('ProjectInfoTabBackup')
+		
+		
+		
+		
 		this.projectPanes = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
 			this.projectPanes.push(new ProjectImageView())
 			this.parameters.truePositionsOfProjectPanes.push(new CGRect())
 		}
+		
+		
+		this.projectInfoTabs = []
+		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
+			this.projectInfoTabs.push(new ProjectInfoTab())
+		}
+		
+		
+		
 		this.footer = new Footer('Footer')
 		
-		
-		this.state.queuedInfoTab = this.projectInfoTab
 	}
 	
 	
@@ -66,6 +80,10 @@ class ProjectsPage extends JABView {
 		super.init()
 		
 		this.startEventListeners()
+		
+		
+		this.state.queuedInfoTab = this.projectInfoTab
+		
 	}
 	
 	
@@ -85,9 +103,12 @@ class ProjectsPage extends JABView {
 	// Add
 	addAllUI () {
 		
-		this.addProjectInfoTab()
-		this.addProjectInfoTabBackup()
+		// this.addProjectInfoTab()
+		// this.addProjectInfoTabBackup()
+		
+		
 		this.addProjectPanes()
+		this.addProjectInfoTabs()
 		this.addFooter()
 		
 	}
@@ -102,9 +123,20 @@ class ProjectsPage extends JABView {
 		this.addSubview(this.projectInfoTabBackup)
 	}
 	
+	
+	
+	
+	
+	
 	addProjectPanes () {
 		for (var i = 0; i < this.projectPanes.length; i++) {
 			this.addSubview(this.projectPanes[i])
+		}
+	}
+	
+	addProjectInfoTabs () {
+		for (var i = 0; i < this.projectInfoTabs.length; i++) {
+			this.addSubview(this.projectInfoTabs[i])
 		}
 	}
 	
@@ -120,15 +152,20 @@ class ProjectsPage extends JABView {
 		super.updateAllUI()
 		
 		
-		this.configureProjectInfoTab()
-		this.positionProjectInfoTab()
+		// this.configureProjectInfoTab()
+		// this.positionProjectInfoTab()
 		
-		this.configureProjectInfoTabBackup()
-		this.positionProjectInfoTabBackup()
+		// this.configureProjectInfoTabBackup()
+		// this.positionProjectInfoTabBackup()
 		
-
+		
+		
+		
 		this.configureProjectPanes()
 		this.positionProjectPanes()
+		
+		this.configureProjectInfoTabs()
+		this.positionProjectInfoTabs()
 		
 		this.configureFooter()
 		this.positionFooter()
@@ -214,7 +251,6 @@ class ProjectsPage extends JABView {
 			view.opacity = 1
 			
 			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
-				console.log('here')
 				// view.state.leftHanded = true
 			} else {
 				view.state.leftHanded = false
@@ -263,9 +299,12 @@ class ProjectsPage extends JABView {
 	
 	
 	
+	
+
+	
 
 
-	// Project Rows
+	// Project Panes
 	configureProjectPanes () {
 
 		for (var i = 0; i < this.projectPanes.length; i++) {
@@ -314,11 +353,11 @@ class ProjectsPage extends JABView {
 					if (i >= this.state.selectedProjectIndex - (this.state.selectedProjectIndex % this.parameters.numberOfColumns)) {
 						if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
 							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) + 1) {
-								verticalAdjustment = newFrame.size.height/2
+								verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
 							}
 						} else {
 							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) - 1) {
-								verticalAdjustment = newFrame.size.height/2
+								verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
 							}
 						}
 					}
@@ -337,6 +376,65 @@ class ProjectsPage extends JABView {
 				this.parameters.truePositionsOfProjectPanes[i] = truePosition
 				
 			}
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	// Project Info Tabs
+	configureProjectInfoTabs () {
+		
+		for (var i = 0; i < this.projectInfoTabs.length; i++) {
+			
+			var view = this.projectInfoTabs[i]
+			var correspondingProjectPane = this.projectPanes[i]
+			
+			if (!this.subviewIsBelowSubviews(view, this.projectPanes)) { // This should only be true the first time
+				this.pushSubviewToBack(view)
+			}
+			
+			view.state.projectDataBundle = this.state.projectDataBundles[i]
+			view.configureDuration = this.parameters.gridAnimationDuration
+			
+			if (this.state.selectedProject == correspondingProjectPane) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
+			
+			view.updateAllUI()
+		}
+		
+	}
+	
+	positionProjectInfoTabs () {
+		
+		for (var i = 0; i < this.projectInfoTabs.length; i++) {
+			
+			var view = this.projectInfoTabs[i]
+			var correspondingProjectPane = this.projectPanes[i]
+			var correspondingTruePosition = this.parameters.truePositionsOfProjectPanes[i]
+			
+			var newFrame = new CGRect()
+								
+			newFrame.size.width = correspondingTruePosition.width
+			newFrame.size.height = correspondingTruePosition.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight
+			
+			
+			if (i % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
+				newFrame.origin.x = correspondingTruePosition.x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
+			} else {
+				newFrame.origin.x = correspondingTruePosition.right + this.parameters.betweenBufferForGridColumns
+			}
+			
+			newFrame.origin.y = correspondingTruePosition.y
+								
+			view.frame = newFrame
+			
 		}
 		
 	}
@@ -624,8 +722,6 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
-		console.log('clicked!!!!!!!!!!!!!')
-		
 		if (this.state.selectedProject != null) {
 			if (view != this.state.selectedProject) {
 				// If a project is currently open and now we need to open a different one
@@ -633,8 +729,8 @@ class ProjectsPage extends JABView {
 					selectedProject: view,
 					selectedProjectIndex: this.projectPanes.indexOf(view)
 				}
-				this.switchCurrentInfoTab()
-				this.positionCurrentInfoTab()
+				// this.switchCurrentInfoTab()
+				// this.positionCurrentInfoTab()
 				this.animatedUpdate()
 			} else {
 				// If the currently open project has just been clicked on (close it)
@@ -650,8 +746,8 @@ class ProjectsPage extends JABView {
 				selectedProject: view,
 				selectedProjectIndex: this.projectPanes.indexOf(view),
 			}
-			this.switchCurrentInfoTab()
-			this.positionCurrentInfoTab()
+			// this.switchCurrentInfoTab()
+			// this.positionCurrentInfoTab()
 			this.animatedUpdate()
 		}
 	}

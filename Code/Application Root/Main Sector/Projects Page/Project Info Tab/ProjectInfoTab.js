@@ -46,6 +46,21 @@ class ProjectInfoTab extends JABView {
 	}
 	
 	
+	//
+	// Getters and Setters
+	//
+	
+	get titleFontSize () {
+		if (sizeClass == 'xs') {
+			return 14
+		} else if (sizeClass == 's') {
+			return 16
+		} else {
+			return 20
+		}
+	}
+	
+	
 	
 	
 	//
@@ -295,6 +310,7 @@ class ProjectInfoTab extends JABView {
 	// Title Label
 	configureTitleLabel () {
 		
+		console.log('configuring', sizeClass, this.titleFontSize)
 		var view = this.titleLabel
 		var dataBundle = this.state.projectDataBundle
 		view.positionDuration = 0
@@ -302,7 +318,7 @@ class ProjectInfoTab extends JABView {
 		if (dataBundle != null) {
 			view.text = this.state.projectDataBundle.title
 			view.fontFamily = 'siteFont'
-			view.fontSize = 20
+			view.fontSize = this.titleFontSize
 			view.letterSpacing = 1.5
 			view.textColor = 'white'
 		}
@@ -343,7 +359,7 @@ class ProjectInfoTab extends JABView {
 		if (dataBundle != null) {
 			view.text = 'dir. ' + this.state.projectDataBundle.director + ' | ' + this.state.projectDataBundle.movieType + ' | ' + this.state.projectDataBundle.year
 			view.fontFamily = 'siteFont'
-			view.fontSize = 13
+			view.fontSize = this.titleFontSize * (13.0/20.0)
 			view.letterSpacing = 1.5
 			view.textColor = '#ffffff'
 		}
@@ -385,7 +401,7 @@ class ProjectInfoTab extends JABView {
 			view.text = this.state.projectDataBundle.description
 		}
 		view.fontFamily = 'siteFont'
-		view.fontSize = 11
+		view.fontSize = this.titleFontSize * (11.0/20.0)
 		view.hyphenate = true
 		view.positionDuration = 0
 		
@@ -404,6 +420,9 @@ class ProjectInfoTab extends JABView {
 		var newFrame = new CGRect()
 		
 		newFrame.size.width = 300
+		if (this.playButton.x - this.titleLabel.x - 20 < newFrame.size.width) {
+			newFrame.size.width = this.playButton.x - this.titleLabel.x - 20
+		}
 		var size = view.font.sizeOfString(view.font.text, newFrame.size.width)
 							
 		

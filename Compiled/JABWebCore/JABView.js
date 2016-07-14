@@ -280,6 +280,24 @@ var JABView = function () {
 
 			return true;
 		}
+	}, {
+		key: 'subviewIsBelowSubview',
+		value: function subviewIsBelowSubview(subview1, subview2) {
+			return this.indexOfSubview(subview1) < this.indexOfSubview(subview2);
+		}
+	}, {
+		key: 'subviewIsBelowSubviews',
+		value: function subviewIsBelowSubviews(subview, subviews) {
+			if (subviews instanceof Array) {
+				for (var i = 0; i < subviews.length; i++) {
+					if (!this.subviewIsBelowSubview(subview, subviews[i])) {
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
 
 		//
 		// Animation
