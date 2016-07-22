@@ -315,6 +315,10 @@ var MainSector = function (_JABView) {
 			var view = this.projectPage;
 			var newFrame = this.bounds;
 
+			if (!this.state.currentlyActive) {
+				newFrame.origin.y += 100;
+			}
+
 			view.frame = newFrame;
 		}
 
@@ -381,6 +385,21 @@ var MainSector = function (_JABView) {
 				this.insertSubviewAboveSubviews(page, otherPages);
 			}
 		}
+	}, {
+		key: 'closeCurrentlyOpenProject',
+		value: function closeCurrentlyOpenProject() {
+			this.parent.mainSectorWantsToCloseProject(this);
+			this.state = {
+				projectOpen: false,
+				closingProject: true
+			};
+			this.projectPage.vimeoView.pause();
+			var mainSector = this;
+			this.animatedUpdate(null, function () {
+				mainSector.state = { closingProject: false };
+				mainSector.animatedUpdate();
+			});
+		}
 
 		//
 		// Delegate
@@ -392,17 +411,7 @@ var MainSector = function (_JABView) {
 		key: 'viewWasClicked',
 		value: function viewWasClicked(view) {
 			if (view == this.projectPage) {
-				this.parent.mainSectorWantsToCloseProject(this);
-				this.state = {
-					projectOpen: false,
-					closingProject: true
-				};
-				this.projectPage.vimeoView.pause();
-				var mainSector = this;
-				this.animatedUpdate(null, function () {
-					mainSector.state = { closingProject: false };
-					mainSector.animatedUpdate();
-				});
+				this.closeCurrentlyOpenProject();
 			}
 		}
 

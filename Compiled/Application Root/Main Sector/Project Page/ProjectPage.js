@@ -28,11 +28,14 @@ var ProjectPage = function (_JABView) {
 		_this.parameters = {
 			reservedTopBuffer: 0,
 			vimeoViewMinimumDistanceFromHeader: 40,
-			vimeoViewVerticalAdjustment: -4
+			vimeoViewVerticalAdjustment: -4,
+
+			bufferBetweenVimeoViewAndTitleLabel: 10
 		};
 
 		// UI
 		_this.vimeoView = new JABVimeoView('VimeoView');
+		_this.titleLabel = new UILabel('TitleLabel');
 
 		return _this;
 	}
@@ -57,11 +60,17 @@ var ProjectPage = function (_JABView) {
 		key: 'addAllUI',
 		value: function addAllUI() {
 			this.addVimeoView();
+			this.addTitleLabel();
 		}
 	}, {
 		key: 'addVimeoView',
 		value: function addVimeoView() {
 			this.addSubview(this.vimeoView);
+		}
+	}, {
+		key: 'addTitleLabel',
+		value: function addTitleLabel() {
+			this.addSubview(this.titleLabel);
 		}
 
 		// Update
@@ -73,6 +82,9 @@ var ProjectPage = function (_JABView) {
 
 			this.configureVimeoView();
 			this.positionVimeoView();
+
+			this.configureTitleLabel();
+			this.positionTitleLabel();
 		}
 
 		// Vimeo View
@@ -88,6 +100,8 @@ var ProjectPage = function (_JABView) {
 			} else {
 				view.vimeoId = null;
 			}
+
+			view.loadingGif = new LoadingGif();
 		}
 	}, {
 		key: 'positionVimeoView',
@@ -114,6 +128,43 @@ var ProjectPage = function (_JABView) {
 			view.frame = newFrame;
 		}
 
+		// Title Label
+
+	}, {
+		key: 'configureTitleLabel',
+		value: function configureTitleLabel() {
+
+			var view = this.titleLabel;
+			var dataBundle = this.state.projectDataBundle;
+
+			view.positionDuration = 0;
+
+			if (dataBundle != null) {
+
+				view.text = dataBundle.title;
+				view.fontFamily = 'siteFont';
+				view.fontSize = 20;
+				view.textColor = 'white';
+				view.letterSpacing = 2;
+			}
+		}
+	}, {
+		key: 'positionTitleLabel',
+		value: function positionTitleLabel() {
+
+			var view = this.titleLabel;
+			var newFrame = new CGRect();
+			var size = view.font.sizeOfString(view.text);
+
+			newFrame.size.width = size.width;
+			newFrame.size.height = size.height;
+
+			newFrame.origin.x = this.vimeoView.x;
+			newFrame.origin.y = this.vimeoView.bottom + this.parameters.bufferBetweenVimeoViewAndTitleLabel;
+
+			view.frame = newFrame;
+		}
+
 		//
 		// Event Listeners
 		//
@@ -126,6 +177,13 @@ var ProjectPage = function (_JABView) {
 		// Delegate
 		//
 
+		// JABVimeoView
+
+	}, {
+		key: 'vimeoViewDidFinishLoading',
+		value: function vimeoViewDidFinishLoading(vimeoView) {
+			console.log('project finished loading!');
+		}
 	}]);
 
 	return ProjectPage;

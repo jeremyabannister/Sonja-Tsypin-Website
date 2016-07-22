@@ -21,7 +21,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ApplicationRoot).call(this, customId));
 
 		_this.laboratoryEnabled = false;
-		_this.contentWidth = { 'xs': 700, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
+		_this.contentWidth = { 'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
 		_this.state = {
 			headerBackdropHidden: false
 		};
@@ -215,6 +215,8 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			this.header.websiteClosed = this.websiteClosed;
 			this.header.selectedMenuIndex = this.mainSector.state.pageIndex;
 			this.header.configureDuration = 0;
+			this.header.clickable = true;
+
 			this.header.updateAllUI();
 		}
 	}, {
@@ -355,6 +357,17 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		//
 		// Delegate
 		//
+
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+
+			if (view == this.header) {
+				this.mainSector.closeCurrentlyOpenProject();
+			}
+		}
 
 		// Main Sector
 

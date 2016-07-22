@@ -116,7 +116,9 @@ var Header = function (_JABView) {
 			this.menu.selectedIndex = this.selectedMenuIndex;
 
 			this.menu.textColor = 'white';
-			this.menu.fontSize = 12;
+
+			var fontSizes = { 'xs': 11, 's': 16, 'm': 12, 'l': 12, 'xl': 12 };
+			this.menu.fontSize = fontSizes[sizeClass];
 			this.menu.letterSpacing = 1.5;
 			this.menu.fontWeight = 'bold';
 			this.menu.textAlign = 'right';

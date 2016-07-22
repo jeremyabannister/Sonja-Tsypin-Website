@@ -28,7 +28,7 @@ var Laboratory = function (_JABView) {
 		_this.view2 = new JABView('View2', _this);
 
 		_this.defaultTimeInterval = 2000;
-		_this.specificTimeIntervals = [2000, 1000]; // First one specifies start delay and is necessary
+		_this.specificTimeIntervals = [2000]; // First one specifies start delay and is necessary
 
 		_this.numberOfExperiments = 0; // Actual value is set in runExperiment which is run on the next line
 
@@ -107,8 +107,6 @@ var Laboratory = function (_JABView) {
 
 			var view = this.view1;
 			view.red();
-
-			view.shapeDuration = 800;
 		}
 	}, {
 		key: 'positionView1',
@@ -124,8 +122,6 @@ var Laboratory = function (_JABView) {
 			newFrame.origin.y = 100;
 
 			view.frame = newFrame;
-
-			view.clipPath = new Polygon([0, 0, 100, 90, 40, 60, 0, 12]);
 		}
 	}, {
 		key: 'configureView2',
@@ -133,7 +129,6 @@ var Laboratory = function (_JABView) {
 
 			var view = this.view2;
 			view.blue();
-			// view.shapeDuration = 800
 		}
 	}, {
 		key: 'positionView2',
@@ -149,8 +144,6 @@ var Laboratory = function (_JABView) {
 			newFrame.origin.y = 200;
 
 			view.frame = newFrame;
-
-			// view.clipPath = new Polygon([0, 0, 40, 30, 87, 0, 9, 100])
 		}
 
 		//
@@ -169,22 +162,10 @@ var Laboratory = function (_JABView) {
 			var view1 = this.view1;
 			var view2 = this.view2;
 
-			this.numberOfExperiments = 3;
+			this.numberOfExperiments = 1;
 			console.log('<<<<<<<<<< Launching Experiment #' + experimentNumber + ' >>>>>>>>>>');
 
-			if (experimentNumber == 1) {
-
-				view1.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100]);
-				// view2.clipPath = new Polygon([0, 0, 100, 0, 100, 100, 0, 100])
-			} else if (experimentNumber == 2) {
-
-				view1.clipPath = new Polygon([0, 0, 9, 0, 100, 100, 0, 100]);
-				// view2.clipPath = new Polygon([0, 90, 50, 0, 23, 16, 40, 100])
-			} else if (experimentNumber == 3) {
-
-				view1.clipPath = new Polygon([0, 0, 70, 0, 100, 100, 0, 100]);
-				// view2.clipPath = new Polygon([0, 94, 15, 47, 0, 0, 100, 100])
-			}
+			if (experimentNumber == 1) {} else if (experimentNumber == 2) {} else if (experimentNumber == 3) {}
 
 			console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>');
 		}

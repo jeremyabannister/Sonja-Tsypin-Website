@@ -15,7 +15,7 @@ class LoadingGif extends JABView {
 		this.numberOfSpokes = 10
 		this.highlightedSpokeIndex = 0
 		
-		this.gifDuration = 1200
+		this.gifDuration = 1000
 		this.advanceHighlightTimers = []
 		this.cycleCompletedTimer = setTimeout(function() {}, 0)
 		
