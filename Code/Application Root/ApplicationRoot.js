@@ -11,7 +11,7 @@ class ApplicationRoot extends JABApplicationRoot {
 			headerBackdropHidden: false,
 		}
 		
-		this.websiteClosed = false
+		this.websiteClosed = true
 		this.websiteClosedLocked = false
 
 		// Parameters
