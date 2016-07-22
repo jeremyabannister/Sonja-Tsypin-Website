@@ -370,6 +370,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 		if (view == this.header) {
 			this.mainSector.closeCurrentlyOpenProject()
+			this.mainSector.projectsPage.deselectProjects()
 		}
 		
 	}

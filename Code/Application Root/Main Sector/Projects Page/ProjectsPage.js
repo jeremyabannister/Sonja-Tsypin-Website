@@ -14,10 +14,6 @@ class ProjectsPage extends JABView {
 			
 			selectedProject: null,
 			selectedProjectIndex: null,
-			
-			
-			currentInfoTab: null,
-			queuedInfoTab: null,
 		}
 
 		
@@ -46,13 +42,6 @@ class ProjectsPage extends JABView {
 		
 		// UI
 		
-		
-		this.projectInfoTab = new ProjectInfoTab('ProjectInfoTab')
-		this.projectInfoTabBackup = new ProjectInfoTab('ProjectInfoTabBackup')
-		
-		
-		
-		
 		this.projectPanes = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
 			this.projectPanes.push(new ProjectImageView())
@@ -65,9 +54,10 @@ class ProjectsPage extends JABView {
 			this.projectInfoTabs.push(new ProjectInfoTab())
 		}
 		
-		
-		
 		this.footer = new Footer('Footer')
+		
+		
+		this.marginClickDetectors = [new JABView('MarginClickDetectorLeft'), new JABView('MarginClickDetectorRight'), new JABView('MarginClickDetectorTop')]
 		
 	}
 	
@@ -78,11 +68,7 @@ class ProjectsPage extends JABView {
 	
 	init () {
 		super.init()
-		
 		this.startEventListeners()
-		
-		
-		this.state.queuedInfoTab = this.projectInfoTab
 		
 	}
 	
@@ -103,27 +89,12 @@ class ProjectsPage extends JABView {
 	// Add
 	addAllUI () {
 		
-		// this.addProjectInfoTab()
-		// this.addProjectInfoTabBackup()
-		
-		
 		this.addProjectPanes()
 		this.addProjectInfoTabs()
 		this.addFooter()
+		this.addMarginClickDetectors()
 		
 	}
-	
-	
-	
-	addProjectInfoTab () {
-		this.addSubview(this.projectInfoTab)
-	}
-	
-	addProjectInfoTabBackup () {
-		this.addSubview(this.projectInfoTabBackup)
-	}
-	
-	
 	
 	
 	
@@ -145,19 +116,19 @@ class ProjectsPage extends JABView {
 		this.addSubview(this.footer)
 	}
 	
-
+	
+	addMarginClickDetectors () {
+		this.addSubview(this.marginClickDetectors[0])
+		this.addSubview(this.marginClickDetectors[1])
+		this.addSubview(this.marginClickDetectors[2])
+	}
+	
+	
+	
 	
 	// Update
 	updateAllUI () {
 		super.updateAllUI()
-		
-		
-		// this.configureProjectInfoTab()
-		// this.positionProjectInfoTab()
-		
-		// this.configureProjectInfoTabBackup()
-		// this.positionProjectInfoTabBackup()
-		
 		
 		
 		
@@ -170,131 +141,12 @@ class ProjectsPage extends JABView {
 		this.configureFooter()
 		this.positionFooter()
 		
+		
+		
+		this.configureMarginClickDetectors()
+		this.positionMarginClickDetectors()
+		
 	}
-
-	
-	
-	
-	
-	// Project Info Tab
-	configureProjectInfoTab () {
-		
-		
-		var view = this.projectInfoTab
-		
-		view.configureDuration = this.parameters.gridAnimationDuration
-		
-		if (this.state.selectedProject == null || view != this.state.currentInfoTab) {
-			// view.opacity = 0
-		} else {
-			view.state.usedAtLeastOnce = true
-			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
-			view.opacity = 1
-			
-			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
-				// view.state.leftHanded = true
-			} else {
-				view.state.leftHanded = false
-			}
-		}
-		
-		if (!view.state.usedAtLeastOnce) {
-			view.opacity = 0
-		}
-		
-		view.updateAllUI()
-	}
-	
-	positionProjectInfoTab () {
-		var view = this.projectInfoTab
-		var newFrame = new CGRect()
-							
-		newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
-		newFrame.size.height = (newFrame.size.width * (9.0/16.0))/2 - this.parameters.betweenBufferForGridRows
-		
-		
-		if (this.state.selectedProject == null) {
-			newFrame.origin.x = view.x
-			newFrame.origin.y = view.y
-		} else {
-			if (view == this.state.currentInfoTab) {
-				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
-					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].right + this.parameters.betweenBufferForGridColumns
-				} else {
-					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
-				}
-				
-				newFrame.origin.y = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].y
-			} else {
-				newFrame.origin.x = view.x
-				newFrame.origin.y = view.y
-			}
-		}
-		
-							
-		view.frame = newFrame
-	}
-	
-	
-	// Project Info Tab Backup
-	configureProjectInfoTabBackup () {
-		
-		var view = this.projectInfoTabBackup
-		
-		view.configureDuration = this.parameters.gridAnimationDuration
-		
-		if (this.state.selectedProject == null || view != this.state.currentInfoTab) {
-			// view.opacity = 0
-		} else {
-			view.state.usedAtLeastOnce = true
-			view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
-			view.opacity = 1
-			
-			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
-				// view.state.leftHanded = true
-			} else {
-				view.state.leftHanded = false
-			}
-		}
-		
-		if (!view.state.usedAtLeastOnce) {
-			view.opacity = 0
-		}
-		
-		view.updateAllUI()
-	}
-	
-	positionProjectInfoTabBackup () {
-		var view = this.projectInfoTabBackup
-		var newFrame = new CGRect()
-							
-		newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
-		newFrame.size.height = (newFrame.size.width * (9.0/16.0))/2 - this.parameters.betweenBufferForGridRows
-		
-		
-		if (this.state.selectedProject == null) {
-			newFrame.origin.x = view.x
-			newFrame.origin.y = view.y
-		} else {
-			if (view == this.state.currentInfoTab) {
-				if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
-					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].right + this.parameters.betweenBufferForGridColumns
-				} else {
-					newFrame.origin.x = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
-				}
-				
-				newFrame.origin.y = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex].y
-			} else {
-				newFrame.origin.x = view.x
-				newFrame.origin.y = view.y
-			}
-		}
-		
-							
-		view.frame = newFrame
-	}
-	
-	
 	
 	
 	
@@ -483,6 +335,60 @@ class ProjectsPage extends JABView {
 		
 	}
 	
+	
+	
+	
+	
+	// Margin Click Detectors
+	configureMarginClickDetectors () {
+		
+		this.marginClickDetectors[0].clickable = true
+		this.marginClickDetectors[1].clickable = true
+		this.marginClickDetectors[2].clickable = true
+		
+	}
+	
+	positionMarginClickDetectors () {
+		
+		var view = this.marginClickDetectors[0]
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = (this.width - applicationRoot.contentWidth)/2
+		newFrame.size.height = this.height
+
+		newFrame.origin.x = 0
+		newFrame.origin.y = 0
+							
+		view.frame = newFrame
+		
+		
+		
+		view = this.marginClickDetectors[1]
+		newFrame = new CGRect()
+							
+		newFrame.size.width = (this.width - applicationRoot.contentWidth)/2
+		newFrame.size.height = this.height
+
+		newFrame.origin.x = this.width - newFrame.size.width
+		newFrame.origin.y = 0
+							
+		view.frame = newFrame
+		
+		
+		
+		view = this.marginClickDetectors[2]
+		newFrame = new CGRect()
+							
+		newFrame.size.width = this.width
+		newFrame.size.height = this.parameters.reservedTopBuffer + this.parameters.topBufferForGrid
+
+		newFrame.origin.x = 0
+		newFrame.origin.y = 0
+							
+		view.frame = newFrame
+		
+		
+	}
 	
 	
 	
@@ -693,27 +599,17 @@ class ProjectsPage extends JABView {
 	
 	
 	
-	// Info Tabs
-	switchCurrentInfoTab () {
-		
-		if (this.state.currentInfoTab == null) {
-			this.state.currentInfoTab = this.projectInfoTab
-		} else {
-			if (this.state.currentInfoTab == this.projectInfoTab) {
-				this.state.currentInfoTab = this.projectInfoTabBackup
-			} else if (this.state.currentInfoTab == this.projectInfoTabBackup) {
-				this.state.currentInfoTab = this.projectInfoTab
-			}
+	// Selection
+	deselectProjects () {
+		this.state = {
+			selectedProject: null,
+			selectedProjectIndex: null,
 		}
+		
+		this.animatedUpdate()
 	}
 	
-	positionCurrentInfoTab () {
-		if (this.state.currentInfoTab == this.projectInfoTab) {
-			this.positionProjectInfoTab()
-		} else if (this.state.currentInfoTab == this.projectInfoTabBackup) {
-			this.positionProjectInfoTabBackup()
-		}
-	}
+	
 	
 	//
 	// Delegate
@@ -722,33 +618,37 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
-		if (this.state.selectedProject != null) {
-			if (view != this.state.selectedProject) {
-				// If a project is currently open and now we need to open a different one
+		if (view == this.marginClickDetectors[0] || view == this.marginClickDetectors[1] || view == this.marginClickDetectors[2]) {
+			this.deselectProjects()
+		} else {
+			if (this.state.selectedProject != null) {
+				if (view != this.state.selectedProject) {
+					// If a project is currently open and now we need to open a different one
+					this.state = {
+						selectedProject: view,
+						selectedProjectIndex: this.projectPanes.indexOf(view)
+					}
+					// this.switchCurrentInfoTab()
+					// this.positionCurrentInfoTab()
+					this.animatedUpdate()
+				} else {
+					// If the currently open project has just been clicked on (close it)
+					this.state = {
+						selectedProject: null,
+						selectedProjectIndex: null,
+					}
+					this.animatedUpdate()
+				}
+			} else {
+				// If no project is currently open and a project has just been selected
 				this.state = {
 					selectedProject: view,
-					selectedProjectIndex: this.projectPanes.indexOf(view)
+					selectedProjectIndex: this.projectPanes.indexOf(view),
 				}
 				// this.switchCurrentInfoTab()
 				// this.positionCurrentInfoTab()
 				this.animatedUpdate()
-			} else {
-				// If the currently open project has just been clicked on (close it)
-				this.state = {
-					selectedProject: null,
-					selectedProjectIndex: null,
-				}
-				this.animatedUpdate()
 			}
-		} else {
-			// If no project is currently open and a project has just been selected
-			this.state = {
-				selectedProject: view,
-				selectedProjectIndex: this.projectPanes.indexOf(view),
-			}
-			// this.switchCurrentInfoTab()
-			// this.positionCurrentInfoTab()
-			this.animatedUpdate()
 		}
 	}
 	
