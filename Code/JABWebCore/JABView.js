@@ -57,11 +57,6 @@ class JABView {
 		this.willingToInheritAnimationOptions = true
 
 
-		// Position
-		this.frame = new CGRect()
-		
-		// Shape
-		this.clipPath = 'none'
 
 		// Configuration
 		this.opacity = 1
@@ -74,6 +69,14 @@ class JABView {
 		this.overflow = 'visible'
 		this.cursor = 'auto'
 		this.animation = 'none'
+		
+		
+		// Position
+		this.frame = new CGRect()
+		this.angle = 0
+		
+		// Shape
+		this.clipPath = 'none'
 	
 	
 		// Other
@@ -574,8 +577,10 @@ class JABView {
 	// Position
 	
 	get computedX () {
+		
 		var transformString = $(this.selector).css('transform')
-		if (transformString != 'none') {
+		if (transformString != 'none' && transformString != undefined) {
+			
 			return $(this.selector).css('transform').split('(')[1].split(')')[0].split(',')[4]
 		}
 		return 0
@@ -583,7 +588,7 @@ class JABView {
 	
 	get computedY () {
 		var transformString = $(this.selector).css('transform')
-		if (transformString != 'none') {
+		if (transformString != 'none' && transformString != undefined) {
 			return $(this.selector).css('transform').split('(')[1].split(')')[0].split(',')[5]
 		}
 		return 0
@@ -957,9 +962,15 @@ class JABView {
 			
 			this.updateTransition()
 			this.stopPositioning()
+			
+			var rotationTransform = ''
+			if (this.angle != null && this.angle != 0) {
+				rotationTransform = ' rotate(' + this.angle + 'deg)'
+			}
+			
 			$(this.selector).css({
 				
-				transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)',
+				transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)' + rotationTransform,
 
 				width: this.width,
 				height: this.height,
@@ -1010,6 +1021,32 @@ class JABView {
 
 	set height (newHeight) {
 		this.frame = new CGRect(this.frame.origin.x, this.frame.origin.y, this.frame.size.width, newHeight)
+	}
+	
+	
+	
+	
+	// Angle
+	get angle () {
+		return this._angle
+	}
+	
+	set angle (newAngle) {
+		var changed = (this.angle != newAngle)
+		
+		if (changed) {
+			
+			this._angle = newAngle
+			this.updateTransition()
+			var rotationTransform = ''
+			if (this.angle != null && this.angle != 0) {
+				rotationTransform = ' rotate(' + this.angle + 'deg)'
+			}
+			
+			$(this.selector).css({
+				transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)' + rotationTransform,
+			})
+		}
 	}
 
 

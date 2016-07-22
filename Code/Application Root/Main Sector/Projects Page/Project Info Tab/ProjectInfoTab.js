@@ -310,7 +310,6 @@ class ProjectInfoTab extends JABView {
 	// Title Label
 	configureTitleLabel () {
 		
-		console.log('configuring', sizeClass, this.titleFontSize)
 		var view = this.titleLabel
 		var dataBundle = this.state.projectDataBundle
 		view.positionDuration = 0

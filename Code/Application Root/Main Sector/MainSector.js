@@ -348,6 +348,10 @@ class MainSector extends JABView {
 		var view = this.projectPage
 		var newFrame = this.bounds
 		
+		if (!this.state.currentlyActive) {
+			newFrame.origin.y += 100
+		}
+		
 		view.frame = newFrame
 	}
 	
@@ -431,6 +435,19 @@ class MainSector extends JABView {
 	}
 	
 	
+	closeCurrentlyOpenProject () {
+		this.parent.mainSectorWantsToCloseProject(this)
+		this.state = {
+			projectOpen: false,
+			closingProject: true
+		}
+		this.projectPage.vimeoView.pause()
+		var mainSector = this
+		this.animatedUpdate(null, function() {
+			mainSector.state = {closingProject: false}
+			mainSector.animatedUpdate()
+		})
+	}
 
 
 
@@ -441,17 +458,7 @@ class MainSector extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		if (view == this.projectPage) {
-			this.parent.mainSectorWantsToCloseProject(this)
-			this.state = {
-				projectOpen: false,
-				closingProject: true
-			}
-			this.projectPage.vimeoView.pause()
-			var mainSector = this
-			this.animatedUpdate(null, function() {
-				mainSector.state = {closingProject: false}
-				mainSector.animatedUpdate()
-			})
+			this.closeCurrentlyOpenProject()
 		}
 	}
 	
@@ -463,7 +470,7 @@ class MainSector extends JABView {
 		}
 		this.parent.mainSectorWantsToDisplayProject(this)
 	}
-
+	
 
 }
 

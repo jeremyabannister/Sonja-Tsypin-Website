@@ -5,7 +5,7 @@ function updateSizeClassForWidth (width) {
 		if (width >= 0) {
 			if (width < 768) {
 				sizeClass = 'xs'
-			} else if (width < 1030) {
+			} else if (width < 1035) {
 				sizeClass = 's'
 			} else if (width < 1200) {
 				sizeClass = 'm'

@@ -100,13 +100,16 @@ class ReelPage extends JABView {
 	configureVimeoView () {
 		
 		var vimeoId = '153864846'
+		var view = this.vimeoView
 		
-		if (this.vimeoView.vimeoId != vimeoId) {
-			this.vimeoView.vimeoId = vimeoId
+		if (view.vimeoId != vimeoId) {
+			view.vimeoId = vimeoId
 		}
 		
-		
-		this.vimeoView.blur = 0
+		if (!(view.loadingGif instanceof LoadingGif)) {
+			view.loadingGif = new LoadingGif()
+		}
+		view.blur = 0
 		
 		
 		
@@ -206,5 +209,10 @@ class ReelPage extends JABView {
 	//
 	// Delegate
 	//
+	
+	// JABVimeoView
+	vimeoViewDidFinishLoading (vimeoView) {
+		
+	}
 	
 }

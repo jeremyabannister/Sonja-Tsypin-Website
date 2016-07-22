@@ -301,7 +301,6 @@ var ProjectInfoTab = function (_JABView) {
 		key: 'configureTitleLabel',
 		value: function configureTitleLabel() {
 
-			console.log('configuring', sizeClass, this.titleFontSize);
 			var view = this.titleLabel;
 			var dataBundle = this.state.projectDataBundle;
 			view.positionDuration = 0;

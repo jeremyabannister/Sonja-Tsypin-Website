@@ -6,12 +6,12 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// State
 		this.laboratoryEnabled = false
-		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
+		this.contentWidth = {'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
 		this.state = {
 			headerBackdropHidden: false,
 		}
 		
-		this.websiteClosed = true
+		this.websiteClosed = false
 		this.websiteClosedLocked = false
 
 		// Parameters
@@ -23,14 +23,12 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.laboratory = new Laboratory('Laboratory')
 		} else {
 			
-			
 			// UI
 			this.mainSector = new MainSector('MainSector')
 			this.headerBackdrop = new JABView('HeaderBackdrop')
 			this.homeSector = new HomeSector('HomeSector')
 			this.header = new Header('Header')
 		}
-		
 		
 		
 	}
@@ -213,6 +211,8 @@ class ApplicationRoot extends JABApplicationRoot {
 		this.header.websiteClosed = this.websiteClosed
 		this.header.selectedMenuIndex = this.mainSector.state.pageIndex
 		this.header.configureDuration = 0
+		this.header.clickable = true
+		
 		this.header.updateAllUI()
 		
 	}
@@ -363,6 +363,16 @@ class ApplicationRoot extends JABApplicationRoot {
 	//
 	// Delegate
 	//
+	
+	
+	// JABView
+	viewWasClicked (view) {
+		
+		if (view == this.header) {
+			this.mainSector.closeCurrentlyOpenProject()
+		}
+		
+	}
 	
 	
 	// Main Sector
