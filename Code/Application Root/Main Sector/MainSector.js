@@ -28,11 +28,6 @@ class MainSector extends JABView {
 		this.reelPage = new ReelPage('ReelPage')
 		this.projectPage = new ProjectPage('ProjectPage')
 		
-		this.comingSoonView = new UILabel('ComingSoonView')
-		
-		
-		
-		
 	}
 
 	

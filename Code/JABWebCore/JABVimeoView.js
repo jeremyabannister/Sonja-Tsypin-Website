@@ -6,7 +6,7 @@ class JABVimeoView extends JABView {
 		// State
 		this.vimeoId = null
 		this.loadingVideo = false
-		this.loadingGif = new JABGif()
+		this.loadingGif = null
 		this.loadedOnce = false
 		
 		// UI
@@ -44,7 +44,7 @@ class JABVimeoView extends JABView {
 		if (changed) {
 			this._vimeoId = newVimeoId
 			
-			if (!this.loadedOnce) {
+			if (!this.loadedOnce || this.player == null) {
 				$(this.iFrameWrapper.selector + ' > iframe').attr({ 'src':('https://player.vimeo.com/video/' + newVimeoId + '?portrait=0&badge=0&byline=0&title=0&api=1') })
 				
 				this.player = new Vimeo.Player($(this.iFrameWrapper.selector + ' > iframe'));

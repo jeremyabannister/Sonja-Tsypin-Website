@@ -92,6 +92,7 @@ class Laboratory extends JABView {
 	configureView1 () {
 		
 		var view = this.view1
+		view.positionDuration = 600
 		view.red()
 		
 	}
@@ -160,7 +161,7 @@ class Laboratory extends JABView {
 		
 		if (experimentNumber == 1) {
 			
-			
+			view1.frame = new CGRect(300, 300, 130, 130)
 			
 		} else if (experimentNumber == 2) {
 			

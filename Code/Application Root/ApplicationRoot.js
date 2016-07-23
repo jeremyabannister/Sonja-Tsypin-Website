@@ -30,7 +30,6 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.header = new Header('Header')
 		}
 		
-		
 	}
 	
 	//

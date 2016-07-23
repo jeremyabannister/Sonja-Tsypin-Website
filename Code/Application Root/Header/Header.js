@@ -12,8 +12,8 @@ class Header extends JABView {
 		// UI
 		this.logo = new Logo('Logo')
 		this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS	', 'projects'], ['ABOUT', 'about']])
-
-
+		
+		
 	}
 
 	
@@ -25,6 +25,10 @@ class Header extends JABView {
 		super.init()
 		
 		this.startEventListeners()
+		
+		if (this.notReal == '1234') {
+			console.log('what????')
+		}
 	}
 
 	//

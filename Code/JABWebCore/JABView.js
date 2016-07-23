@@ -17,6 +17,14 @@ class JABView {
 		}
 		
 		
+		//
+		// Debug
+		//
+		
+		this.debugTargetId = 'Underline---Menu---Header---ApplicationRoot'
+		
+		
+		
 		// Subviews
 		this.subviews = []
 		
@@ -82,10 +90,12 @@ class JABView {
 		// Other
 		this.clickable = false
 		
-
+		
+		
+		viewHierarchy.push(this)
 	}
 
-
+	
 
 
 	//
@@ -93,32 +103,27 @@ class JABView {
 	//
 	updateId () {
 		
+		var view = this
 		var connectorString = '---'
-		var id = ''
 		
-		if (this.parent != null) {
-			if (this.parent.id != null) {
-				id = this.parent.id
-			}
-		}
-		
-		if (this.customId != null) {
-			if (this.customId.indexOf(connectorString) == -1) {
-				if (id != '') {
-					id = this.customId + connectorString + id
-				} else {
-					id = this.customId
+		function idTail () {
+			if (view.parent != null) {
+				if (view.parent.id != null) {
+					return connectorString + view.parent.id
 				}
 			}
-		} else {
-			if (id != '') {
-				id = this.idNumber + connectorString + id
-			} else {
-				id = this.idNumber
+			return ''
+		}
+		function displayId () {
+			if (view.customId != null) {
+				if (view.customId.indexOf(connectorString) == -1) {
+					return view.customId
+				}
 			}
+			return view.idNumber
 		}
 		
-		this.id = id
+		this.id = displayId() + idTail()
 	}
 	
 	
@@ -507,10 +512,6 @@ class JABView {
 	// Transition
 	updateTransition () {
 		
-		
-		if (this.id == '1---Menu---Header---MainSector---ApplicationRoot') {
-			// console.log(this.selector + ' is updating transition with ' + this.animationOptions.configureDuration)
-		}
 		
 		var configureDuration = this.animationOptions.configureDuration || 0
 		var configureEasingFunction = this.animationOptions.configureEasingFunction || 'ease-in-out'
@@ -951,9 +952,7 @@ class JABView {
 
 	set frame (newFrame) {
 		
-		if (this.id == 'Underline---Menu---Header---ApplicationRoot') {
-			console.log('setting frame')
-		}
+		this.debugLog('setting frame')
 		
 		
 		var scaled = ((newFrame.size.width != this.width) || (newFrame.size.height != this.height))
@@ -1038,10 +1037,6 @@ class JABView {
 	}
 	
 	set angle (newAngle) {
-		
-		if (this.id == 'Underline---Menu---Header---ApplicationRoot') {
-			console.log('setting angle')
-		}
 		
 		var changed = (this.angle != newAngle)
 		
@@ -1376,6 +1371,19 @@ class JABView {
 		}
 	}
 
+
+
+
+
+	//
+	// Debug
+	//
+	
+	debugLog (message) {
+		if (this.id == this.debugTargetId) {
+			console.log(message)
+		}
+	}
 
 
 }
