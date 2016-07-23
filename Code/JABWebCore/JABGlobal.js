@@ -21,6 +21,9 @@ function updateSizeClassForWidth (width) {
 }
 
 
+var websiteIsResizing = false
+
+
 
 // Property Support
 function isPropertySupported(property)

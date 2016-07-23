@@ -197,7 +197,7 @@ class Menu extends JABView {
 		var underlinedButton = this.buttons[positionIndex]
 
 		var newFrame = new CGRect()
-
+		
 		newFrame.size.width = underlinedButton.width - 2
 		newFrame.size.height = 0.5
 

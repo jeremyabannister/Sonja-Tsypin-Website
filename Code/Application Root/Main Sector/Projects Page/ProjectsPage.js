@@ -170,6 +170,11 @@ class ProjectsPage extends JABView {
 			view.backgroundColor = 'black'
 			view.overflow = 'hidden'
 			view.positionDuration = this.parameters.gridAnimationDuration
+			
+			if (websiteIsResizing) {
+				view.positionDuration = 0
+			}
+			
 			view.positionEasingFunction = this.parameters.gridAnimationEasingFunction
 			view.cursor = 'pointer'
 			view.clickable = true

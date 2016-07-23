@@ -951,6 +951,11 @@ class JABView {
 
 	set frame (newFrame) {
 		
+		if (this.id == 'Underline---Menu---Header---ApplicationRoot') {
+			console.log('setting frame')
+		}
+		
+		
 		var scaled = ((newFrame.size.width != this.width) || (newFrame.size.height != this.height))
 		var moved = ((newFrame.origin.x != this.x) || (newFrame.origin.y != this.y))
 		var changed = (moved || scaled)
@@ -967,6 +972,7 @@ class JABView {
 			if (this.angle != null && this.angle != 0) {
 				rotationTransform = ' rotate(' + this.angle + 'deg)'
 			}
+			
 			
 			$(this.selector).css({
 				
@@ -1032,6 +1038,11 @@ class JABView {
 	}
 	
 	set angle (newAngle) {
+		
+		if (this.id == 'Underline---Menu---Header---ApplicationRoot') {
+			console.log('setting angle')
+		}
+		
 		var changed = (this.angle != newAngle)
 		
 		if (changed) {

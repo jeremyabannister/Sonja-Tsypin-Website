@@ -71,8 +71,8 @@ class Header extends JABView {
 
 	// Logo
 	configureLogo () {
-
-		// this.logo.animationsDisabled = ['all']
+		
+		this.logo.positionDuration = 0
 		if (this.websiteClosed) {
 			this.logo.faded = true
 		} else {
