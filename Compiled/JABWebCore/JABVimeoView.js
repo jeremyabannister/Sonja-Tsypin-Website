@@ -22,7 +22,7 @@ var JABVimeoView = function (_JABView) {
 
 		_this.vimeoId = null;
 		_this.loadingVideo = false;
-		_this.loadingGif = new JABGif();
+		_this.loadingGif = null;
 		_this.loadedOnce = false;
 
 		// UI
@@ -214,7 +214,7 @@ var JABVimeoView = function (_JABView) {
 			if (changed) {
 				this._vimeoId = newVimeoId;
 
-				if (!this.loadedOnce) {
+				if (!this.loadedOnce || this.player == null) {
 					$(this.iFrameWrapper.selector + ' > iframe').attr({ 'src': 'https://player.vimeo.com/video/' + newVimeoId + '?portrait=0&badge=0&byline=0&title=0&api=1' });
 
 					this.player = new Vimeo.Player($(this.iFrameWrapper.selector + ' > iframe'));

@@ -106,6 +106,7 @@ var Laboratory = function (_JABView) {
 		value: function configureView1() {
 
 			var view = this.view1;
+			view.positionDuration = 600;
 			view.red();
 		}
 	}, {
@@ -165,7 +166,10 @@ var Laboratory = function (_JABView) {
 			this.numberOfExperiments = 1;
 			console.log('<<<<<<<<<< Launching Experiment #' + experimentNumber + ' >>>>>>>>>>');
 
-			if (experimentNumber == 1) {} else if (experimentNumber == 2) {} else if (experimentNumber == 3) {}
+			if (experimentNumber == 1) {
+
+				view1.frame = new CGRect(300, 300, 130, 130);
+			} else if (experimentNumber == 2) {} else if (experimentNumber == 3) {}
 
 			console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>');
 		}

@@ -40,6 +40,10 @@ var Header = function (_JABView) {
 			_get(Object.getPrototypeOf(Header.prototype), 'init', this).call(this);
 
 			this.startEventListeners();
+
+			if (this.notReal == '1234') {
+				console.log('what????');
+			}
 		}
 
 		//
@@ -86,7 +90,7 @@ var Header = function (_JABView) {
 		key: 'configureLogo',
 		value: function configureLogo() {
 
-			// this.logo.animationsDisabled = ['all']
+			this.logo.positionDuration = 0;
 			if (this.websiteClosed) {
 				this.logo.faded = true;
 			} else {

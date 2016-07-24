@@ -22,6 +22,12 @@ var JABView = function () {
 			this.updateViewString();
 		}
 
+		//
+		// Debug
+		//
+
+		this.debugTargetId = 'Underline---Menu---Header---ApplicationRoot';
+
 		// Subviews
 		this.subviews = [];
 
@@ -82,6 +88,8 @@ var JABView = function () {
 
 		// Other
 		this.clickable = false;
+
+		viewHierarchy.push(this);
 	}
 
 	//
@@ -93,32 +101,27 @@ var JABView = function () {
 		key: 'updateId',
 		value: function updateId() {
 
+			var view = this;
 			var connectorString = '---';
-			var id = '';
 
-			if (this.parent != null) {
-				if (this.parent.id != null) {
-					id = this.parent.id;
-				}
-			}
-
-			if (this.customId != null) {
-				if (this.customId.indexOf(connectorString) == -1) {
-					if (id != '') {
-						id = this.customId + connectorString + id;
-					} else {
-						id = this.customId;
+			function idTail() {
+				if (view.parent != null) {
+					if (view.parent.id != null) {
+						return connectorString + view.parent.id;
 					}
 				}
-			} else {
-				if (id != '') {
-					id = this.idNumber + connectorString + id;
-				} else {
-					id = this.idNumber;
+				return '';
+			}
+			function displayId() {
+				if (view.customId != null) {
+					if (view.customId.indexOf(connectorString) == -1) {
+						return view.customId;
+					}
 				}
+				return view.idNumber;
 			}
 
-			this.id = id;
+			this.id = displayId() + idTail();
 		}
 	}, {
 		key: 'updateViewString',
@@ -327,10 +330,6 @@ var JABView = function () {
 
 		// Transition
 		value: function updateTransition() {
-
-			if (this.id == '1---Menu---Header---MainSector---ApplicationRoot') {
-				// console.log(this.selector + ' is updating transition with ' + this.animationOptions.configureDuration)
-			}
 
 			var configureDuration = this.animationOptions.configureDuration || 0;
 			var configureEasingFunction = this.animationOptions.configureEasingFunction || 'ease-in-out';
@@ -692,6 +691,18 @@ var JABView = function () {
 				this.subviews[i].inheritAnimationOptions(options);
 			}
 		}
+
+		//
+		// Debug
+		//
+
+	}, {
+		key: 'debugLog',
+		value: function debugLog(message) {
+			if (this.id == this.debugTargetId) {
+				console.log(message);
+			}
+		}
 	}, {
 		key: 'selector',
 		get: function get() {
@@ -950,13 +961,15 @@ var JABView = function () {
 		},
 		set: function set(newOpacity) {
 
-			this._opacity = newOpacity;
+			if (this.opacity != newOpacity) {
+				this._opacity = newOpacity;
 
-			this.updateTransition();
-			this.stopOpacity();
-			$(this.selector).css({
-				opacity: newOpacity
-			});
+				this.updateTransition();
+				this.stopOpacity();
+				$(this.selector).css({
+					opacity: newOpacity
+				});
+			}
 		}
 
 		// Background Color
@@ -967,13 +980,16 @@ var JABView = function () {
 			return this._backgroundColor;
 		},
 		set: function set(newBackgroundColor) {
-			this._backgroundColor = newBackgroundColor;
 
-			this.updateTransition();
-			this.stopBackgroundColor();
-			$(this.selector).css({
-				'background-color': newBackgroundColor
-			});
+			if (this.backgroundColor != newBackgroundColor) {
+				this._backgroundColor = newBackgroundColor;
+
+				this.updateTransition();
+				this.stopBackgroundColor();
+				$(this.selector).css({
+					'background-color': newBackgroundColor
+				});
+			}
 		}
 
 		// Border Radius
@@ -984,13 +1000,16 @@ var JABView = function () {
 			return this._borderRadius;
 		},
 		set: function set(newBorderRadius) {
-			this._borderRadius = newBorderRadius;
 
-			this.updateTransition();
-			this.stopBorderRadius();
-			$(this.selector).css({
-				'border-radius': newBorderRadius
-			});
+			if (this.borderRadius != newBorderRadius) {
+				this._borderRadius = newBorderRadius;
+
+				this.updateTransition();
+				this.stopBorderRadius();
+				$(this.selector).css({
+					'border-radius': newBorderRadius
+				});
+			}
 		}
 
 		// Blur
@@ -1001,17 +1020,19 @@ var JABView = function () {
 			return this._blur;
 		},
 		set: function set(newBlur) {
-			this._blur = newBlur;
+			if (this.blur != newBlur) {
+				this._blur = newBlur;
 
-			this.updateTransition();
-			this.stopBlur();
-			$(this.selector).css({
-				'-webkit-filter': 'blur(' + newBlur + 'px)',
-				'-moz-filter': 'blur(' + newBlur + 'px)',
-				'-o-filter': 'blur(' + newBlur + 'px)',
-				'-ms-filter': 'blur(' + newBlur + 'px)',
-				'filter': 'blur(' + newBlur + 'px)'
-			});
+				this.updateTransition();
+				this.stopBlur();
+				$(this.selector).css({
+					'-webkit-filter': 'blur(' + newBlur + 'px)',
+					'-moz-filter': 'blur(' + newBlur + 'px)',
+					'-o-filter': 'blur(' + newBlur + 'px)',
+					'-ms-filter': 'blur(' + newBlur + 'px)',
+					'filter': 'blur(' + newBlur + 'px)'
+				});
+			}
 		}
 	}, {
 		key: 'backdropBlur',
@@ -1019,13 +1040,15 @@ var JABView = function () {
 			return this._backdropBlur;
 		},
 		set: function set(newBackdropBlur) {
-			this._backdropBlur = newBackdropBlur;
+			if (this.backdropBlur != newBackdropBlur) {
+				this._backdropBlur = newBackdropBlur;
 
-			this.updateTransition();
-			this.stopBackdropBlur();
-			$(this.selector).css({
-				'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
-			});
+				this.updateTransition();
+				this.stopBackdropBlur();
+				$(this.selector).css({
+					'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
+				});
+			}
 		}
 
 		//
@@ -1041,10 +1064,12 @@ var JABView = function () {
 		},
 		set: function set(newZIndex) {
 
-			this._zIndex = newZIndex;
-			$(this.selector).css({
-				'z-index': newZIndex
-			});
+			if (this.zIndex != newZIndex) {
+				this._zIndex = newZIndex;
+				$(this.selector).css({
+					'z-index': newZIndex
+				});
+			}
 		}
 
 		// Position
@@ -1069,11 +1094,14 @@ var JABView = function () {
 			return this._overflow;
 		},
 		set: function set(newOverflow) {
-			this._overflow = newOverflow;
 
-			$(this.selector).css({
-				'overflow': newOverflow
-			});
+			if (this.overflow != newOverflow) {
+				this._overflow = newOverflow;
+
+				$(this.selector).css({
+					'overflow': newOverflow
+				});
+			}
 		}
 
 		// Cursor
@@ -1084,15 +1112,18 @@ var JABView = function () {
 			return this._cursor;
 		},
 		set: function set(newCursor) {
-			this._cursor = newCursor;
 
-			$(this.selector).css({
-				'cursor': newCursor
-			});
+			if (this.cursor != newCursor) {
+				this._cursor = newCursor;
 
-			$(this.selector).find('*').css({
-				'cursor': newCursor
-			});
+				$(this.selector).css({
+					'cursor': newCursor
+				});
+
+				$(this.selector).find('*').css({
+					'cursor': newCursor
+				});
+			}
 		}
 
 		// Animation
@@ -1103,11 +1134,13 @@ var JABView = function () {
 			return this._animation;
 		},
 		set: function set(newAnimation) {
-			this._animation = newAnimation;
+			if (this.animation != newAnimation) {
+				this._animation = newAnimation;
 
-			$(this.selector).css({
-				'animation': newAnimation
-			});
+				$(this.selector).css({
+					'animation': newAnimation
+				});
+			}
 		}
 
 		//
@@ -1125,6 +1158,8 @@ var JABView = function () {
 			return new CGRect();
 		},
 		set: function set(newFrame) {
+
+			this.debugLog('setting frame');
 
 			var scaled = newFrame.size.width != this.width || newFrame.size.height != this.height;
 			var moved = newFrame.origin.x != this.x || newFrame.origin.y != this.y;
@@ -1208,6 +1243,7 @@ var JABView = function () {
 			return this._angle;
 		},
 		set: function set(newAngle) {
+
 			var changed = this.angle != newAngle;
 
 			if (changed) {
@@ -1327,16 +1363,21 @@ var JABView = function () {
 			return this._clickable;
 		},
 		set: function set(newClickable) {
-			this._clickable = newClickable;
 
-			var thisView = this;
-			$(this.selector).off();
-			if (this.clickable) {
-				$(this.selector).click(function () {
-					thisView.parent.viewWasClicked(thisView);
-				});
-			} else {
-				$(this.selector).click(function () {});
+			var changed = this.clickable != newClickable;
+
+			if (changed) {
+				this._clickable = newClickable;
+
+				var thisView = this;
+				$(this.selector).off();
+				if (this.clickable) {
+					$(this.selector).click(function () {
+						thisView.parent.viewWasClicked(thisView);
+					});
+				} else {
+					$(this.selector).click(function () {});
+				}
 			}
 		}
 	}]);

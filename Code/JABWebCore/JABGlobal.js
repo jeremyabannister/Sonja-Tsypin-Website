@@ -26,7 +26,7 @@ var websiteIsResizing = false
 
 
 // Object Census
-viewHierarchy = []
+var viewHierarchy = []
 function enumerateViewHierarchy () {
 	console.log('Enumerating View Hierarchy...')
 	for (var i = 0; i < viewHierarchy.length; i++) {

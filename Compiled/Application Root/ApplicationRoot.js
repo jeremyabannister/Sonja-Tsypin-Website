@@ -143,6 +143,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			this.mainSector.backgroundColor = 'black';
 			this.mainSector.parameters.heightOfHeader = this.header.logo.bottom;
 			this.mainSector.state.currentlyActive = !this.websiteClosed;
+			this.mainSector.positionDuration = 0;
 
 			this.mainSector.updateAllUI();
 		}
@@ -189,6 +190,12 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		key: 'configureHomeSector',
 		value: function configureHomeSector() {
 			this.homeSector.backgroundColor = 'black';
+
+			if (websiteIsResizing) {
+				this.homeSector.positionDuration = 0;
+			} else {
+				this.homeSector.positionDuration = 800;
+			}
 
 			this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
 			this.homeSector.currentlyActive = this.websiteClosed;
@@ -366,6 +373,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			if (view == this.header) {
 				this.mainSector.closeCurrentlyOpenProject();
+				this.mainSector.projectsPage.deselectProjects();
 			}
 		}
 

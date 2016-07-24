@@ -221,6 +221,7 @@ var Menu = function (_JABView) {
 		key: 'viewWasClicked',
 		value: function viewWasClicked(view) {
 
+			console.log('clicked!');
 			for (var i = 0; i < this.buttons.length; i++) {
 				if (this.buttons[i] == view) {
 					if (this.buttonInfo.length > i) {

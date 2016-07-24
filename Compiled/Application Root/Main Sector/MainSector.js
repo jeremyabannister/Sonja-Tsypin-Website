@@ -42,8 +42,6 @@ var MainSector = function (_JABView) {
 		_this.reelPage = new ReelPage('ReelPage');
 		_this.projectPage = new ProjectPage('ProjectPage');
 
-		_this.comingSoonView = new UILabel('ComingSoonView');
-
 		return _this;
 	}
 
