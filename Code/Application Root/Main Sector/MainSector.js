@@ -5,35 +5,28 @@ class MainSector extends JABView {
 
 
 		// State
-		this.websiteClosed = true
-		this.websiteClosedLocked = false
+		this.state = {
+			currentlyActive: false,
+			pageIndex: 0,
+			projectOpen: false,
+			closingProject: false,
+			projectDataBundle: null,
+			scrollable: false,
+			
+			comingSoon: true,
+		}
 		
-		this.possibleStates = ['WorkPage', 'MorePage', 'AboutPage', 'ContactPage']
-		this.state = this.possibleStates[0]
-		this.comingSoon = true
 
-		this.totalScrollDistanceSinceLastTrigger = 0
-		this.heightOfHeader = 100
+		// Parameters
+		this.parameters = {
+			heightOfHeader: 0,
+		}
 
 		// UI
-		this.contactPage = new ContactPage('ContactPage')
 		this.aboutPage = new AboutPage('AboutPage')
-		this.morePage = new MorePage('MorePage')
-		this.workPage = new WorkPage('WorkPage')
-		
-		this.comingSoonView = new UILabel('ComingSoonView')
-		
-		this.homePage = new HomePage('HomePage')
-		this.header = new Header('Header')
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		this.projectsPage = new ProjectsPage('ProjectsPage')
+		this.reelPage = new ReelPage('ReelPage')
+		this.projectPage = new ProjectPage('ProjectPage')
 		
 	}
 
@@ -45,6 +38,7 @@ class MainSector extends JABView {
 	
 	init () {
 		super.init()
+		
 	}
 	
 	
@@ -62,6 +56,20 @@ class MainSector extends JABView {
 		}
 	}
 	
+	
+	get currentlyActivePage () {
+		return this.pages[this.state.pageIndex]
+	}
+	
+	get pages () {
+		return [this.reelPage, this.projectsPage, this.aboutPage, this.projectPage]
+	}
+	
+	
+	get readyToClose () {
+		return (this.currentlyActivePage.state.readyToClose && !this.state.projectOpen)
+	}
+	
 
 	//
 	// UI
@@ -70,46 +78,44 @@ class MainSector extends JABView {
 	// Add
 	addAllUI () {
 		
-		this.addContactPage()
 		this.addAboutPage()
-		this.addMorePage()
-		this.addWorkPage()
-		this.addComingSoonView()
-		this.addHomePage()
-		this.addHeader()
+		this.addProjectsPage()
+		this.addReelPage()
+		this.addProjectPage()
+		
+		// this.addComingSoonView()
 		
 	}
 	
 	
 	
 	
-	addContactPage () {
-		this.addSubview(this.contactPage)
-	}
 	
 	addAboutPage () {
 		this.addSubview(this.aboutPage)
 	}
 	
-	addMorePage () {
-		this.addSubview(this.morePage)
+	addProjectsPage () {
+		this.addSubview(this.projectsPage)
 	}
 	
-	addWorkPage () {
-		this.addSubview(this.workPage)
+	addReelPage () {
+		this.addSubview(this.reelPage)
 	}
+	
+	addProjectPage () {
+		this.addSubview(this.projectPage)
+	}
+	
+	
+	
+	
+	
 	
 	addComingSoonView () {
 		this.addSubview(this.comingSoonView)
 	}
 	
-	addHomePage () {
-		this.addSubview(this.homePage)
-	}
-	
-	addHeader () {
-		this.addSubview(this.header)
-	}
 
 
 
@@ -119,167 +125,238 @@ class MainSector extends JABView {
 	updateAllUI () {
 		super.updateAllUI()
 
-
-		
-		this.configureContactPage()
-		this.positionContactPage()
-
 		this.configureAboutPage()
 		this.positionAboutPage()
 		
-		this.configureMorePage()
-		this.positionMorePage()
-
-		this.configureWorkPage()
-		this.positionWorkPage()
+		this.configureProjectsPage()
+		this.positionProjectsPage()
+		
+		this.configureReelPage()
+		this.positionReelPage()
+		
+		this.configureProjectPage()
+		this.positionProjectPage()
 		
 		
-		this.configureComingSoonView()
-		this.positionComingSoonView()
 		
-		this.configureHomePage()
-		this.positionHomePage()
-
-
-		this.configureHeader()
-		this.positionHeader()
+		// this.configureComingSoonView()
+		// this.positionComingSoonView()
 
 	}
 	
 	
 	
-	
-	// Contact Page
-	configureContactPage () {
-		
-		this.contactPage.backgroundColor = 'black'
-		
-		if (this.state == this.possibleStates[3]) {
-			if (!this.subviewIsAboveSubviews(this.contactPage, [this.workPage, this.morePage, this.aboutPage])) {
-				this.insertSubviewAboveSubviews(this.contactPage, [this.workPage, this.morePage, this.aboutPage])
-			}
-			
-			setComingSoon(this.contactPage.comingSoon)
-		}
-		
-	}
-	
-	positionContactPage () {
-		
-		this.contactPage.frame = this.bounds
-		
-	}
 	
 	
 	
 	// About Page
 	configureAboutPage () {
 		
-		this.aboutPage.backgroundColor = 'black'
-		this.aboutPage.reservedTopBuffer = this.heightOfHeader
+		var view = this.aboutPage
 		
-		if (this.websiteClosed) {
-			this.aboutPage.subdued = true
-		} else {
-			this.aboutPage.subdued = false
-		}
+		view.backgroundColor = 'black'
+		view.overflow = 'auto'
+		view.reservedTopBuffer = this.parameters.heightOfHeader
 		
-		if (this.state == this.possibleStates[2]) {
-			if (!this.subviewIsAboveSubviews(this.aboutPage, [this.workPage, this.morePage, this.contactPage])) {
-				this.insertSubviewAboveSubviews(this.aboutPage, [this.workPage, this.morePage, this.contactPage])
+		if (this.currentlyActivePage == view) {
+			
+			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+				this.bringPageToFront(view)
 			}
+			view.scrollable = this.state.scrollable
+			setComingSoon(view.comingSoon)
 			
-			setComingSoon(this.aboutPage.comingSoon)
-			
+			if (this.state.currentlyActive) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
+		} else {
+			view.opacity = 0
 		}
 		
-		this.aboutPage.updateAllUI()
+		
+		view.updateAllUI()
 		
 	}
 	
 	positionAboutPage () {
 		
+		var view = this.aboutPage
 		var newFrame = this.bounds
 		
-		this.aboutPage.frame = newFrame
+		if (!this.state.currentlyActive) {
+			newFrame.origin.y += 100
+		}
+		
+		view.frame = newFrame
 	}
 
 
 
 
-	// More Page
-	configureMorePage() {
+	// Projects Page
+	configureProjectsPage () {
 		
-		this.morePage.backgroundColor = 'black'
+		var view = this.projectsPage
 		
-		if (this.state == this.possibleStates[1]) {
-			if (!this.subviewIsAboveSubviews(this.morePage, [this.workPage, this.aboutPage, this.contactPage])) {
-				this.insertSubviewAboveSubviews(this.morePage, [this.workPage, this.aboutPage, this.contactPage])
+		view.backgroundColor = 'black'
+		view.overflow = 'auto'
+		view.parameters = {reservedTopBuffer: this.parameters.heightOfHeader}
+		
+		if (this.currentlyActivePage == view) {
+			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+				this.bringPageToFront(view)
 			}
 			
-			setComingSoon(this.morePage.comingSoon)
+			view.state.scrollable = this.state.scrollable
+			if (view.state.comingSoon) {
+				view.state.scrollable = false
+			}
+			
+			if (this.state.projectOpen) {
+				view.blur = 20
+			} else {
+				view.blur = 0
+			}
+
+			
+			
+			
+			setComingSoon(view.state.comingSoon)
+			
+			if (this.state.currentlyActive) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
+		} else {
+			view.opacity = 0
 		}
+		
+		
+		view.updateAllUI()
 		
 	}
 	
-	positionMorePage () {
+	positionProjectsPage () {
 		
-		this.morePage.frame = this.bounds
+		var view = this.projectsPage
+		var newFrame = this.bounds
 		
-	}
-
-
-
-	// Work Page
-	configureWorkPage () {
-
-		this.workPage.backgroundColor = 'black'
-		this.workPage.reservedTopBuffer = this.heightOfHeader
-
-
-		if (this.websiteClosed) {
-			this.workPage.subdued = true
-		} else {
-			this.workPage.subdued = false
+		if (!this.state.currentlyActive) {
+			newFrame.origin.y += 100
 		}
 		
+		view.frame = newFrame
 		
-		if (this.state == this.possibleStates[0]) {
-			if (!this.subviewIsAboveSubviews(this.workPage, [this.morePage, this.aboutPage, this.contactPage])) {
-				this.insertSubviewAboveSubviews(this.workPage, [this.morePage, this.aboutPage, this.contactPage])
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Reel Page
+	configureReelPage () {
+		
+		var view = this.reelPage
+		
+		view.backgroundColor = 'black'
+		view.overflow = 'auto'
+		view.reservedTopBuffer = this.parameters.heightOfHeader
+		
+		if (this.currentlyActivePage == view) {
+			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+				this.bringPageToFront(view)
 			}
 			
-			setComingSoon(this.workPage.comingSoon)
+			if (!this.state.projectOpen) {
+				view.currentlyActive = this.state.currentlyActive
+				view.scrollable = this.state.scrollable
+			} else {
+				view.currentlyActive = false
+			}
 			
-			this.workPage.updateAllUI()
-			
-			this.workPage.overflow = 'visible'
+			if (this.state.currentlyActive) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
 		} else {
-			
-			this.workPage.overflow = 'hidden'
+			view.opacity = 0
+			view.currentlyActive = false
 		}
 		
+		view.updateAllUI()
+		
 	}
-
-	positionWorkPage () {
-
-		var newFrame = new CGRect()
-
-		newFrame.size.width = this.width
-		newFrame.size.height = this.height
-
-		newFrame.origin.x = (this.width - newFrame.size.width)/2
-
-		if (this.state == this.possibleStates[0]) {
-			newFrame.origin.y = 0
-		} else {
-			newFrame.origin.y = 0
+	
+	positionReelPage () {
+		
+		
+		var view = this.reelPage
+		var newFrame = this.bounds
+		
+		if (!this.state.currentlyActive) {
+			newFrame.origin.y += 100
 		}
-
-
-		this.workPage.frame = newFrame
-
+		
+		view.frame = newFrame
+		
 	}
+	
+	
+	
+	
+	// Project Page
+	configureProjectPage () {
+		
+		var view = this.projectPage
+		
+		view.clickable = true
+		view.parameters.reservedTopBuffer = this.parameters.heightOfHeader
+		view.overflow = 'auto'
+		view.configureDuration = 200
+		view.backgroundColor = 'rgba(0,0,0, 0.6)'
+		
+		if (this.state.projectOpen) {
+			this.bringPageToFront(view)
+			view.opacity = 1
+			view.configureDelay = 0
+			
+			view.state.projectDataBundle = this.state.projectDataBundle
+		} else {
+			view.opacity = 0
+			view.configureDelay = 200
+		}
+		
+		this.projectPage.updateAllUI()
+		
+	}
+	
+	positionProjectPage () {
+		
+		var view = this.projectPage
+		var newFrame = this.bounds
+		
+		if (!this.state.currentlyActive) {
+			newFrame.origin.y += 100
+		}
+		
+		view.frame = newFrame
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -297,9 +374,7 @@ class MainSector extends JABView {
 		this.comingSoonView.fontWeight = 'bold'
 		this.comingSoonView.letterSpacing = 1.5
 		
-		this.comingSoonView.configureDuration = 0
-		
-		if (this.comingSoon) {
+		if (this.comingSoon && this.state.currentlyActive) {
 			this.comingSoonView.opacity = 1
 		} else {
 			this.comingSoonView.opacity = 0
@@ -316,6 +391,14 @@ class MainSector extends JABView {
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		newFrame.origin.y = (this.height - newFrame.size.height)/2
+		
+		if (!this.state.currentlyActive) {
+			newFrame.origin.y += 100
+		}
+		
+		if (!this.state.comingSoon) {
+			newFrame.origin.x = this.width
+		}
 					
 		this.comingSoonView.frame = newFrame
 		
@@ -323,40 +406,6 @@ class MainSector extends JABView {
 	
 	
 	
-	
-
-
-	// Home Page
-	configureHomePage () {
-		
-		this.homePage.overflow = 'hidden'
-		this.homePage.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
-		
-	}
-
-
-	positionHomePage () {
-
-		if (this.websiteClosed) {
-			this.homePage.frame = new CGRect(0, 0, this.width, this.height)
-		} else {
-			this.homePage.frame = new CGRect(0, -this.height, this.width, this.height)
-		}
-	}
-
-
-	// Header
-	configureHeader () {
-
-		this.header.websiteClosed = this.websiteClosed
-		this.header.selectedMenuIndex = $.inArray(this.state, this.possibleStates)
-		this.header.updateAllUI()
-
-	}
-
-	positionHeader () {
-		this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader)
-	}
 
 
 
@@ -366,83 +415,33 @@ class MainSector extends JABView {
 	// Actions
 	//
 	
-	
-	// Navigation
-	openWebsite (duration) {
-		if (this.websiteClosed) {
-			if (!this.websiteClosedLocked) {
-				this.websiteClosed = false
-				
-				this.setWebsiteClosedLockedForTimeout(duration)
-				
-				if (duration == null) {
-					duration = 800
-				}
-				this.animatedUpdate({
-					
-					configureDuration: duration,
-					configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
-					
-					positionDuration: duration,
-					positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
-				})
+	bringPageToFront (page) {
+		
+		var otherPages = []
+		for (var i = 0; i < this.pages.length; i++) {
+			if (this.pages[i] != page) {
+				otherPages.push(this.pages[i])
 			}
+		}
+		
+		if (!this.subviewIsAboveSubviews(page, otherPages)) {
+			this.insertSubviewAboveSubviews(page, otherPages)
 		}
 	}
 	
 	
-	closeWebsite (duration) {
-		if (!this.websiteClosed) {
-			if (!this.websiteClosedLocked) {
-				this.websiteClosed = true
-				
-				this.setWebsiteClosedLockedForTimeout(duration)
-				
-				if (duration == null) {
-					duration = 800
-				}
-				this.animatedUpdate({
-					
-					configureDuration: duration,
-					configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
-					
-					positionDuration: duration,
-					positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
-				})
-			}
+	closeCurrentlyOpenProject () {
+		this.parent.mainSectorWantsToCloseProject(this)
+		this.state = {
+			projectOpen: false,
+			closingProject: true
 		}
-	}
-	
-	
-	setWebsiteClosedLockedForTimeout (timeoutDuration) {
-		this.websiteClosedLocked = true
+		this.projectPage.vimeoView.pause()
 		var mainSector = this
-		setTimeout(function() {
-			mainSector.websiteClosedLocked = false
-		}, timeoutDuration)
-	}
-	
-
-
-
-	// Scrolling
-	userDidScrollByAmount (amount) {
-
-		if (this.websiteClosed) {
-			if (amount < 0) {
-				this.openWebsite(800)
-			}
-		} else {
-			if (amount > 0) {
-				this.closeWebsite(800)
-			}
-		}
-
-	}
-
-	userDidStopScrolling () {
-
-
+		this.animatedUpdate(null, function() {
+			mainSector.state = {closingProject: false}
+			mainSector.animatedUpdate()
+		})
 	}
 
 
@@ -450,37 +449,23 @@ class MainSector extends JABView {
 	//
 	// Delegate
 	//
-
-	// Home Page
-	homePageDownArrowWasClicked () {
-		this.openWebsite()
-	}
-
-	// Header
-	headerLogoWasClicked () {
-		this.closeWebsite()
-	}
-
-	headerDidSelectPage (pageIdentifier) {
-		
-		if (pageIdentifier == 'work') {
-			this.state = this.possibleStates[0]
-			this.workPage.state = this.workPage.possibleStates[0]
-		} else if (pageIdentifier == 'more') {
-			this.state = this.possibleStates[1]
-		} else if (pageIdentifier == 'about') {
-			this.state = this.possibleStates[2]
-		} else if (pageIdentifier == 'contact') {
-			this.state = this.possibleStates[3]
+	
+	// JABView
+	viewWasClicked (view) {
+		if (view == this.projectPage) {
+			this.closeCurrentlyOpenProject()
 		}
-		
-		if (this.websiteClosed) {
-			this.openWebsite()
-		} else {
-			this.animatedUpdate()
-		}
-		
 	}
+	
+	// Projects Page
+	projectsPageWantsToDisplayProject (projectsPage, project) {
+		this.state = {
+			projectOpen: true,
+			projectDataBundle: project,
+		}
+		this.parent.mainSectorWantsToDisplayProject(this)
+	}
+	
 
 }
 

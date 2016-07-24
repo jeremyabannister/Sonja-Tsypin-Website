@@ -4,7 +4,7 @@ class JABImageView extends JABView {
 		super(customId)
 		
 		// State
-		this.src = ''
+		this.image = new UIImage('')
 		
 		// UI*
 		this.imageView = "<img>"
@@ -20,26 +20,64 @@ class JABImageView extends JABView {
 	updateAllUI () {
 		super.updateAllUI()
 		
+		this.configureImageView()
 		this.positionImageView()
 		
 	}
 	
 	
 	
+	//
+	// Getters and Setters
+	//
+	
+	get image () {
+		return this._image
+	}
+	
+	set image (newImage) {
+		this._image = newImage
+		$(this.selector + ' > img').attr({ 'src':newImage.src })
+	}
+	
+	
+	
+	
 	
 	get src () {
-		return $(this.selector + ' > img').attr('src')
+		return this.image.src
 	}
 	
 	set src (newSrc) {
-		this._src = newSrc
-		$(this.selector + ' > img').attr({ 'src':newSrc })
+		if (this.src != newSrc) {
+			this.image.src = newSrc
+			this.image = this.image
+		}
 	}
+	
+	
 	
 	
 	//
 	// UI
 	//
+	
+	configureImageView () {
+		
+		var configureDuration = this.animationOptions.configureDuration || 0
+		var configureEasingFunction = this.animationOptions.configureEasingFunction || 'ease-in-out'
+		var configureDelay = this.animationOptions.configureDelay || 0
+		
+		
+		var positionDuration = this.animationOptions.positionDuration || 0
+		var positionEasingFunction = this.animationOptions.positionEasingFunction || 'ease-in-out'
+		var positionDelay = this.animationOptions.positionDelay || 0
+		
+		$(this.selector + ' > img').css({
+			transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
+		})
+		
+	}
 	
 	
 	positionImageView () {

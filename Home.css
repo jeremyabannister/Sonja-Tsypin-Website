@@ -55,7 +55,6 @@ html {
 	overflow: hidden;
 	
 	background-color: black;
-
 }
 
 ::-webkit-scrollbar { 
@@ -81,6 +80,27 @@ body {
 	padding: 0;
 	
 	background-color: black;
+}
 
+
+a {
+	color: #bbbbbb;
+}
+
+
+.smaller {
+	font-size:90%;
+}
+
+
+
+/* Laboratory */
+@keyframes test {
+	0% {
+		-webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);
+	}
+	100% {
+		-webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);
+	}
 }
 

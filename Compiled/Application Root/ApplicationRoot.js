@@ -21,7 +21,18 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ApplicationRoot).call(this, customId));
 
 		_this.laboratoryEnabled = false;
-		_this.contentWidth = { 'xs': 700, 's': 780, 'm': 1000, 'l': 1000 };
+		_this.contentWidth = { 'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
+		_this.state = {
+			headerBackdropHidden: false
+		};
+
+		_this.websiteClosed = true;
+		_this.websiteClosedLocked = false;
+
+		// Parameters
+		_this.parameters = {
+			heightOfHeader: 110
+		};
 
 		if (_this.laboratoryEnabled) {
 			_this.laboratory = new Laboratory('Laboratory');
@@ -29,17 +40,29 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			// UI
 			_this.mainSector = new MainSector('MainSector');
+			_this.headerBackdrop = new JABView('HeaderBackdrop');
+			_this.homeSector = new HomeSector('HomeSector');
+			_this.header = new Header('Header');
 		}
 
-		// Initialize
 		return _this;
 	}
 
 	//
-	// Getters and Setters
+	// Init
 	//
 
 	_createClass(ApplicationRoot, [{
+		key: 'init',
+		value: function init() {
+			_get(Object.getPrototypeOf(ApplicationRoot.prototype), 'init', this).call(this);
+		}
+
+		//
+		// Getters and Setters
+		//
+
+	}, {
 		key: 'addAllUI',
 
 
@@ -55,12 +78,30 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			} else {
 
 				this.addMainSector();
+				this.addHeaderBackdrop();
+				this.addHomeSector();
+				this.addHeader();
 			}
 		}
 	}, {
 		key: 'addMainSector',
 		value: function addMainSector() {
 			this.addSubview(this.mainSector);
+		}
+	}, {
+		key: 'addHeaderBackdrop',
+		value: function addHeaderBackdrop() {
+			this.addSubview(this.headerBackdrop);
+		}
+	}, {
+		key: 'addHomeSector',
+		value: function addHomeSector() {
+			this.addSubview(this.homeSector);
+		}
+	}, {
+		key: 'addHeader',
+		value: function addHeader() {
+			this.addSubview(this.header);
 		}
 	}, {
 		key: 'addLaboratory',
@@ -82,6 +123,15 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 				this.configureMainSector();
 				this.positionMainSector();
+
+				this.configureHeaderBackdrop();
+				this.positionHeaderBackdrop();
+
+				this.configureHomeSector();
+				this.positionHomeSector();
+
+				this.configureHeader();
+				this.positionHeader();
 			}
 		}
 
@@ -90,13 +140,102 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'configureMainSector',
 		value: function configureMainSector() {
-			this.mainSector.backgroundColor = '#000000';
+			this.mainSector.backgroundColor = 'black';
+			this.mainSector.parameters.heightOfHeader = this.header.logo.bottom;
+			this.mainSector.state.currentlyActive = !this.websiteClosed;
+			this.mainSector.positionDuration = 0;
+
+			this.mainSector.updateAllUI();
 		}
 	}, {
 		key: 'positionMainSector',
 		value: function positionMainSector() {
 			this.mainSector.frame = new CGRect(0, 0, this.width, this.height);
 		}
+
+		// Header Backdrop
+
+	}, {
+		key: 'configureHeaderBackdrop',
+		value: function configureHeaderBackdrop() {
+
+			var view = this.headerBackdrop;
+			view.backgroundColor = 'black';
+
+			if (this.state.headerBackdropHidden) {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+		}
+	}, {
+		key: 'positionHeaderBackdrop',
+		value: function positionHeaderBackdrop() {
+
+			var view = this.headerBackdrop;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.width;
+			newFrame.size.height = this.parameters.heightOfHeader;
+
+			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+			newFrame.origin.y = 0;
+
+			view.frame = newFrame;
+		}
+
+		// Home Sector
+
+	}, {
+		key: 'configureHomeSector',
+		value: function configureHomeSector() {
+			this.homeSector.backgroundColor = 'black';
+
+			if (websiteIsResizing) {
+				this.homeSector.positionDuration = 0;
+			} else {
+				this.homeSector.positionDuration = 800;
+			}
+
+			this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
+			this.homeSector.currentlyActive = this.websiteClosed;
+			this.homeSector.updateAllUI();
+		}
+	}, {
+		key: 'positionHomeSector',
+		value: function positionHomeSector() {
+			var newFrame = this.bounds;
+
+			if (!this.websiteClosed) {
+				newFrame.origin.y = -this.height;
+			}
+
+			this.homeSector.frame = newFrame;
+		}
+
+		// Header
+
+	}, {
+		key: 'configureHeader',
+		value: function configureHeader() {
+
+			this.header.websiteClosed = this.websiteClosed;
+			this.header.selectedMenuIndex = this.mainSector.state.pageIndex;
+			this.header.configureDuration = 0;
+			this.header.clickable = true;
+
+			this.header.updateAllUI();
+		}
+	}, {
+		key: 'positionHeader',
+		value: function positionHeader() {
+			this.header.frame = new CGRect(0, 0, this.width, this.parameters.heightOfHeader);
+
+			this.configureMainSector(); // This is done because the mainSector's heightOfHeader parameter is dependent on the logo in the header which doesn't get positioned until after the parameter is given to the mainSector
+		}
+
+		// Laboratory
+
 	}, {
 		key: 'configureLaboratory',
 		value: function configureLaboratory() {
@@ -133,15 +272,160 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		// Actions
 		//
 
+		// Navigation
+
+	}, {
+		key: 'openWebsite',
+		value: function openWebsite(duration) {
+			if (this.websiteClosed) {
+				if (!this.websiteClosedLocked) {
+					this.websiteClosed = false;
+
+					this.setWebsiteClosedLockedForTimeout(duration);
+
+					if (duration == null) {
+						duration = 800;
+					}
+
+					var applicationRoot = this;
+					this.animatedUpdate({
+
+						configureDuration: duration,
+						configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
+
+						positionDuration: duration,
+						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+					}, function () {
+						applicationRoot.homePageHidden = true;
+						applicationRoot.mainSector.state.scrollable = true;
+						applicationRoot.updateAllUI();
+					});
+				}
+			}
+		}
+	}, {
+		key: 'closeWebsite',
+		value: function closeWebsite(duration) {
+			if (!this.websiteClosed) {
+				if (!this.websiteClosedLocked) {
+					this.websiteClosed = true;
+
+					this.setWebsiteClosedLockedForTimeout(duration);
+
+					if (duration == null) {
+						duration = 800;
+					}
+
+					this.homePageHidden = false;
+					this.configureHomeSector();
+					this.animatedUpdate({
+
+						configureDuration: duration,
+						configureEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)',
+
+						positionDuration: duration,
+						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+					}, function () {
+						applicationRoot.mainSector.state.scrollable = false;
+						applicationRoot.updateAllUI();
+					});
+				}
+			}
+		}
+	}, {
+		key: 'setWebsiteClosedLockedForTimeout',
+		value: function setWebsiteClosedLockedForTimeout(timeoutDuration) {
+			this.websiteClosedLocked = true;
+			var applicationRoot = this;
+			setTimeout(function () {
+				applicationRoot.websiteClosedLocked = false;
+			}, timeoutDuration);
+		}
+
+		// Scrolling
+
 	}, {
 		key: 'userDidScrollByAmount',
 		value: function userDidScrollByAmount(amount) {
-			this.mainSector.userDidScrollByAmount(amount);
+
+			if (this.websiteClosed) {
+				if (amount < 0) {
+					this.openWebsite();
+				}
+			} else {
+				if (amount > 0) {
+					if (this.mainSector.readyToClose) {
+						this.closeWebsite();
+					}
+				}
+			}
+		}
+
+		//
+		// Delegate
+		//
+
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+
+			if (view == this.header) {
+				this.mainSector.closeCurrentlyOpenProject();
+				this.mainSector.projectsPage.deselectProjects();
+			}
+		}
+
+		// Main Sector
+
+	}, {
+		key: 'mainSectorWantsToDisplayProject',
+		value: function mainSectorWantsToDisplayProject(mainSector) {
+
+			this.state = {
+				headerBackdropHidden: true
+			};
+
+			this.animatedUpdate();
 		}
 	}, {
-		key: 'userDidStopScrolling',
-		value: function userDidStopScrolling() {
-			this.mainSector.userDidStopScrolling();
+		key: 'mainSectorWantsToCloseProject',
+		value: function mainSectorWantsToCloseProject(mainSector) {
+			this.state = { headerBackdropHidden: false };
+
+			this.animatedUpdate();
+		}
+
+		// Home Sector
+
+	}, {
+		key: 'homeSectorEnterButtonWasClicked',
+		value: function homeSectorEnterButtonWasClicked() {
+			this.openWebsite();
+		}
+
+		// Header
+
+	}, {
+		key: 'headerLogoWasClicked',
+		value: function headerLogoWasClicked() {
+			this.closeWebsite();
+		}
+	}, {
+		key: 'headerDidSelectPage',
+		value: function headerDidSelectPage(pageIndex) {
+
+			this.mainSector.state = {
+				pageIndex: pageIndex,
+				projectOpen: false
+			};
+
+			if (this.websiteClosed) {
+				this.openWebsite();
+			} else {
+				this.updateAllUI(); // Use non-animated update because the only thing that should animate is the menu underline which has its own hardcoded positionDuration. If animated update is used then the newly selected page fades in but we want it to pop it
+			}
 		}
 	}, {
 		key: 'contentWidth',

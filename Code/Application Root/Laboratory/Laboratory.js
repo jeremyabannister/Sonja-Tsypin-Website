@@ -8,12 +8,12 @@ class Laboratory extends JABView {
 		this.big = false
 
 		// UI
-    	this.view1 = new UILabel()
+    	this.view1 = new UILabel('View1')
     	this.view2 = new JABView('View2', this)
 
 
-		this.defaultTimeInterval = 1000
-		this.specificTimeIntervals = [26]
+		this.defaultTimeInterval = 2000
+		this.specificTimeIntervals = [2000] // First one specifies start delay and is necessary
 
 		this.numberOfExperiments = 0 // Actual value is set in runExperiment which is run on the next line
 
@@ -90,16 +90,27 @@ class Laboratory extends JABView {
 
 	// View 1
 	configureView1 () {
-		this.view1.red()
-		this.view1.text = 'SONJA TSYPIN'
-		this.view1.fontFamily = 'siteFont'
+		
+		var view = this.view1
+		view.positionDuration = 600
+		view.red()
 		
 	}
 	
 	positionView1 () {
 		
-		this.view1.width = 'auto'
-		this.view1.height = 'auto'
+		var view = this.view1
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = 100
+		newFrame.size.height = 100
+
+		newFrame.origin.x = 300
+		newFrame.origin.y = 100
+							
+		view.frame = newFrame
+		
+		
 		
 		
 	}
@@ -108,23 +119,25 @@ class Laboratory extends JABView {
 	
 	configureView2 () {
 		
-		this.view2.blue()
+		var view = this.view2
+		view.blue()
+		
 	}
 	
 	positionView2 () {
 		
+		var view = this.view2
 		var newFrame = new CGRect()
 				
-		newFrame.size.width = 127
-		newFrame.size.height = 20
+		newFrame.size.width = 100
+		newFrame.size.height = 100
 				
-		newFrame.origin.x = 0
-		newFrame.origin.y = 40
+		newFrame.origin.x = 600
+		newFrame.origin.y = 200
 				
 				
-		this.view2.frame = newFrame
+		view.frame = newFrame
 		
-		console.log(this.view1.font.sizeOfString(this.view1.text))
 		
 	}
 
@@ -140,23 +153,17 @@ class Laboratory extends JABView {
 	
 	runExperiment (experimentNumber) {
 		
-		this.numberOfExperiments = 3
-		console.log("<<<<<<<<<< Launching Experiment #" + experimentNumber + ' >>>>>>>>>>')
+		var view1 = this.view1
+		var view2 = this.view2
+		
+		this.numberOfExperiments = 1
+		console.log('<<<<<<<<<< Launching Experiment #' + experimentNumber + ' >>>>>>>>>>')
 		
 		if (experimentNumber == 1) {
 			
-			
-			var a = null
-			var b = null
-			var c = 3
-			
-			var test = a || b || c
-			
-			console.log(test)
-			
+			view1.frame = new CGRect(300, 300, 130, 130)
 			
 		} else if (experimentNumber == 2) {
-			
 			
 			
 			
@@ -164,9 +171,15 @@ class Laboratory extends JABView {
 			
 			
 		}
+		
+		console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>')
 	}
 	
+	// @keyframes test {0% {-webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% {-webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);}}
 	
+	
+	
+	// @keyframes View1---Laboratory---ApplicationRoot { 0% { clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px); -webkit-clip-path: polygon(0px 0px, 100px 90px, 40px 60px, 0px 12px);} 100% { clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px); -webkit-clip-path: polygon(0px 0px, 100px 0px, 100px 100px, 0px 100px);} }
 }
 
 

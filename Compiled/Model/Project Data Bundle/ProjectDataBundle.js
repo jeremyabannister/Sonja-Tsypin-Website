@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -11,27 +11,17 @@ var ProjectDataBundle = function () {
 		this.metaDataBundle = new ProjectMetaDataBundle();
 		this.stillsBundle = new ProjectStillsBundle();
 		this.videoBundle = new ProjectVideoBundle();
-
-		this.id = '';
-		this.title = '';
-		this.subtitle = '';
-		this.year = '';
-
-		this.vimeoId = '';
-		this.stills = [];
-		this.mainStillIndex = 0;
-
-		this.mainStill = '';
-		this.secondaryStills = [];
 	}
 
+	//
 	// Custom Getters and Setters
+	//
 
 	// Id
 
 
 	_createClass(ProjectDataBundle, [{
-		key: 'id',
+		key: "id",
 		get: function get() {
 			return this.metaDataBundle.id;
 		},
@@ -43,7 +33,7 @@ var ProjectDataBundle = function () {
 		// Title
 
 	}, {
-		key: 'title',
+		key: "title",
 		get: function get() {
 			return this.metaDataBundle.title;
 		},
@@ -52,22 +42,34 @@ var ProjectDataBundle = function () {
 			this.metaDataBundle = this.metaDataBundle;
 		}
 
-		// Subtitle
+		// Director
 
 	}, {
-		key: 'subtitle',
+		key: "director",
 		get: function get() {
-			return this.metaDataBundle.subtitle;
+			return this.metaDataBundle.director;
 		},
-		set: function set(newSubtitle) {
-			this.metaDataBundle.subtitle = newSubtitle;
+		set: function set(newDirector) {
+			this.metaDataBundle.director = newDirector;
+			this.metaDataBundle = this.metaDataBundle;
+		}
+
+		// Movie Type
+
+	}, {
+		key: "movieType",
+		get: function get() {
+			return this.metaDataBundle.movieType;
+		},
+		set: function set(newMovieType) {
+			this.metaDataBundle.movieType = newMovieType;
 			this.metaDataBundle = this.metaDataBundle;
 		}
 
 		// Year
 
 	}, {
-		key: 'year',
+		key: "year",
 		get: function get() {
 			return this.metaDataBundle.year;
 		},
@@ -76,10 +78,34 @@ var ProjectDataBundle = function () {
 			this.metaDataBundle = this.metaDataBundle;
 		}
 
+		// Description
+
+	}, {
+		key: "description",
+		get: function get() {
+			return this.metaDataBundle.description;
+		},
+		set: function set(newDescription) {
+			this.metaDataBundle.description = newDescription;
+			this.metaDataBundle = this.metaDataBundle;
+		}
+
+		// No Video Message
+
+	}, {
+		key: "noVideoMessage",
+		get: function get() {
+			return this.metaDataBundle.noVideoMessage;
+		},
+		set: function set(newNoVideoMessage) {
+			this.metaDataBundle.noVideoMessage = newNoVideoMessage;
+			this.metaDataBundle = this.metaDataBundle;
+		}
+
 		// Vimeo Id
 
 	}, {
-		key: 'vimeoId',
+		key: "vimeoId",
 		get: function get() {
 			return this.videoBundle.vimeoId;
 		},
@@ -88,10 +114,22 @@ var ProjectDataBundle = function () {
 			this.videoBundle = this.videoBundle;
 		}
 
+		// Vimeo Width To Height
+
+	}, {
+		key: "vimeoHeightToWidth",
+		get: function get() {
+			return this.videoBundle.vimeoHeightToWidth;
+		},
+		set: function set(newVimeoHeightToWidth) {
+			this.videoBundle.vimeoHeightToWidth = newVimeoHeightToWidth;
+			this.videoBundle = this.videoBundle;
+		}
+
 		// Stills
 
 	}, {
-		key: 'stills',
+		key: "stills",
 		get: function get() {
 			return this.stillsBundle.stills;
 		},
@@ -103,7 +141,7 @@ var ProjectDataBundle = function () {
 		// Main Still Index
 
 	}, {
-		key: 'mainStillIndex',
+		key: "mainStillIndex",
 		get: function get() {
 			return this.stillsBundle.mainStillIndex;
 		},
@@ -115,7 +153,7 @@ var ProjectDataBundle = function () {
 		// Main Still
 
 	}, {
-		key: 'mainStill',
+		key: "mainStill",
 		get: function get() {
 			return this.stillsBundle.mainStill;
 		},
@@ -127,7 +165,7 @@ var ProjectDataBundle = function () {
 		// Secondary Stills
 
 	}, {
-		key: 'secondaryStills',
+		key: "secondaryStills",
 		get: function get() {
 			return this.stillsBundle.secondaryStills;
 		},
