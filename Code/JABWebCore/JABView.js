@@ -773,13 +773,15 @@ class JABView {
 
 	set opacity (newOpacity) {
 		
-		this._opacity = newOpacity
-		
-		this.updateTransition()
-		this.stopOpacity()
-		$(this.selector).css({
-			opacity: newOpacity,
-		})
+		if (this.opacity != newOpacity) {
+			this._opacity = newOpacity
+			
+			this.updateTransition()
+			this.stopOpacity()
+			$(this.selector).css({
+				opacity: newOpacity,
+			})
+		}
 	}
 	
 	// Background Color
@@ -788,13 +790,16 @@ class JABView {
 	}
 
 	set backgroundColor (newBackgroundColor) {
-		this._backgroundColor = newBackgroundColor
 		
-		this.updateTransition()
-		this.stopBackgroundColor()
-		$(this.selector).css({
-			'background-color': newBackgroundColor,
-		})
+		if (this.backgroundColor != newBackgroundColor) {
+			this._backgroundColor = newBackgroundColor
+			
+			this.updateTransition()
+			this.stopBackgroundColor()
+			$(this.selector).css({
+				'background-color': newBackgroundColor,
+			})
+		}
 	}
 	
 	
@@ -804,13 +809,16 @@ class JABView {
 	}
 
 	set borderRadius (newBorderRadius) {
-		this._borderRadius = newBorderRadius
 		
-		this.updateTransition()
-		this.stopBorderRadius()
-		$(this.selector).css({
-			'border-radius': newBorderRadius,
-		})
+		if (this.borderRadius !=  newBorderRadius) {
+			this._borderRadius = newBorderRadius
+			
+			this.updateTransition()
+			this.stopBorderRadius()
+			$(this.selector).css({
+				'border-radius': newBorderRadius,
+			})
+		}
 	}
 
 	
@@ -820,17 +828,19 @@ class JABView {
 	}
 	
 	set blur (newBlur) {
-		this._blur = newBlur
-		
-		this.updateTransition()
-		this.stopBlur()
-		$(this.selector).css({
-			'-webkit-filter': 'blur(' + newBlur + 'px)',
-			'-moz-filter': 'blur(' + newBlur + 'px)',
-			'-o-filter': 'blur(' + newBlur + 'px)',
-			'-ms-filter': 'blur(' + newBlur + 'px)',
-			'filter': 'blur(' + newBlur + 'px)'
-		})
+		if (this.blur != newBlur) {
+			this._blur = newBlur
+			
+			this.updateTransition()
+			this.stopBlur()
+			$(this.selector).css({
+				'-webkit-filter': 'blur(' + newBlur + 'px)',
+				'-moz-filter': 'blur(' + newBlur + 'px)',
+				'-o-filter': 'blur(' + newBlur + 'px)',
+				'-ms-filter': 'blur(' + newBlur + 'px)',
+				'filter': 'blur(' + newBlur + 'px)'
+			})
+		}
 	}
 	
 	
@@ -840,13 +850,15 @@ class JABView {
 	
 	
 	set backdropBlur (newBackdropBlur) {
-		this._backdropBlur = newBackdropBlur
-		
-		this.updateTransition()
-		this.stopBackdropBlur()
-		$(this.selector).css({
-			'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
-		})
+		if (this.backdropBlur != newBackdropBlur) {
+			this._backdropBlur = newBackdropBlur
+			
+			this.updateTransition()
+			this.stopBackdropBlur()
+			$(this.selector).css({
+				'-webkit-backdrop-filter': 'blur(' + newBackdropBlur + 'px)'
+			})
+		}
 	}
 
 
@@ -867,10 +879,12 @@ class JABView {
 
 	set zIndex (newZIndex) {
 		
-		this._zIndex = newZIndex
-		$(this.selector).css({
-			'z-index': newZIndex,
-		})
+		if (this.zIndex != newZIndex) {
+			this._zIndex = newZIndex
+			$(this.selector).css({
+				'z-index': newZIndex,
+			})
+		}
 	}
 
 
@@ -893,11 +907,14 @@ class JABView {
 	}
 
 	set overflow (newOverflow) {
-		this._overflow = newOverflow
+		
+		if (this.overflow != newOverflow) {
+			this._overflow = newOverflow
 
-		$(this.selector).css({
-			'overflow': newOverflow,
-		})
+			$(this.selector).css({
+				'overflow': newOverflow,
+			})
+		}
 	}
 
 
@@ -907,16 +924,18 @@ class JABView {
 	}
 
 	set cursor (newCursor) {
-		this._cursor = newCursor
+		
+		if (this.cursor != newCursor) {
+			this._cursor = newCursor
 
+			$(this.selector).css({
+				'cursor': newCursor,
+			})
 
-		$(this.selector).css({
-			'cursor': newCursor,
-		})
-
-		$(this.selector).find('*').css({
-			'cursor': newCursor,
-		})
+			$(this.selector).find('*').css({
+				'cursor': newCursor,
+			})
+		}
 	}
 	
 	
@@ -926,11 +945,13 @@ class JABView {
 	}
 	
 	set animation (newAnimation) {
-		this._animation = newAnimation
-		
-		$(this.selector).css({
-			'animation': newAnimation
-		})
+		if (this.animation != newAnimation) {
+			this._animation = newAnimation
+			
+			$(this.selector).css({
+				'animation': newAnimation
+			})
+		}
 	}
 	
 	
@@ -1214,16 +1235,21 @@ class JABView {
 	}
 	
 	set clickable (newClickable) {
-		this._clickable = newClickable
 		
-		var thisView = this
-		$(this.selector).off()
-		if (this.clickable) {
-			$(this.selector).click(function() {
-				thisView.parent.viewWasClicked(thisView)
-			})
-		} else {
-			$(this.selector).click(function() {})
+		var changed = this.clickable != newClickable
+		
+		if (changed) {
+			this._clickable = newClickable
+			
+			var thisView = this
+			$(this.selector).off()
+			if (this.clickable) {
+				$(this.selector).click(function() {
+					thisView.parent.viewWasClicked(thisView)
+				})
+			} else {
+				$(this.selector).click(function() {})
+			}
 		}
 	}
 

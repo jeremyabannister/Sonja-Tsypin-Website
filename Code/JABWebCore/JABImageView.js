@@ -49,8 +49,10 @@ class JABImageView extends JABView {
 	}
 	
 	set src (newSrc) {
-		this.image.src = newSrc
-		this.image = this.image
+		if (this.src != newSrc) {
+			this.image.src = newSrc
+			this.image = this.image
+		}
 	}
 	
 	
