@@ -12,8 +12,8 @@ class Header extends JABView {
 		// UI
 		this.logo = new Logo('Logo')
 		this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS	', 'projects'], ['ABOUT', 'about']])
-
-
+		
+		
 	}
 
 	
@@ -25,6 +25,10 @@ class Header extends JABView {
 		super.init()
 		
 		this.startEventListeners()
+		
+		if (this.notReal == '1234') {
+			console.log('what????')
+		}
 	}
 
 	//
@@ -71,8 +75,8 @@ class Header extends JABView {
 
 	// Logo
 	configureLogo () {
-
-		// this.logo.animationsDisabled = ['all']
+		
+		this.logo.positionDuration = 0
 		if (this.websiteClosed) {
 			this.logo.faded = true
 		} else {
@@ -103,7 +107,9 @@ class Header extends JABView {
 		this.menu.selectedIndex = this.selectedMenuIndex
 		
 		this.menu.textColor = 'white'
-		this.menu.fontSize = 12
+		
+		var fontSizes = {'xs': 11, 's': 16, 'm': 12, 'l': 12, 'xl': 12}
+		this.menu.fontSize = fontSizes[sizeClass]
 		this.menu.letterSpacing = 1.5
 		this.menu.fontWeight = 'bold'
 		this.menu.textAlign = 'right'

@@ -38,6 +38,7 @@ var JABImageView = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(JABImageView.prototype), 'updateAllUI', this).call(this);
 
+			this.configureImageView();
 			this.positionImageView();
 		}
 
@@ -46,13 +47,29 @@ var JABImageView = function (_JABView) {
 		//
 
 	}, {
-		key: 'positionImageView',
+		key: 'configureImageView',
 
 
 		//
 		// UI
 		//
 
+		value: function configureImageView() {
+
+			var configureDuration = this.animationOptions.configureDuration || 0;
+			var configureEasingFunction = this.animationOptions.configureEasingFunction || 'ease-in-out';
+			var configureDelay = this.animationOptions.configureDelay || 0;
+
+			var positionDuration = this.animationOptions.positionDuration || 0;
+			var positionEasingFunction = this.animationOptions.positionEasingFunction || 'ease-in-out';
+			var positionDelay = this.animationOptions.positionDelay || 0;
+
+			$(this.selector + ' > img').css({
+				transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms'
+			});
+		}
+	}, {
+		key: 'positionImageView',
 		value: function positionImageView() {
 
 			$(this.selector + ' > img').css({
@@ -75,8 +92,10 @@ var JABImageView = function (_JABView) {
 			return this.image.src;
 		},
 		set: function set(newSrc) {
-			this.image.src = newSrc;
-			this.image = this.image;
+			if (this.src != newSrc) {
+				this.image.src = newSrc;
+				this.image = this.image;
+			}
 		}
 	}]);
 

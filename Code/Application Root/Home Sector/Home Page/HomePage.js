@@ -192,8 +192,8 @@ class HomePage extends JABView {
 
 	positionEnterArrow () {
 
-
-		var widthOfEnterArrow = 40
+		var widthsOfEnterArrow = {'xs': 50, 's': 70, 'm': 40, 'l': 40, 'xl': 40}
+		var widthOfEnterArrow = widthsOfEnterArrow[sizeClass]
 		var bottomBufferForEnterArrow = 10
 
 		var newFrame = new CGRect()

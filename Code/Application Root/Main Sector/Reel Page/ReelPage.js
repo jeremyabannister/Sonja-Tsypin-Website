@@ -4,17 +4,19 @@ class ReelPage extends JABView {
 		super(customId)
 		
 		// State
+		this.state = {
+			readyToClose: true
+		}
 		this.currentlyActive = null
 		this.comingSoon = false
 		
 		this.scrollable = false
 		this.scrollFinishTimer
-		this.readyToClose = true
 		
 		// Parameters
 		this.reservedTopBuffer = 0
-		this.topBufferForVimeoView = 20
-		this.bottomBufferForVimeoView = 60
+		this.topBufferForVimeoView = 58
+		this.bottomBufferForVimeoView = 20
 		
 		// UI
 		this.vimeoView = new JABVimeoView('VimeoView')
@@ -98,13 +100,17 @@ class ReelPage extends JABView {
 	configureVimeoView () {
 		
 		var vimeoId = '153864846'
+		var view = this.vimeoView
 		
-		if (this.vimeoView.vimeoId != vimeoId) {
-			this.vimeoView.vimeoId = vimeoId
+		if (!(view.loadingGif instanceof LoadingGif)) {
+			view.loadingGif = new LoadingGif()
 		}
 		
+		if (view.vimeoId != vimeoId) {
+			view.vimeoId = vimeoId
+		}
 		
-		this.vimeoView.blur = 0
+		view.blur = 0
 		
 		
 		
@@ -143,6 +149,10 @@ class ReelPage extends JABView {
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		newFrame.origin.y = this.vimeoView.bottom + this.bottomBufferForVimeoView
+		
+		if (newFrame.origin.y + newFrame.size.height < this.height) {
+			newFrame.origin.y = this.height - newFrame.size.height
+		}
 							
 		view.frame = newFrame
 		
@@ -166,10 +176,14 @@ class ReelPage extends JABView {
 			clearTimeout(reelPage.scrollFinishTimer)
 			if (reelPage.scrollTop <= 0) {
 				reelPage.scrollFinishTimer = setTimeout(function () {
-					reelPage.readyToClose = true
+					reelPage.state.readyToClose = true
 				}, 50)
 			} else {
-				reelPage.readyToClose = false
+				reelPage.state.readyToClose = false
+			}
+			
+			if (reelPage.readyToClose && evt.originalEvent.wheelDelta > 0) {
+				evt.preventDefault()
 			}
 		})
 	}
@@ -196,5 +210,10 @@ class ReelPage extends JABView {
 	//
 	// Delegate
 	//
+	
+	// JABVimeoView
+	vimeoViewDidFinishLoading (vimeoView) {
+		
+	}
 	
 }

@@ -4,7 +4,7 @@ class Footer extends JABView {
 		super(customId)
 		
 		// State
-		this.requiredHeight = 70
+		this.requiredHeight = 50
 		
 		// Parameters
 		this.leftBufferForCopyrightLabel = 5
@@ -92,7 +92,7 @@ class Footer extends JABView {
 		
 		var view = this.copyrightLabel
 		
-	    view.text = 'SONJA TSYPIN \u00a9 2016'
+	    view.text = "SONJA TSYPIN <span style='color:ffff00'>\u00a9</span> 2016"
 	    view.textColor = 'white'
 		view.fontFamily = 'siteFont'
 		view.fontWeight = 'bold'
@@ -181,6 +181,10 @@ class Footer extends JABView {
 			window.open('http://www.instagram.com/sonjatsypin')
 		} else if (view == this.buttons[1]) {
 			window.open('http://www.sonjatsypin.weebly.com')
+		} else if (view == this.buttons[2]) {
+			var test = document.querySelector(this.copyrightLabel.selector)
+			test.select()
+			document.execCommand('copy')
 		}
 	}
 	

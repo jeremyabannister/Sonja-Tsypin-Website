@@ -66,7 +66,9 @@ class Logo extends JABView {
 		this.sonjaTsypinLabel.text = "SONJA TSYPIN"
 		this.sonjaTsypinLabel.fontFamily = 'siteFont'
 		this.sonjaTsypinLabel.textColor = 'white'
-		this.sonjaTsypinLabel.fontSize = 28
+		
+		var fontSizes = {'xs': 21, 's': 38, 'm': 28, 'l': 28, 'xl': 28};
+		this.sonjaTsypinLabel.fontSize = fontSizes[sizeClass]
 		this.sonjaTsypinLabel.fontWeight = 'normal'
 		this.sonjaTsypinLabel.letterSpacing = 3.5
 
@@ -90,8 +92,12 @@ class Logo extends JABView {
 
 		this.cinematographerLabel.text = "CINEMATOGRAPHER"
 		this.cinematographerLabel.textColor = 'white'
-		this.cinematographerLabel.fontSize = 12
-		this.cinematographerLabel.letterSpacing = 8.4
+		
+		var fontSizes = {'xs': 9, 's': 19, 'm': 12, 'l': 12, 'xl': 12}
+		this.cinematographerLabel.fontSize = fontSizes[sizeClass]
+		
+		var letterSpacings = {'xs': 7, 's': 8.4, 'm': 8.4, 'l': 8.4, 'xl': 8.4}
+		this.cinematographerLabel.letterSpacing = letterSpacings[sizeClass]
 		this.cinematographerLabel.fontWeight = 'normal'
 
 

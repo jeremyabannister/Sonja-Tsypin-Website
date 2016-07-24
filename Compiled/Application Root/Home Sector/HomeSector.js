@@ -74,18 +74,7 @@ var HomeSector = function (_JABView) {
 		value: function configureHomePage() {
 
 			this.homePage.overflow = 'hidden';
-			this.homePage.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
-
 			this.homePage.currentlyActive = this.currentlyActive;
-
-			/*
-   if (this.homePageHidden) {
-   	this.homePage.opacity = 0
-   } else {
-   	this.homePage.opacity = 1
-   }
-   */
-
 			this.homePage.updateAllUI();
 		}
 	}, {

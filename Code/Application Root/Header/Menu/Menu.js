@@ -197,7 +197,7 @@ class Menu extends JABView {
 		var underlinedButton = this.buttons[positionIndex]
 
 		var newFrame = new CGRect()
-
+		
 		newFrame.size.width = underlinedButton.width - 2
 		newFrame.size.height = 0.5
 
@@ -225,6 +225,7 @@ class Menu extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
+		console.log('clicked!')
 		for (var i = 0; i < this.buttons.length; i++) {
 			if (this.buttons[i] == view) {
 				if (this.buttonInfo.length > i) {

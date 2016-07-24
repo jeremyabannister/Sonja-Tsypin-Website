@@ -20,30 +20,27 @@ var MainSector = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MainSector).call(this, customId));
 
-		_this.websiteClosed = true;
-		_this.websiteClosedLocked = false;
-		_this.homePageHidden = false;
-		_this.scrollable = false;
+		_this.state = {
+			currentlyActive: false,
+			pageIndex: 0,
+			projectOpen: false,
+			closingProject: false,
+			projectDataBundle: null,
+			scrollable: false,
 
-		_this.stateIndex = 0;
-
-		// Scrolling
-		_this.scrollPosition = 0;
-		_this.scrollSensitivity = 0.5;
-		_this.bottomScrollBuffer = 0;
-		_this.comingSoon = true;
-		_this.scrollReboundTimer;
+			comingSoon: true
+		};
 
 		// Parameters
-		_this.heightOfHeader = 0;
+		_this.parameters = {
+			heightOfHeader: 0
+		};
 
 		// UI
-		_this.contactPage = new ContactPage('ContactPage');
 		_this.aboutPage = new AboutPage('AboutPage');
-		_this.morePage = new MorePage('MorePage');
-		_this.workPage = new WorkPage('WorkPage');
-
-		_this.comingSoonView = new UILabel('ComingSoonView');
+		_this.projectsPage = new ProjectsPage('ProjectsPage');
+		_this.reelPage = new ReelPage('ReelPage');
+		_this.projectPage = new ProjectPage('ProjectPage');
 
 		return _this;
 	}
@@ -73,16 +70,12 @@ var MainSector = function (_JABView) {
 		// Add
 		value: function addAllUI() {
 
-			this.addContactPage();
 			this.addAboutPage();
-			this.addMorePage();
-			this.addWorkPage();
-			this.addComingSoonView();
-		}
-	}, {
-		key: 'addContactPage',
-		value: function addContactPage() {
-			this.addSubview(this.contactPage);
+			this.addProjectsPage();
+			this.addReelPage();
+			this.addProjectPage();
+
+			// this.addComingSoonView()
 		}
 	}, {
 		key: 'addAboutPage',
@@ -90,14 +83,19 @@ var MainSector = function (_JABView) {
 			this.addSubview(this.aboutPage);
 		}
 	}, {
-		key: 'addMorePage',
-		value: function addMorePage() {
-			this.addSubview(this.morePage);
+		key: 'addProjectsPage',
+		value: function addProjectsPage() {
+			this.addSubview(this.projectsPage);
 		}
 	}, {
-		key: 'addWorkPage',
-		value: function addWorkPage() {
-			this.addSubview(this.workPage);
+		key: 'addReelPage',
+		value: function addReelPage() {
+			this.addSubview(this.reelPage);
+		}
+	}, {
+		key: 'addProjectPage',
+		value: function addProjectPage() {
+			this.addSubview(this.projectPage);
 		}
 	}, {
 		key: 'addComingSoonView',
@@ -112,48 +110,20 @@ var MainSector = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(MainSector.prototype), 'updateAllUI', this).call(this);
 
-			this.configureContactPage();
-			this.positionContactPage();
-
 			this.configureAboutPage();
 			this.positionAboutPage();
 
-			this.configureMorePage();
-			this.positionMorePage();
+			this.configureProjectsPage();
+			this.positionProjectsPage();
 
-			this.configureWorkPage();
-			this.positionWorkPage();
+			this.configureReelPage();
+			this.positionReelPage();
 
-			this.configureComingSoonView();
-			this.positionComingSoonView();
-		}
+			this.configureProjectPage();
+			this.positionProjectPage();
 
-		// Contact Page
-
-	}, {
-		key: 'configureContactPage',
-		value: function configureContactPage() {
-			var view = this.contactPage;
-
-			view.backgroundColor = 'black';
-			if (this.currentlyActivePage == view) {
-				if (!this.subviewIsAboveSubviews(view, [this.workPage, this.morePage, this.aboutPage])) {
-					this.insertSubviewAboveSubviews(view, [this.workPage, this.morePage, this.aboutPage]);
-				}
-
-				setComingSoon(view.comingSoon);
-			}
-		}
-	}, {
-		key: 'positionContactPage',
-		value: function positionContactPage() {
-			var view = this.contactPage;
-
-			var newFrame = this.bounds;
-
-			// newFrame.origin.y = this.scrollPosition
-
-			view.frame = newFrame;
+			// this.configureComingSoonView()
+			// this.positionComingSoonView()
 		}
 
 		// About Page
@@ -165,20 +135,25 @@ var MainSector = function (_JABView) {
 			var view = this.aboutPage;
 
 			view.backgroundColor = 'black';
+			view.overflow = 'auto';
+			view.reservedTopBuffer = this.parameters.heightOfHeader;
+
 			if (this.currentlyActivePage == view) {
-				if (!this.subviewIsAboveSubviews(view, [this.workPage, this.morePage, this.contactPage])) {
-					this.insertSubviewAboveSubviews(view, [this.workPage, this.morePage, this.contactPage]);
+
+				if (!this.state.closingProject) {
+					// closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+					this.bringPageToFront(view);
 				}
-
+				view.scrollable = this.state.scrollable;
 				setComingSoon(view.comingSoon);
-			}
 
-			view.reservedTopBuffer = this.heightOfHeader;
-
-			if (this.websiteClosed) {
-				view.subdued = true;
+				if (this.state.currentlyActive) {
+					view.opacity = 1;
+				} else {
+					view.opacity = 0;
+				}
 			} else {
-				view.subdued = false;
+				view.opacity = 0;
 			}
 
 			view.updateAllUI();
@@ -187,83 +162,161 @@ var MainSector = function (_JABView) {
 		key: 'positionAboutPage',
 		value: function positionAboutPage() {
 
+			var view = this.aboutPage;
 			var newFrame = this.bounds;
 
-			// newFrame.origin.y = this.scrollPosition
-
-			this.aboutPage.frame = newFrame;
-		}
-
-		// More Page
-
-	}, {
-		key: 'configureMorePage',
-		value: function configureMorePage() {
-
-			var view = this.morePage;
-
-			view.backgroundColor = 'black';
-			if (this.currentlyActivePage == view) {
-				if (!this.subviewIsAboveSubviews(view, [this.workPage, this.aboutPage, this.contactPage])) {
-					this.insertSubviewAboveSubviews(view, [this.workPage, this.aboutPage, this.contactPage]);
-				}
-
-				setComingSoon(view.comingSoon);
+			if (!this.state.currentlyActive) {
+				newFrame.origin.y += 100;
 			}
-		}
-	}, {
-		key: 'positionMorePage',
-		value: function positionMorePage() {
 
-			var newFrame = this.bounds;
-
-			// newFrame.origin.y = this.scrollPosition
-
-			this.morePage.frame = newFrame;
+			view.frame = newFrame;
 		}
 
-		// Work Page
+		// Projects Page
 
 	}, {
-		key: 'configureWorkPage',
-		value: function configureWorkPage() {
+		key: 'configureProjectsPage',
+		value: function configureProjectsPage() {
 
-			var view = this.workPage;
+			var view = this.projectsPage;
 
 			view.backgroundColor = 'black';
-			view.reservedTopBuffer = this.heightOfHeader;
-			view.scrollable = this.scrollable;
+			view.overflow = 'auto';
+			view.parameters = { reservedTopBuffer: this.parameters.heightOfHeader };
 
 			if (this.currentlyActivePage == view) {
-				if (!this.subviewIsAboveSubviews(view, [this.morePage, this.aboutPage, this.contactPage])) {
-					this.insertSubviewAboveSubviews(view, [this.morePage, this.aboutPage, this.contactPage]);
+				if (!this.state.closingProject) {
+					// closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+					this.bringPageToFront(view);
 				}
 
-				setComingSoon(view.comingSoon);
+				view.state.scrollable = this.state.scrollable;
+				if (view.state.comingSoon) {
+					view.state.scrollable = false;
+				}
 
-				if (!this.websiteClosed) {
-					view.currentlyActive = true;
+				if (this.state.projectOpen) {
+					view.blur = 20;
 				} else {
-					view.currentlyActive = false;
+					view.blur = 0;
+				}
+
+				setComingSoon(view.state.comingSoon);
+
+				if (this.state.currentlyActive) {
+					view.opacity = 1;
+				} else {
+					view.opacity = 0;
 				}
 			} else {
-				this.workPage.currentlyActive = false;
-			}
-
-			if (this.websiteClosed) {
-				view.subdued = true;
-			} else {
-				view.subdued = false;
+				view.opacity = 0;
 			}
 
 			view.updateAllUI();
 		}
 	}, {
-		key: 'positionWorkPage',
-		value: function positionWorkPage() {
+		key: 'positionProjectsPage',
+		value: function positionProjectsPage() {
 
-			var view = this.workPage;
+			var view = this.projectsPage;
 			var newFrame = this.bounds;
+
+			if (!this.state.currentlyActive) {
+				newFrame.origin.y += 100;
+			}
+
+			view.frame = newFrame;
+		}
+
+		// Reel Page
+
+	}, {
+		key: 'configureReelPage',
+		value: function configureReelPage() {
+
+			var view = this.reelPage;
+
+			view.backgroundColor = 'black';
+			view.overflow = 'auto';
+			view.reservedTopBuffer = this.parameters.heightOfHeader;
+
+			if (this.currentlyActivePage == view) {
+				if (!this.state.closingProject) {
+					// closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+					this.bringPageToFront(view);
+				}
+
+				if (!this.state.projectOpen) {
+					view.currentlyActive = this.state.currentlyActive;
+					view.scrollable = this.state.scrollable;
+				} else {
+					view.currentlyActive = false;
+				}
+
+				if (this.state.currentlyActive) {
+					view.opacity = 1;
+				} else {
+					view.opacity = 0;
+				}
+			} else {
+				view.opacity = 0;
+				view.currentlyActive = false;
+			}
+
+			view.updateAllUI();
+		}
+	}, {
+		key: 'positionReelPage',
+		value: function positionReelPage() {
+
+			var view = this.reelPage;
+			var newFrame = this.bounds;
+
+			if (!this.state.currentlyActive) {
+				newFrame.origin.y += 100;
+			}
+
+			view.frame = newFrame;
+		}
+
+		// Project Page
+
+	}, {
+		key: 'configureProjectPage',
+		value: function configureProjectPage() {
+
+			var view = this.projectPage;
+
+			view.clickable = true;
+			view.parameters.reservedTopBuffer = this.parameters.heightOfHeader;
+			view.overflow = 'auto';
+			view.configureDuration = 200;
+			view.backgroundColor = 'rgba(0,0,0, 0.6)';
+
+			if (this.state.projectOpen) {
+				this.bringPageToFront(view);
+				view.opacity = 1;
+				view.configureDelay = 0;
+
+				view.state.projectDataBundle = this.state.projectDataBundle;
+			} else {
+				view.opacity = 0;
+				view.configureDelay = 200;
+			}
+
+			this.projectPage.updateAllUI();
+		}
+	}, {
+		key: 'positionProjectPage',
+		value: function positionProjectPage() {
+
+			var view = this.projectPage;
+			var newFrame = this.bounds;
+
+			if (!this.state.currentlyActive) {
+				newFrame.origin.y += 100;
+			}
+
 			view.frame = newFrame;
 		}
 
@@ -281,9 +334,7 @@ var MainSector = function (_JABView) {
 			this.comingSoonView.fontWeight = 'bold';
 			this.comingSoonView.letterSpacing = 1.5;
 
-			this.comingSoonView.configureDuration = 0;
-
-			if (this.comingSoon) {
+			if (this.comingSoon && this.state.currentlyActive) {
 				this.comingSoonView.opacity = 1;
 			} else {
 				this.comingSoonView.opacity = 0;
@@ -302,6 +353,14 @@ var MainSector = function (_JABView) {
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
 			newFrame.origin.y = (this.height - newFrame.size.height) / 2;
 
+			if (!this.state.currentlyActive) {
+				newFrame.origin.y += 100;
+			}
+
+			if (!this.state.comingSoon) {
+				newFrame.origin.x = this.width;
+			}
+
 			this.comingSoonView.frame = newFrame;
 		}
 
@@ -309,10 +368,62 @@ var MainSector = function (_JABView) {
 		// Actions
 		//
 
+	}, {
+		key: 'bringPageToFront',
+		value: function bringPageToFront(page) {
+
+			var otherPages = [];
+			for (var i = 0; i < this.pages.length; i++) {
+				if (this.pages[i] != page) {
+					otherPages.push(this.pages[i]);
+				}
+			}
+
+			if (!this.subviewIsAboveSubviews(page, otherPages)) {
+				this.insertSubviewAboveSubviews(page, otherPages);
+			}
+		}
+	}, {
+		key: 'closeCurrentlyOpenProject',
+		value: function closeCurrentlyOpenProject() {
+			this.parent.mainSectorWantsToCloseProject(this);
+			this.state = {
+				projectOpen: false,
+				closingProject: true
+			};
+			this.projectPage.vimeoView.pause();
+			var mainSector = this;
+			this.animatedUpdate(null, function () {
+				mainSector.state = { closingProject: false };
+				mainSector.animatedUpdate();
+			});
+		}
+
 		//
 		// Delegate
 		//
 
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+			if (view == this.projectPage) {
+				this.closeCurrentlyOpenProject();
+			}
+		}
+
+		// Projects Page
+
+	}, {
+		key: 'projectsPageWantsToDisplayProject',
+		value: function projectsPageWantsToDisplayProject(projectsPage, project) {
+			this.state = {
+				projectOpen: true,
+				projectDataBundle: project
+			};
+			this.parent.mainSectorWantsToDisplayProject(this);
+		}
 	}, {
 		key: 'websiteClosed',
 		get: function get() {
@@ -326,18 +437,17 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'currentlyActivePage',
 		get: function get() {
-			return this.pages[this.stateIndex];
+			return this.pages[this.state.pageIndex];
 		}
 	}, {
 		key: 'pages',
 		get: function get() {
-			return [this.workPage, this.morePage, this.aboutPage, this.contactPage];
+			return [this.reelPage, this.projectsPage, this.aboutPage, this.projectPage];
 		}
 	}, {
 		key: 'readyToClose',
 		get: function get() {
-
-			return this.workPage.contentDomain.readyToClose;
+			return this.currentlyActivePage.state.readyToClose && !this.state.projectOpen;
 		}
 	}]);
 

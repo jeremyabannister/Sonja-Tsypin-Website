@@ -25,7 +25,7 @@ var Header = function (_JABView) {
 
 		// UI
 		_this.logo = new Logo('Logo');
-		_this.menu = new Menu('Menu', [['WORK', 'work'], ['MORE', 'more'], ['ABOUT', 'about']]);
+		_this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS	', 'projects'], ['ABOUT', 'about']]);
 
 		return _this;
 	}
@@ -40,6 +40,10 @@ var Header = function (_JABView) {
 			_get(Object.getPrototypeOf(Header.prototype), 'init', this).call(this);
 
 			this.startEventListeners();
+
+			if (this.notReal == '1234') {
+				console.log('what????');
+			}
 		}
 
 		//
@@ -86,7 +90,7 @@ var Header = function (_JABView) {
 		key: 'configureLogo',
 		value: function configureLogo() {
 
-			// this.logo.animationsDisabled = ['all']
+			this.logo.positionDuration = 0;
 			if (this.websiteClosed) {
 				this.logo.faded = true;
 			} else {
@@ -116,7 +120,9 @@ var Header = function (_JABView) {
 			this.menu.selectedIndex = this.selectedMenuIndex;
 
 			this.menu.textColor = 'white';
-			this.menu.fontSize = 12;
+
+			var fontSizes = { 'xs': 11, 's': 16, 'm': 12, 'l': 12, 'xl': 12 };
+			this.menu.fontSize = fontSizes[sizeClass];
 			this.menu.letterSpacing = 1.5;
 			this.menu.fontWeight = 'bold';
 			this.menu.textAlign = 'right';
