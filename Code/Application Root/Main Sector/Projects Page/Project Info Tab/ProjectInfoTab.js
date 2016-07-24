@@ -5,35 +5,33 @@ class ProjectInfoTab extends JABView {
 		
 		// State
 		this.state = {
-			projectDataBundle: null
+			projectDataBundle: null,
+			leftHanded: false,
+			usedAtleastOnce: false,
 		}
 		
 		
 		// Parameters
 		this.parameters = {
 			sizeOfPlayButton: 80,
-			leftBufferForPlayButton: 12,
-			bottomBufferForPlayButton: 5,
+			sideBufferForPlayButton: 23,
 			
 			leftBufferForTitleLabel: 10,
 			topBufferForTitleLabel: 0,
 			bufferBetweenTitleLabelAndSubtitleLabel: 3,
-			bufferBetweenSubtitleLabelAndYearLabel: 3,
+			bufferBetweenSubtitleLabelAndDescriptionLabel: 7,
 			
-			sizeOfInfoButton: 15,
-			bufferBetweenTitleLabelAndInfoButton: 4,
 		}
 		
 		// UI
-		this.leftDivider = new JABView('LeftDivider')
-		this.rightDivider = new JABView('RightDivider')
+		this.bottomLine = new JABView('BottomLine')
+		this.sideLine = new JABView('SideLine')
 		
+		this.noVideoMessageLabel = new UILabel('NoVideoMessageLabel')
 		this.playButton = new JABImageView('PlayButton')
-		this.titleLabel = new UILabel('TitleLabel')
-		this.infoButton = new JABImageView('InfoButton')
-		this.subtitleLabel = new UILabel('SubtitleLabel')
-		this.yearLabel = new UILabel('YearLabel')
 		
+		this.titleLabel = new UILabel('TitleLabel')
+		this.subtitleLabel = new UILabel('SubtitleLabel')
 		this.descriptionLabel = new UILabel('DescriptionLabel')
 		
 	}
@@ -48,6 +46,21 @@ class ProjectInfoTab extends JABView {
 	}
 	
 	
+	//
+	// Getters and Setters
+	//
+	
+	get titleFontSize () {
+		if (sizeClass == 'xs') {
+			return 14
+		} else if (sizeClass == 's') {
+			return 16
+		} else {
+			return 20
+		}
+	}
+	
+	
 	
 	
 	//
@@ -58,30 +71,33 @@ class ProjectInfoTab extends JABView {
 	// Add
 	addAllUI () {
 		
-		this.addLeftDivider()
-		this.addRightDivider()
+		this.addBottomLine()
+		this.addSideLine()
 		
+		this.addNoVideoMessageLabel()
 		this.addPlayButton()
 		
 		this.addTitleLabel()
-		this.addInfoButton()
 		this.addSubtitleLabel()
-		this.addYearLabel()
-		
 		this.addDescriptionLabel()
 		
 	}
 	
 	
-	addLeftDivider () {
-		this.addSubview(this.leftDivider)
+	addBottomLine () {
+		this.addSubview(this.bottomLine)
 	}
 	
-	addRightDivider () {
-		this.addSubview(this.rightDivider)
+	addSideLine () {
+		this.addSubview(this.sideLine)
 	}
 	
 	
+	
+	
+	addNoVideoMessageLabel () {
+		this.addSubview(this.noVideoMessageLabel)
+	}
 	
 	addPlayButton () {
 		this.addSubview(this.playButton)
@@ -90,23 +106,15 @@ class ProjectInfoTab extends JABView {
 	
 	
 	
+	
+	
 	addTitleLabel () {
 		this.addSubview(this.titleLabel)
-	}
-	
-	addInfoButton () {
-		this.addSubview(this.infoButton)
 	}
 	
 	addSubtitleLabel () {
 		this.addSubview(this.subtitleLabel)
 	}
-	
-	addYearLabel () {
-		this.addSubview(this.yearLabel)
-	}
-	
-	
 	
 	addDescriptionLabel () {
 		this.addSubview(this.descriptionLabel)
@@ -122,17 +130,21 @@ class ProjectInfoTab extends JABView {
 		
 		
 		
-		this.configureLeftDivider()
-		this.positionLeftDivider()
+		this.configureBottomLine()
+		this.positionBottomLine()
 		
 		
-		this.configureRightDivider()
-		this.positionRightDivider()
+		this.configureSideLine()
+		this.positionSideLine()
 		
 		
+		
+		this.configureNoVideoMessageLabel()
+		this.positionNoVideoMessageLabel()
 		
 		this.configurePlayButton()
 		this.positionPlayButton()
+		
 		
 		
 		
@@ -140,19 +152,8 @@ class ProjectInfoTab extends JABView {
 		this.positionTitleLabel()
 		
 		
-		this.configureInfoButton()
-		this.positionInfoButton()
-		
-		
 		this.configureSubtitleLabel()
 		this.positionSubtitleLabel()
-		
-		
-		this.configureYearLabel()
-		this.positionYearLabel()
-		
-		
-		
 		
 		
 		this.configureDescriptionLabel()
@@ -161,18 +162,18 @@ class ProjectInfoTab extends JABView {
 	
 	
 	
-	// Left Divider
-	configureLeftDivider () {
+	// Bottom Line
+	configureBottomLine () {
 		
-		var view = this.leftDivider
+		var view = this.bottomLine
 		
 		view.backgroundColor = 'white'
 		
 	}
 	
-	positionLeftDivider () {
+	positionBottomLine () {
 		
-		var view = this.leftDivider
+		var view = this.bottomLine
 		var newFrame = new CGRect()
 							
 		newFrame.size.width = this.width
@@ -186,24 +187,30 @@ class ProjectInfoTab extends JABView {
 	
 	
 	
-	// Right Divider
+	// Side Line
 	
-	configureRightDivider () {
+	configureSideLine () {
 		
-		var view = this.rightDivider
+		var view = this.sideLine
 		
 		view.backgroundColor = 'white'
+		view.positionDuration = 0
 	}
 	
-	positionRightDivider () {
+	positionSideLine () {
 		
-		var view = this.rightDivider
+		var view = this.sideLine
 		var newFrame = new CGRect()
 							
 		newFrame.size.width = 1
 		newFrame.size.height = this.height
-
-		newFrame.origin.x = this.width - newFrame.size.width
+		
+		if (this.state.leftHanded) {
+			newFrame.origin.x = 0
+		} else {
+			newFrame.origin.x = this.width - newFrame.size.width
+		}
+		
 		newFrame.origin.y = 0
 							
 		view.frame = newFrame
@@ -215,12 +222,64 @@ class ProjectInfoTab extends JABView {
 	
 	
 	
+	
+	// No Video Message
+	configureNoVideoMessageLabel () {
+		
+		var view = this.noVideoMessageLabel
+		var dataBundle = this.state.projectDataBundle
+		view.configureDuration = 0
+		
+		if (dataBundle != null) {
+			if (dataBundle.noVideoMessage != null) {
+				
+				view.opacity = 1
+				
+				view.text = this.state.projectDataBundle.noVideoMessage
+				view.fontFamily = 'siteFont'
+				view.fontSize = 12
+				view.textColor = 'white'
+				view.textAlign = 'center'
+				
+			} else {
+				view.opacity = 0
+			}
+		}
+	}
+	
+	positionNoVideoMessageLabel () {
+		var view = this.noVideoMessageLabel
+		var newFrame = new CGRect()
+		var size = view.font.sizeOfString(view.text, 80)
+		
+		newFrame.size.width = size.width
+		newFrame.size.height = size.height
+
+		newFrame.origin.x = this.width - newFrame.size.width - 12
+		newFrame.origin.y = (this.height - newFrame.size.height)/2
+							
+		view.frame = newFrame
+	}
+	
+	
 	// Play Button
 	configurePlayButton () {
 		
-		this.playButton.src = './Resources/Images/Buttons/Play Button.png'
-		this.playButton.cursor = 'pointer'
-		this.playButton.clickable = true
+		var view = this.playButton
+		view.src = './Resources/Images/Buttons/Play Button.png'
+		view.cursor = 'pointer'
+		view.positionDuration = 0
+		view.configureDuration = 0
+		
+		if (this.state.projectDataBundle != null) {
+			if (this.state.projectDataBundle.noVideoMessage == null) {
+				view.opacity = 1
+				view.clickable = true
+			} else {
+				view.opacity = 0
+				view.clickable = false
+			}
+		}
 		
 	}
 	
@@ -232,8 +291,12 @@ class ProjectInfoTab extends JABView {
 		newFrame.size.width = this.parameters.sizeOfPlayButton
 		newFrame.size.height = newFrame.size.width
 
-		newFrame.origin.x = this.width - newFrame.size.width - 23
-		newFrame.origin.y = (this.height - this.leftDivider.height - newFrame.size.height)/2
+		if (this.state.leftHanded) {
+			newFrame.origin.x = this.parameters.sideBufferForPlayButton
+		} else {
+			newFrame.origin.x = this.width - newFrame.size.width - this.parameters.sideBufferForPlayButton
+		}
+		newFrame.origin.y = (this.height - this.bottomLine.height - newFrame.size.height)/2
 							
 		view.frame = newFrame
 		
@@ -249,11 +312,12 @@ class ProjectInfoTab extends JABView {
 		
 		var view = this.titleLabel
 		var dataBundle = this.state.projectDataBundle
+		view.positionDuration = 0
 		
 		if (dataBundle != null) {
 			view.text = this.state.projectDataBundle.title
 			view.fontFamily = 'siteFont'
-			view.fontSize = 20
+			view.fontSize = this.titleFontSize
 			view.letterSpacing = 1.5
 			view.textColor = 'white'
 		}
@@ -269,35 +333,14 @@ class ProjectInfoTab extends JABView {
 							
 		newFrame.size.width = size.width
 		newFrame.size.height = size.height
-
-		newFrame.origin.x = this.parameters.leftBufferForTitleLabel
+		
+		if (this.state.leftHanded) {
+			newFrame.origin.x = this.width - newFrame.size.width - this.parameters.leftBufferForTitleLabel
+		} else {
+			newFrame.origin.x = this.parameters.leftBufferForTitleLabel
+		}
+		
 		newFrame.origin.y = this.parameters.topBufferForTitleLabel
-							
-		view.frame = newFrame
-	}
-	
-	
-	
-	// Info Button
-	configureInfoButton () {
-		
-		var view = this.infoButton
-		view.src = './Resources/Images/Buttons/Info Button.png'
-		view.cursor = 'pointer'
-		view.clickable = true
-		view.opacity = 0
-	}
-	
-	positionInfoButton () {
-		
-		var view = this.infoButton
-		var newFrame = new CGRect()
-							
-		newFrame.size.width = this.parameters.sizeOfInfoButton
-		newFrame.size.height = newFrame.size.width
-
-		newFrame.origin.x = this.titleLabel.right + 10
-		newFrame.origin.y = this.titleLabel.y + (this.titleLabel.height - newFrame.size.height)/2
 							
 		view.frame = newFrame
 	}
@@ -310,10 +353,12 @@ class ProjectInfoTab extends JABView {
 		var view = this.subtitleLabel
 		var dataBundle = this.state.projectDataBundle
 		
+		view.positionDuration = 0
+		
 		if (dataBundle != null) {
-			view.text = this.state.projectDataBundle.subtitle
+			view.text = 'dir. ' + this.state.projectDataBundle.director + ' | ' + this.state.projectDataBundle.movieType + ' | ' + this.state.projectDataBundle.year
 			view.fontFamily = 'siteFont'
-			view.fontSize = 13
+			view.fontSize = this.titleFontSize * (13.0/20.0)
 			view.letterSpacing = 1.5
 			view.textColor = '#ffffff'
 		}
@@ -329,46 +374,16 @@ class ProjectInfoTab extends JABView {
 		newFrame.size.width = size.width
 		newFrame.size.height = size.height
 
-		newFrame.origin.x = this.titleLabel.x
+		if (this.state.leftHanded) {
+			newFrame.origin.x = this.titleLabel.right - newFrame.size.width
+		} else {
+			newFrame.origin.x = this.titleLabel.x
+		}
 		newFrame.origin.y = this.titleLabel.bottom + this.parameters.bufferBetweenTitleLabelAndSubtitleLabel
 							
 		view.frame = newFrame
 	}
 	
-	
-	
-	// Year Label
-	configureYearLabel () {
-		
-		var view = this.yearLabel
-		var dataBundle = this.state.projectDataBundle
-		
-		view.opacity = 0
-		
-		if (dataBundle != null) {
-			view.text = this.state.projectDataBundle.year
-			view.fontFamily = 'siteFont'
-			view.fontSize = 14
-			view.letterSpacing = 1.5
-			view.textColor = 'white'
-		}
-		
-	}
-	
-	positionYearLabel () {
-		
-		var view = this.yearLabel
-		var newFrame = new CGRect()
-		var size = this.yearLabel.font.sizeOfString(this.yearLabel.text)
-							
-		newFrame.size.width = size.width
-		newFrame.size.height = size.height
-
-		newFrame.origin.x = this.subtitleLabel.x
-		newFrame.origin.y = this.height - newFrame.size.height
-							
-		view.frame = newFrame
-	}
 	
 	
 	
@@ -380,10 +395,20 @@ class ProjectInfoTab extends JABView {
 		
 		var view = this.descriptionLabel
 		
-		view.text = "A wildly popular online personality who hasn't left her apartment in four years has her tiny world turned upside down when a stranger forces himself into her peculiar space."
+		var dataBundle = this.state.projectDataBundle
+		if (dataBundle != null) {
+			view.text = this.state.projectDataBundle.description
+		}
 		view.fontFamily = 'siteFont'
-		view.fontSize = 11
+		view.fontSize = this.titleFontSize * (11.0/20.0)
 		view.hyphenate = true
+		view.positionDuration = 0
+		
+		if (this.state.leftHanded) {
+			view.textAlign = 'right'
+		} else {
+			view.textAlign = 'left'
+		}
 		
 		view.textColor = '#aaaaaa'
 	}
@@ -394,13 +419,20 @@ class ProjectInfoTab extends JABView {
 		var newFrame = new CGRect()
 		
 		newFrame.size.width = 300
+		if (this.playButton.x - this.titleLabel.x - 20 < newFrame.size.width) {
+			newFrame.size.width = this.playButton.x - this.titleLabel.x - 20
+		}
 		var size = view.font.sizeOfString(view.font.text, newFrame.size.width)
 							
 		
 		newFrame.size.height = size.height
-
-		newFrame.origin.x = this.titleLabel.x
-		newFrame.origin.y = this.subtitleLabel.bottom + this.parameters.bufferBetweenTitleLabelAndSubtitleLabel + 4
+		
+		if (this.state.leftHanded) {
+			newFrame.origin.x = this.titleLabel.right - newFrame.size.width
+		} else {
+			newFrame.origin.x = this.titleLabel.x
+		}
+		newFrame.origin.y = this.subtitleLabel.bottom + this.parameters.bufferBetweenSubtitleLabelAndDescriptionLabel
 							
 		view.frame = newFrame
 	}
@@ -428,8 +460,6 @@ class ProjectInfoTab extends JABView {
 	viewWasClicked (view) {
 		if (view == this.playButton) {
 			this.parent.projectInfoTabPlayButtonWasClicked(this)
-		} else if (view == this.infoButton) {
-			this.parent.projectInfoTabInfoButtonWasClicked(this)
 		}
 	}
 	

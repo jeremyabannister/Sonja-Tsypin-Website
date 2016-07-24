@@ -42,15 +42,27 @@ var ProjectDataBundle = function () {
 			this.metaDataBundle = this.metaDataBundle;
 		}
 
-		// Subtitle
+		// Director
 
 	}, {
-		key: "subtitle",
+		key: "director",
 		get: function get() {
-			return this.metaDataBundle.subtitle;
+			return this.metaDataBundle.director;
 		},
-		set: function set(newSubtitle) {
-			this.metaDataBundle.subtitle = newSubtitle;
+		set: function set(newDirector) {
+			this.metaDataBundle.director = newDirector;
+			this.metaDataBundle = this.metaDataBundle;
+		}
+
+		// Movie Type
+
+	}, {
+		key: "movieType",
+		get: function get() {
+			return this.metaDataBundle.movieType;
+		},
+		set: function set(newMovieType) {
+			this.metaDataBundle.movieType = newMovieType;
 			this.metaDataBundle = this.metaDataBundle;
 		}
 
@@ -66,6 +78,30 @@ var ProjectDataBundle = function () {
 			this.metaDataBundle = this.metaDataBundle;
 		}
 
+		// Description
+
+	}, {
+		key: "description",
+		get: function get() {
+			return this.metaDataBundle.description;
+		},
+		set: function set(newDescription) {
+			this.metaDataBundle.description = newDescription;
+			this.metaDataBundle = this.metaDataBundle;
+		}
+
+		// No Video Message
+
+	}, {
+		key: "noVideoMessage",
+		get: function get() {
+			return this.metaDataBundle.noVideoMessage;
+		},
+		set: function set(newNoVideoMessage) {
+			this.metaDataBundle.noVideoMessage = newNoVideoMessage;
+			this.metaDataBundle = this.metaDataBundle;
+		}
+
 		// Vimeo Id
 
 	}, {
@@ -75,6 +111,18 @@ var ProjectDataBundle = function () {
 		},
 		set: function set(newVimeoId) {
 			this.videoBundle.vimeoId = newVimeoId;
+			this.videoBundle = this.videoBundle;
+		}
+
+		// Vimeo Width To Height
+
+	}, {
+		key: "vimeoHeightToWidth",
+		get: function get() {
+			return this.videoBundle.vimeoHeightToWidth;
+		},
+		set: function set(newVimeoHeightToWidth) {
+			this.videoBundle.vimeoHeightToWidth = newVimeoHeightToWidth;
 			this.videoBundle = this.videoBundle;
 		}
 

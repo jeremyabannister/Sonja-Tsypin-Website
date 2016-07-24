@@ -37,13 +37,24 @@ class ProjectDataBundle {
 	}
 
 
-	// Subtitle
-	get subtitle () {
-		return this.metaDataBundle.subtitle
+	// Director
+	get director () {
+		return this.metaDataBundle.director
 	}
 
-	set subtitle (newSubtitle) {
-		this.metaDataBundle.subtitle = newSubtitle
+	set director (newDirector) {
+		this.metaDataBundle.director = newDirector
+		this.metaDataBundle = this.metaDataBundle
+	}
+	
+	
+	// Movie Type
+	get movieType () {
+		return this.metaDataBundle.movieType
+	}
+
+	set movieType (newMovieType) {
+		this.metaDataBundle.movieType = newMovieType
 		this.metaDataBundle = this.metaDataBundle
 	}
 
@@ -57,6 +68,37 @@ class ProjectDataBundle {
 		this.metaDataBundle.year = newYear
 		this.metaDataBundle = this.metaDataBundle
 	}
+	
+	
+	// Description
+	get description () {
+		return this.metaDataBundle.description
+	}
+	
+	set description (newDescription) {
+		this.metaDataBundle.description = newDescription
+		this.metaDataBundle = this.metaDataBundle
+	}
+	
+	
+	
+	
+	// No Video Message
+	get noVideoMessage () {
+		return this.metaDataBundle.noVideoMessage
+	}
+	
+	set noVideoMessage (newNoVideoMessage) {
+		this.metaDataBundle.noVideoMessage = newNoVideoMessage
+		this.metaDataBundle = this.metaDataBundle
+	}
+	
+	
+	
+	
+	
+	
+	
 
 
 

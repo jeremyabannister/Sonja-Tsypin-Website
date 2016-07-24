@@ -31,8 +31,8 @@ var ReelPage = function (_JABView) {
 
 		// Parameters
 		_this.reservedTopBuffer = 0;
-		_this.topBufferForVimeoView = 20;
-		_this.bottomBufferForVimeoView = 60;
+		_this.topBufferForVimeoView = 58;
+		_this.bottomBufferForVimeoView = 20;
 
 		// UI
 		_this.vimeoView = new JABVimeoView('VimeoView');
@@ -106,12 +106,16 @@ var ReelPage = function (_JABView) {
 		value: function configureVimeoView() {
 
 			var vimeoId = '153864846';
+			var view = this.vimeoView;
 
-			if (this.vimeoView.vimeoId != vimeoId) {
-				this.vimeoView.vimeoId = vimeoId;
+			if (view.vimeoId != vimeoId) {
+				view.vimeoId = vimeoId;
 			}
 
-			this.vimeoView.blur = 0;
+			if (!(view.loadingGif instanceof LoadingGif)) {
+				view.loadingGif = new LoadingGif();
+			}
+			view.blur = 0;
 		}
 	}, {
 		key: 'positionVimeoView',
@@ -208,6 +212,11 @@ var ReelPage = function (_JABView) {
 		// Delegate
 		//
 
+		// JABVimeoView
+
+	}, {
+		key: 'vimeoViewDidFinishLoading',
+		value: function vimeoViewDidFinishLoading(vimeoView) {}
 	}, {
 		key: 'currentlyActive',
 		get: function get() {

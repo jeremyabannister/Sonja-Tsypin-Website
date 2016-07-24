@@ -9,18 +9,12 @@ class ProjectsPage extends JABView {
 			projectDataBundles: this.assembleProjectDataBundles(),
 			comingSoon: false,
 			
-			selectedProject: null,
-			selectedProjectIndex: null,
-			infoTabHidden: true,
-			
 			scrollable: false,
 			readyToClose: true,
+			
+			selectedProject: null,
+			selectedProjectIndex: null,
 		}
-		
-		
-		
-		
-		this.scrollFinishTimer
 
 		
 		// Parameters
@@ -32,19 +26,38 @@ class ProjectsPage extends JABView {
 			betweenBufferForGridRows: 10,
 			betweenBufferForGridColumns: 10,
 			bottomBufferForGrid: 50,
+			heightOfProjectInfoTabsAsFractionOfProjectPaneHeight: 0.5, // Relative to height of project panes, set below
 			
 			gridAnimationDuration: 250,
-			gridAnimationEasingFunction: 'ease-in-out'
+			gridAnimationEasingFunction: 'ease-in-out',
+			
+			truePositionsOfProjectPanes: [],
 		}
+		
+		
+		// Timers
+		this.scrollFinishTimer
+		
 		
 		
 		// UI
-		this.projectInfoTab = new ProjectInfoTab('InfoTab')
-		this.projectStillViews = []
+		
+		this.projectPanes = []
 		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
-			this.projectStillViews.push(new ProjectImageView())
+			this.projectPanes.push(new ProjectImageView())
+			this.parameters.truePositionsOfProjectPanes.push(new CGRect())
 		}
+		
+		
+		this.projectInfoTabs = []
+		for (var i = 0; i < this.state.projectDataBundles.length; i++) {
+			this.projectInfoTabs.push(new ProjectInfoTab())
+		}
+		
 		this.footer = new Footer('Footer')
+		
+		
+		this.marginClickDetectors = [new JABView('MarginClickDetectorLeft'), new JABView('MarginClickDetectorRight'), new JABView('MarginClickDetectorTop')]
 		
 	}
 	
@@ -55,8 +68,8 @@ class ProjectsPage extends JABView {
 	
 	init () {
 		super.init()
-		
 		this.startEventListeners()
+		
 	}
 	
 	
@@ -76,21 +89,25 @@ class ProjectsPage extends JABView {
 	// Add
 	addAllUI () {
 		
-		this.addProjectInfoTab()
-		this.addProjectStillViews()
+		this.addProjectPanes()
+		this.addProjectInfoTabs()
 		this.addFooter()
+		this.addMarginClickDetectors()
 		
 	}
 	
 	
 	
-	addProjectInfoTab () {
-		this.addSubview(this.projectInfoTab)
+	
+	addProjectPanes () {
+		for (var i = 0; i < this.projectPanes.length; i++) {
+			this.addSubview(this.projectPanes[i])
+		}
 	}
 	
-	addProjectStillViews () {
-		for (var i = 0; i < this.projectStillViews.length; i++) {
-			this.addSubview(this.projectStillViews[i])
+	addProjectInfoTabs () {
+		for (var i = 0; i < this.projectInfoTabs.length; i++) {
+			this.addSubview(this.projectInfoTabs[i])
 		}
 	}
 	
@@ -99,86 +116,65 @@ class ProjectsPage extends JABView {
 		this.addSubview(this.footer)
 	}
 	
-
+	
+	addMarginClickDetectors () {
+		this.addSubview(this.marginClickDetectors[0])
+		this.addSubview(this.marginClickDetectors[1])
+		this.addSubview(this.marginClickDetectors[2])
+	}
+	
+	
+	
 	
 	// Update
 	updateAllUI () {
 		super.updateAllUI()
 		
 		
-		this.configureProjectInfoTab()
-		this.positionProjectInfoTab()
-
-		this.configureProjectStillViews()
-		this.positionProjectStillViews()
+		
+		this.configureProjectPanes()
+		this.positionProjectPanes()
+		
+		this.configureProjectInfoTabs()
+		this.positionProjectInfoTabs()
 		
 		this.configureFooter()
 		this.positionFooter()
 		
-	}
-
-	
-	
-	
-	// Project Info Tab
-	configureProjectInfoTab () {
 		
 		
-		var view = this.projectInfoTab
+		this.configureMarginClickDetectors()
+		this.positionMarginClickDetectors()
 		
-		view.state.projectDataBundle = this.state.projectDataBundles[this.state.selectedProjectIndex]
-		view.configureDuration = this.parameters.gridAnimationDuration
-		
-		if (this.state.infoTabHidden) {
-			view.opacity = 0
-		} else {
-			view.opacity = 1
-		}
-		
-		view.updateAllUI()
-	}
-	
-	positionProjectInfoTab () {
-		var view = this.projectInfoTab
-		var newFrame = new CGRect()
-							
-		newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
-		newFrame.size.height = (newFrame.size.width * (9.0/16.0))/2 - this.parameters.betweenBufferForGridRows
-		
-		
-		if (this.state.selectedProject == null) {
-			newFrame.origin.y = this.height
-		} else {
-			
-			if (this.state.selectedProjectIndex % this.parameters.numberOfColumns == 0) {
-				newFrame.origin.x = this.state.selectedProject.right + this.parameters.betweenBufferForGridColumns
-			} else {
-				newFrame.origin.x = this.state.selectedProject.x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
-			}
-			
-			newFrame.origin.y = this.state.selectedProject.y
-		}
-		
-							
-		view.frame = newFrame
 	}
 	
 	
+	
+	
+	
+
+	
 
 
-	// Project Rows
-	configureProjectStillViews () {
+	// Project Panes
+	configureProjectPanes () {
 
-		for (var i = 0; i < this.projectStillViews.length; i++) {
-			var view = this.projectStillViews[i]
+		for (var i = 0; i < this.projectPanes.length; i++) {
+			var view = this.projectPanes[i]
 			
 			view.state.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex]
 			if (this.state.comingSoon) {
 				view.opacity = 0
 			}
 			
+			view.backgroundColor = 'black'
 			view.overflow = 'hidden'
 			view.positionDuration = this.parameters.gridAnimationDuration
+			
+			if (websiteIsResizing) {
+				view.positionDuration = 0
+			}
+			
 			view.positionEasingFunction = this.parameters.gridAnimationEasingFunction
 			view.cursor = 'pointer'
 			view.clickable = true
@@ -199,22 +195,27 @@ class ProjectsPage extends JABView {
 
 	}
 
-	positionProjectStillViews () {
+	positionProjectPanes () {
 
 		if (!this.state.comingSoon) {
-			for (var i = 0; i < this.projectStillViews.length; i++) {
-				var view = this.projectStillViews[i]
+			for (var i = 0; i < this.projectPanes.length; i++) {
+				var view = this.projectPanes[i]
 				var newFrame = new CGRect()
 				
 				newFrame.size.width = (applicationRoot.contentWidth - ((this.parameters.numberOfColumns - 1) * this.parameters.betweenBufferForGridColumns))/this.parameters.numberOfColumns
 				newFrame.size.height = newFrame.size.width * (9.0/16.0)
 				
-				
 				var verticalAdjustment = 0
 				if (this.state.selectedProject != null) {
-					if (i >= this.state.selectedProjectIndex - (this.state.selectedProjectIndex % this.parameters.numberOfColumns) && i != this.state.selectedProjectIndex) {
-						if (i % this.parameters.numberOfColumns != this.state.selectedProjectIndex % this.parameters.numberOfColumns) {
-							verticalAdjustment = newFrame.size.height/2
+					if (i >= this.state.selectedProjectIndex - (this.state.selectedProjectIndex % this.parameters.numberOfColumns)) {
+						if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
+							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) + 1) {
+								verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
+							}
+						} else {
+							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) - 1) {
+								verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
+							}
 						}
 					}
 				}
@@ -225,7 +226,72 @@ class ProjectsPage extends JABView {
 				
 				view.frame = newFrame
 				
+				
+				// Keep track of where the project panes are supposed to be when they are not shifted to make room for info tab. This is done so that incoming info tab can be placed relative to where the project pane will be, not where it is in its currently shifted position
+				var truePosition = newFrame.copy()
+				truePosition.y -= verticalAdjustment
+				this.parameters.truePositionsOfProjectPanes[i] = truePosition
+				
 			}
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	// Project Info Tabs
+	configureProjectInfoTabs () {
+		
+		for (var i = 0; i < this.projectInfoTabs.length; i++) {
+			
+			var view = this.projectInfoTabs[i]
+			var correspondingProjectPane = this.projectPanes[i]
+			
+			if (!this.subviewIsBelowSubviews(view, this.projectPanes)) { // This should only be true the first time
+				this.pushSubviewToBack(view)
+			}
+			
+			view.state.projectDataBundle = this.state.projectDataBundles[i]
+			view.configureDuration = this.parameters.gridAnimationDuration
+			
+			if (this.state.selectedProject == correspondingProjectPane) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
+			
+			view.updateAllUI()
+		}
+		
+	}
+	
+	positionProjectInfoTabs () {
+		
+		for (var i = 0; i < this.projectInfoTabs.length; i++) {
+			
+			var view = this.projectInfoTabs[i]
+			var correspondingProjectPane = this.projectPanes[i]
+			var correspondingTruePosition = this.parameters.truePositionsOfProjectPanes[i]
+			
+			var newFrame = new CGRect()
+								
+			newFrame.size.width = correspondingTruePosition.width
+			newFrame.size.height = correspondingTruePosition.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight
+			
+			
+			if (i % this.parameters.numberOfColumns == this.parameters.numberOfColumns - 1) {
+				newFrame.origin.x = correspondingTruePosition.x - newFrame.size.width - this.parameters.betweenBufferForGridColumns
+			} else {
+				newFrame.origin.x = correspondingTruePosition.right + this.parameters.betweenBufferForGridColumns
+			}
+			
+			newFrame.origin.y = correspondingTruePosition.y
+								
+			view.frame = newFrame
+			
 		}
 		
 	}
@@ -249,13 +315,13 @@ class ProjectsPage extends JABView {
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		
 		if (!this.state.comingSoon) {
-			if (this.projectStillViews.length > 0) {
+			if (this.projectPanes.length > 0) {
 				var lowestBottom = 0
 				for (var i = 0; i < this.parameters.numberOfColumns; i++) {
-					var index = this.projectStillViews.length - 1 - i
-					if (this.projectStillViews.length > index) {
-						if (this.projectStillViews[index].bottom > lowestBottom) {
-							lowestBottom = this.projectStillViews[index].bottom
+					var index = this.projectPanes.length - 1 - i
+					if (this.projectPanes.length > index) {
+						if (this.projectPanes[index].bottom > lowestBottom) {
+							lowestBottom = this.projectPanes[index].bottom
 						}
 					}
 				}
@@ -278,6 +344,60 @@ class ProjectsPage extends JABView {
 	
 	
 	
+	// Margin Click Detectors
+	configureMarginClickDetectors () {
+		
+		this.marginClickDetectors[0].clickable = true
+		this.marginClickDetectors[1].clickable = true
+		this.marginClickDetectors[2].clickable = true
+		
+	}
+	
+	positionMarginClickDetectors () {
+		
+		var view = this.marginClickDetectors[0]
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = (this.width - applicationRoot.contentWidth)/2
+		newFrame.size.height = this.height
+
+		newFrame.origin.x = 0
+		newFrame.origin.y = 0
+							
+		view.frame = newFrame
+		
+		
+		
+		view = this.marginClickDetectors[1]
+		newFrame = new CGRect()
+							
+		newFrame.size.width = (this.width - applicationRoot.contentWidth)/2
+		newFrame.size.height = this.height
+
+		newFrame.origin.x = this.width - newFrame.size.width
+		newFrame.origin.y = 0
+							
+		view.frame = newFrame
+		
+		
+		
+		view = this.marginClickDetectors[2]
+		newFrame = new CGRect()
+							
+		newFrame.size.width = this.width
+		newFrame.size.height = this.parameters.reservedTopBuffer + this.parameters.topBufferForGrid
+
+		newFrame.origin.x = 0
+		newFrame.origin.y = 0
+							
+		view.frame = newFrame
+		
+		
+	}
+	
+	
+	
+	
 	
 	//
 	// Event Listeners
@@ -291,7 +411,7 @@ class ProjectsPage extends JABView {
 			if (!projectsPage.state.scrollable) {
 				evt.preventDefault()
 			} else {
-				projectsPage.configureProjectStillViews()
+				projectsPage.configureProjectPanes()
 			}
 			
 			clearTimeout(projectsPage.scrollFinishTimer)
@@ -316,7 +436,7 @@ class ProjectsPage extends JABView {
 	// Actions
 	//
 
-
+	// Project Data
 	assembleProjectDataBundles () {
 
 		var dataBundles = []
@@ -327,8 +447,10 @@ class ProjectsPage extends JABView {
 		var dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'powderRoom'
 		dataBundle.title = 'POWDER ROOM'
-		dataBundle.subtitle = 'dir. SONJA TSYPIN | SHORT | 2016'
+		dataBundle.director = 'SONJA TSYPIN'
+		dataBundle.movieType = 'SHORT'
 		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Jessica Kay Park, John Patrick Maddock</span><br/>A wildly popular online personality who hasn't left her apartment in four years has her tiny world turned upside down when a stranger forces himself into her peculiar space."
 		
 		dataBundle.vimeoId = '167824606'
 		dataBundle.vimeoHeightToWidth = (1.0/2.35)
@@ -338,10 +460,41 @@ class ProjectsPage extends JABView {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
 		}
-		dataBundle.mainStillIndex = 3
+		dataBundle.mainStillIndex = 2
 		
 
 		dataBundles.push(dataBundle)
+		
+		
+		
+		
+		
+		
+		
+		
+		// Birth Day
+		dataBundle = new ProjectDataBundle()
+		dataBundle.id = 'birthday'
+		dataBundle.title = 'BIRTH DAY'
+		dataBundle.director = 'EVA EVANS'
+		dataBundle.movieType = 'SHORT'
+		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory."
+		
+		dataBundle.vimeoId = '172178428'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
+		
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
+		for (var i = 0; i < 2; i++) {
+			var index = i + 1
+			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
+		}
+		dataBundle.mainStillIndex = 0
+		
+
+		dataBundles.push(dataBundle)
+		
+		
 		
 		
 		
@@ -351,8 +504,11 @@ class ProjectsPage extends JABView {
 		dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'angels'
 		dataBundle.title = 'ANGELS'
-		dataBundle.subtitle = 'dir. AUDREY BANKS'
-		dataBundle.year = '2015'
+		dataBundle.director = 'AUDREY BANKS'
+		dataBundle.movieType = 'FEATURE'
+		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Moni Bell, Eva Evans, Gabriel Sommer, Joanna Janetakis</span><br/>A man who goes by 'Sir' is holding a mansion full of beautiful women prisoner when a new arrival threatens his power."
+		dataBundle.noVideoMessage = 'TRAILER COMING SOON'
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
@@ -366,19 +522,44 @@ class ProjectsPage extends JABView {
 		
 		
 		
-		
-		
-		// Birth Day
+		// Theodore
 		dataBundle = new ProjectDataBundle()
-		dataBundle.id = 'birthday'
-		dataBundle.title = 'BIRTH DAY'
-		dataBundle.subtitle = 'dir. EVA EVANS'
-		dataBundle.year = '2016'
+		dataBundle.id = 'theodore'
+		dataBundle.title = 'THEODORE'
+		dataBundle.director = 'ONDINE VI\u00d1AO'
+		dataBundle.movieType = 'SHORT'
+		dataBundle.year = '2015'
+		dataBundle.description = "<span style='color:white'>Starring Camillia Hartman, Dexter Zimet</span><br/>A romantic rural retreat takes a terrifying turn after a local offers some chilling advice."
 		
-		dataBundle.vimeoId = '167678674'
+		dataBundle.vimeoId = '139578681'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/4/'
+		for (var i = 0; i < 1; i++) {
+			var index = i + 1
+			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
+		}
+		dataBundle.mainStillIndex = 0
+		
+
+		dataBundles.push(dataBundle)
+		
+		
+		
+		
+		// Found Guilty
+		dataBundle = new ProjectDataBundle()
+		dataBundle.id = 'foundGuilty'
+		dataBundle.title = 'FOUND GUILTY'
+		dataBundle.director = 'SONJA TSYPIN'
+		dataBundle.movieType = 'SHORT'
+		dataBundle.year = '2014'
+		dataBundle.description = '<span style="color:white">Starring Tuva Hildebrand</span><br/>In a short film remake of the famous murder scene from Alfred Hitchcock\'s "Blackmail," a woman must come to terms with herself after commiting an unthinkable crime out of self-defense.'
+		
+		dataBundle.vimeoId = '99426346'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
+		
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/5/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -392,30 +573,47 @@ class ProjectsPage extends JABView {
 		
 		
 		
-		// Powder Room Duplicate
+		
+		// As Long As I Have You
 		dataBundle = new ProjectDataBundle()
-		dataBundle.id = 'powderRoom'
-		dataBundle.title = 'POWDER ROOM'
-		dataBundle.subtitle = 'dir. SONJA TSYPIN'
+		dataBundle.id = 'asLongAsIHaveYou'
+		dataBundle.title = 'AS LONG AS I HAVE YOU'
+		dataBundle.director = 'ONDINE VI\u00d1AO'
+		dataBundle.movieType = 'MUSIC VIDEO'
 		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Annalisa Plumb</span><br/>An experimental video to the track 'As Long As I Have You' by Elvis Presley."
 		
-		dataBundle.vimeoId = '167824606'
-		dataBundle.vimeoHeightToWidth = (1.0/2.35)
+		dataBundle.vimeoId = '152982438'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
-		for (var i = 0; i < 4; i++) {
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
+		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
 		}
-		dataBundle.mainStillIndex = 1
+		dataBundle.mainStillIndex = 0
 		
 
 		dataBundles.push(dataBundle)
 		
 		
+		
 
 		return dataBundles
 	}
+	
+	
+	
+	// Selection
+	deselectProjects () {
+		this.state = {
+			selectedProject: null,
+			selectedProjectIndex: null,
+		}
+		
+		this.animatedUpdate()
+	}
+	
 	
 	
 	//
@@ -425,45 +623,37 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
-		
-		var projectsPage = this
-		
-		if (this.state.selectedProject != null) {
-			projectsPage.state = {infoTabHidden: true} // The first thing, no matter what, is to hide the infoTab
-			if (view != this.state.selectedProject) {
-				// If a project is currently open and now we need to open a different one
-				projectsPage.animatedUpdate(null, function() {
-					projectsPage.state = {
+		if (view == this.marginClickDetectors[0] || view == this.marginClickDetectors[1] || view == this.marginClickDetectors[2]) {
+			this.deselectProjects()
+		} else {
+			if (this.state.selectedProject != null) {
+				if (view != this.state.selectedProject) {
+					// If a project is currently open and now we need to open a different one
+					this.state = {
 						selectedProject: view,
-						selectedProjectIndex: projectsPage.projectStillViews.indexOf(view)
+						selectedProjectIndex: this.projectPanes.indexOf(view)
 					}
-					projectsPage.animatedUpdate(null, function() {
-						projectsPage.updateAllUI()
-						
-						projectsPage.state = {infoTabHidden: false}
-						projectsPage.animatedUpdate()
-					})
-				})
-			} else {
-				// If the currently open project has just been clicked on (close it)
-				projectsPage.animatedUpdate(null, function() {
-					projectsPage.state = {
+					// this.switchCurrentInfoTab()
+					// this.positionCurrentInfoTab()
+					this.animatedUpdate()
+				} else {
+					// If the currently open project has just been clicked on (close it)
+					this.state = {
 						selectedProject: null,
 						selectedProjectIndex: null,
 					}
-					projectsPage.animatedUpdate()
-				})
+					this.animatedUpdate()
+				}
+			} else {
+				// If no project is currently open and a project has just been selected
+				this.state = {
+					selectedProject: view,
+					selectedProjectIndex: this.projectPanes.indexOf(view),
+				}
+				// this.switchCurrentInfoTab()
+				// this.positionCurrentInfoTab()
+				this.animatedUpdate()
 			}
-		} else {
-			// If no project is currently open and a project has just been selected
-			projectsPage.state = {
-				selectedProject: view,
-				selectedProjectIndex: projectsPage.projectStillViews.indexOf(view),
-			}
-			projectsPage.animatedUpdate(null, function() {
-				projectsPage.state = {infoTabHidden: false}
-				projectsPage.animatedUpdate()
-			})
 		}
 	}
 	

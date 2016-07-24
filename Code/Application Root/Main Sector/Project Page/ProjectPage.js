@@ -13,10 +13,14 @@ class ProjectPage extends JABView {
 			reservedTopBuffer: 0,
 			vimeoViewMinimumDistanceFromHeader: 40,
 			vimeoViewVerticalAdjustment: -4,
+			
+			
+			bufferBetweenVimeoViewAndTitleLabel: 10,
 		}
 		
 		// UI
 		this.vimeoView = new JABVimeoView('VimeoView')
+		this.titleLabel = new UILabel('TitleLabel')
 		
 	}
 	
@@ -40,11 +44,16 @@ class ProjectPage extends JABView {
 	// Add
 	addAllUI () {
 		this.addVimeoView()
+		this.addTitleLabel()
 	}
 	
 	
 	addVimeoView () {
 		this.addSubview(this.vimeoView)
+	}
+	
+	addTitleLabel () {
+		this.addSubview(this.titleLabel)
 	}
 	
 	
@@ -57,6 +66,10 @@ class ProjectPage extends JABView {
 		
 		this.configureVimeoView()
 		this.positionVimeoView()
+		
+		
+		this.configureTitleLabel()
+		this.positionTitleLabel()
 	}
 	
 	
@@ -72,6 +85,8 @@ class ProjectPage extends JABView {
 		} else {
 			view.vimeoId = null
 		}
+		
+		view.loadingGif = new LoadingGif()
 		
 	}
 	
@@ -102,6 +117,42 @@ class ProjectPage extends JABView {
 	
 	
 	
+	
+	
+	// Title Label
+	configureTitleLabel () {
+		
+		var view = this.titleLabel
+		var dataBundle = this.state.projectDataBundle
+		
+		view.positionDuration = 0
+		
+		if (dataBundle != null) {
+			
+			view.text = dataBundle.title
+			view.fontFamily = 'siteFont'
+			view.fontSize = 20
+			view.textColor = 'white'
+			view.letterSpacing = 2
+		}
+	}
+	
+	positionTitleLabel () {
+		
+		var view = this.titleLabel
+		var newFrame = new CGRect()
+		var size = view.font.sizeOfString(view.text)
+							
+		newFrame.size.width = size.width
+		newFrame.size.height = size.height
+
+		newFrame.origin.x = this.vimeoView.x
+		newFrame.origin.y = this.vimeoView.bottom + this.parameters.bufferBetweenVimeoViewAndTitleLabel
+							
+		view.frame = newFrame
+	}
+	
+	
 	//
 	// Event Listeners
 	//
@@ -114,5 +165,11 @@ class ProjectPage extends JABView {
 	//
 	// Delegate
 	//
+	
+	
+	// JABVimeoView
+	vimeoViewDidFinishLoading (vimeoView) {
+		console.log('project finished loading!')
+	}
 	
 }

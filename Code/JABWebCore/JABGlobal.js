@@ -5,7 +5,7 @@ function updateSizeClassForWidth (width) {
 		if (width >= 0) {
 			if (width < 768) {
 				sizeClass = 'xs'
-			} else if (width < 1030) {
+			} else if (width < 1035) {
 				sizeClass = 's'
 			} else if (width < 1200) {
 				sizeClass = 'm'
@@ -21,6 +21,27 @@ function updateSizeClassForWidth (width) {
 }
 
 
+var websiteIsResizing = false
+
+
+
+// Object Census
+viewHierarchy = []
+function enumerateViewHierarchy () {
+	console.log('Enumerating View Hierarchy...')
+	for (var i = 0; i < viewHierarchy.length; i++) {
+		if (typeof viewHierarchy[i].id == 'string') {
+			var indent = '    '
+			var whiteSpace = ''
+			for (var j = 0; j < viewHierarchy[i].id.split('---').length - 1; j++) {
+				whiteSpace += indent
+			}
+			console.log(whiteSpace + viewHierarchy[i].id)
+		} else {
+			console.log(viewHierarchy[i].id)
+		}
+	}
+}
 
 // Property Support
 function isPropertySupported(property)

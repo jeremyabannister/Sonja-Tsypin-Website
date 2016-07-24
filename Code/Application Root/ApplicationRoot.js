@@ -6,12 +6,12 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// State
 		this.laboratoryEnabled = false
-		this.contentWidth = {'xs': 700, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
+		this.contentWidth = {'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
 		this.state = {
 			headerBackdropHidden: false,
 		}
 		
-		this.websiteClosed = false
+		this.websiteClosed = true
 		this.websiteClosedLocked = false
 
 		// Parameters
@@ -23,15 +23,12 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.laboratory = new Laboratory('Laboratory')
 		} else {
 			
-			
 			// UI
 			this.mainSector = new MainSector('MainSector')
 			this.headerBackdrop = new JABView('HeaderBackdrop')
 			this.homeSector = new HomeSector('HomeSector')
 			this.header = new Header('Header')
 		}
-		
-		
 		
 	}
 	
@@ -145,6 +142,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		this.mainSector.backgroundColor = 'black'
 		this.mainSector.parameters.heightOfHeader = this.header.logo.bottom
 		this.mainSector.state.currentlyActive = !this.websiteClosed
+		this.mainSector.positionDuration = 0
 		
 		this.mainSector.updateAllUI()
 	}
@@ -191,6 +189,12 @@ class ApplicationRoot extends JABApplicationRoot {
 	configureHomeSector () {
 		this.homeSector.backgroundColor = 'black'
 		
+		if (websiteIsResizing) {
+			this.homeSector.positionDuration = 0
+		} else {
+			this.homeSector.positionDuration = 800
+		}
+		
 		this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
 		this.homeSector.currentlyActive = this.websiteClosed
 		this.homeSector.updateAllUI()
@@ -213,6 +217,8 @@ class ApplicationRoot extends JABApplicationRoot {
 		this.header.websiteClosed = this.websiteClosed
 		this.header.selectedMenuIndex = this.mainSector.state.pageIndex
 		this.header.configureDuration = 0
+		this.header.clickable = true
+		
 		this.header.updateAllUI()
 		
 	}
@@ -363,6 +369,17 @@ class ApplicationRoot extends JABApplicationRoot {
 	//
 	// Delegate
 	//
+	
+	
+	// JABView
+	viewWasClicked (view) {
+		
+		if (view == this.header) {
+			this.mainSector.closeCurrentlyOpenProject()
+			this.mainSector.projectsPage.deselectProjects()
+		}
+		
+	}
 	
 	
 	// Main Sector

@@ -21,13 +21,18 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ApplicationRoot).call(this, customId));
 
 		_this.laboratoryEnabled = false;
-		_this.contentWidth = { 'xs': 700, 's': 780, 'm': 1000, 'l': 1000 };
+		_this.contentWidth = { 'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
+		_this.state = {
+			headerBackdropHidden: false
+		};
 
 		_this.websiteClosed = true;
 		_this.websiteClosedLocked = false;
 
 		// Parameters
-		_this.heightOfHeader = 110;
+		_this.parameters = {
+			heightOfHeader: 110
+		};
 
 		if (_this.laboratoryEnabled) {
 			_this.laboratory = new Laboratory('Laboratory');
@@ -40,15 +45,24 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			_this.header = new Header('Header');
 		}
 
-		// Initialize
 		return _this;
 	}
 
 	//
-	// Getters and Setters
+	// Init
 	//
 
 	_createClass(ApplicationRoot, [{
+		key: 'init',
+		value: function init() {
+			_get(Object.getPrototypeOf(ApplicationRoot.prototype), 'init', this).call(this);
+		}
+
+		//
+		// Getters and Setters
+		//
+
+	}, {
 		key: 'addAllUI',
 
 
@@ -127,8 +141,8 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		key: 'configureMainSector',
 		value: function configureMainSector() {
 			this.mainSector.backgroundColor = 'black';
-			this.mainSector.heightOfHeader = this.heightOfHeader;
-			this.mainSector.currentlyActive = !this.websiteClosed;
+			this.mainSector.parameters.heightOfHeader = this.header.logo.bottom;
+			this.mainSector.state.currentlyActive = !this.websiteClosed;
 
 			this.mainSector.updateAllUI();
 		}
@@ -144,26 +158,27 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		key: 'configureHeaderBackdrop',
 		value: function configureHeaderBackdrop() {
 
-			if (isPropertySupported('-webkit-backdrop-filter')) {
-				this.headerBackdrop.backgroundColor = 'rgba(0, 0, 0, 0.6)';
-				this.headerBackdrop.backdropBlur = 10;
+			var view = this.headerBackdrop;
+			view.backgroundColor = 'black';
+
+			if (this.state.headerBackdropHidden) {
+				view.opacity = 0;
 			} else {
-				this.headerBackdrop.backgroundColor = 'black';
+				view.opacity = 1;
 			}
 		}
 	}, {
 		key: 'positionHeaderBackdrop',
 		value: function positionHeaderBackdrop() {
 
-			var headerBackdropExtension = 0;
 			var view = this.headerBackdrop;
 			var newFrame = new CGRect();
 
 			newFrame.size.width = this.width;
-			newFrame.size.height = this.heightOfHeader + headerBackdropExtension;
+			newFrame.size.height = this.parameters.heightOfHeader;
 
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
-			newFrame.origin.y = -headerBackdropExtension;
+			newFrame.origin.y = 0;
 
 			view.frame = newFrame;
 		}
@@ -198,15 +213,22 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		value: function configureHeader() {
 
 			this.header.websiteClosed = this.websiteClosed;
-			this.header.selectedMenuIndex = this.mainSector.stateIndex;
+			this.header.selectedMenuIndex = this.mainSector.state.pageIndex;
 			this.header.configureDuration = 0;
+			this.header.clickable = true;
+
 			this.header.updateAllUI();
 		}
 	}, {
 		key: 'positionHeader',
 		value: function positionHeader() {
-			this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader);
+			this.header.frame = new CGRect(0, 0, this.width, this.parameters.heightOfHeader);
+
+			this.configureMainSector(); // This is done because the mainSector's heightOfHeader parameter is dependent on the logo in the header which doesn't get positioned until after the parameter is given to the mainSector
 		}
+
+		// Laboratory
+
 	}, {
 		key: 'configureLaboratory',
 		value: function configureLaboratory() {
@@ -268,7 +290,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
 					}, function () {
 						applicationRoot.homePageHidden = true;
-						applicationRoot.mainSector.scrollable = true;
+						applicationRoot.mainSector.state.scrollable = true;
 						applicationRoot.updateAllUI();
 					});
 				}
@@ -297,7 +319,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 						positionDuration: duration,
 						positionEasingFunction: 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
 					}, function () {
-						applicationRoot.mainSector.scrollable = false;
+						applicationRoot.mainSector.state.scrollable = false;
 						applicationRoot.updateAllUI();
 					});
 				}
@@ -321,12 +343,12 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			if (this.websiteClosed) {
 				if (amount < 0) {
-					this.openWebsite(800);
+					this.openWebsite();
 				}
 			} else {
 				if (amount > 0) {
 					if (this.mainSector.readyToClose) {
-						this.closeWebsite(800);
+						this.closeWebsite();
 					}
 				}
 			}
@@ -335,6 +357,37 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		//
 		// Delegate
 		//
+
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+
+			if (view == this.header) {
+				this.mainSector.closeCurrentlyOpenProject();
+			}
+		}
+
+		// Main Sector
+
+	}, {
+		key: 'mainSectorWantsToDisplayProject',
+		value: function mainSectorWantsToDisplayProject(mainSector) {
+
+			this.state = {
+				headerBackdropHidden: true
+			};
+
+			this.animatedUpdate();
+		}
+	}, {
+		key: 'mainSectorWantsToCloseProject',
+		value: function mainSectorWantsToCloseProject(mainSector) {
+			this.state = { headerBackdropHidden: false };
+
+			this.animatedUpdate();
+		}
 
 		// Home Sector
 
@@ -355,7 +408,10 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		key: 'headerDidSelectPage',
 		value: function headerDidSelectPage(pageIndex) {
 
-			this.mainSector.stateIndex = pageIndex;
+			this.mainSector.state = {
+				pageIndex: pageIndex,
+				projectOpen: false
+			};
 
 			if (this.websiteClosed) {
 				this.openWebsite();

@@ -24,6 +24,9 @@ var UILabel = function (_JABView) {
 		_this.font = new UIFont();
 		_this.textColor = '#000000';
 		_this.textAlign = null;
+		_this.wordBreak = null;
+
+		_this.hyphenate = false;
 
 		// UI
 		return _this;
@@ -106,6 +109,50 @@ var UILabel = function (_JABView) {
 			if (newTextAlign != null) {
 				$(this.selector).css({
 					'text-align': newTextAlign
+				});
+			}
+		}
+
+		// Word Break
+
+	}, {
+		key: 'wordBreak',
+		get: function get() {
+			return this._wordBreak;
+		},
+		set: function set(newWordBreak) {
+			this._wordBreak = newWordBreak;
+
+			if (newWordBreak != null) {
+				$(this.selector).css({
+					'word-break': newWordBreak
+				});
+			}
+		}
+
+		// Hyphenate
+
+	}, {
+		key: 'hyphenate',
+		get: function get() {
+			return this._hyphenate;
+		},
+		set: function set(newHyphenate) {
+			this._hyphenate = newHyphenate;
+
+			if (newHyphenate) {
+				$(this.selector).css({
+					'-webkit-hyphens': 'auto',
+					'-moz-hyphens': 'auto',
+					'-ms-hyphens': 'auto',
+					'hyphens': 'auto'
+				});
+			} else {
+				$(this.selector).css({
+					'-webkit-hyphens': 'none',
+					'-moz-hyphens': 'none',
+					'-ms-hyphens': 'none',
+					'hyphens': 'none'
 				});
 			}
 		}

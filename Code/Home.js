@@ -33,8 +33,11 @@ $(window).load(function() {
 })
 
 $(window).resize(function() {
-
+  
+  console.log('1')
+  websiteIsResizing = true
 	positionApplicationRoot()
+  websiteIsResizing = false
 
 })
 

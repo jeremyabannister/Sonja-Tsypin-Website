@@ -31,6 +31,7 @@ var JABView = function () {
 
 		// Animation
 		this.disableAnimationsTimer = setTimeout(function () {}, 0);
+		this.clipPathSetTimer = setTimeout(function () {}, 0);
 
 		this.masterAnimationOptions = { // Master animation options retains the information about which slots should inherit (indicated by null) and which are fixed to a value, while animationOptions holds the actual current values to be used for animation
 			configureDuration: null,
@@ -39,7 +40,11 @@ var JABView = function () {
 
 			positionDuration: null,
 			positionEasingFunction: null,
-			positionDelay: null
+			positionDelay: null,
+
+			shapeDuration: null,
+			shapeEasingFunction: null,
+			shapeDelay: null
 		};
 		this.animationOptions = {
 			configureDuration: null,
@@ -48,12 +53,13 @@ var JABView = function () {
 
 			positionDuration: null,
 			positionEasingFunction: null,
-			positionDelay: null
+			positionDelay: null,
+
+			shapeDuration: null,
+			shapeEasingFunction: null,
+			shapeDelay: null
 		};
 		this.willingToInheritAnimationOptions = true;
-
-		// Position
-		this.frame = new CGRect();
 
 		// Configuration
 		this.opacity = 1;
@@ -65,6 +71,14 @@ var JABView = function () {
 		this.position = 'absolute';
 		this.overflow = 'visible';
 		this.cursor = 'auto';
+		this.animation = 'none';
+
+		// Position
+		this.frame = new CGRect();
+		this.angle = 0;
+
+		// Shape
+		this.clipPath = 'none';
 
 		// Other
 		this.clickable = false;
@@ -267,6 +281,24 @@ var JABView = function () {
 
 			return true;
 		}
+	}, {
+		key: 'subviewIsBelowSubview',
+		value: function subviewIsBelowSubview(subview1, subview2) {
+			return this.indexOfSubview(subview1) < this.indexOfSubview(subview2);
+		}
+	}, {
+		key: 'subviewIsBelowSubviews',
+		value: function subviewIsBelowSubviews(subview, subviews) {
+			if (subviews instanceof Array) {
+				for (var i = 0; i < subviews.length; i++) {
+					if (!this.subviewIsBelowSubview(subview, subviews[i])) {
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
 
 		//
 		// Animation
@@ -313,13 +345,21 @@ var JABView = function () {
 			});
 		}
 
+		//
 		// Computed Properties
+		//
+
+		// Configure
 
 	}, {
 		key: 'stopOpacity',
 
 
+		//
 		// Stopping Animations
+		//
+
+		// Configure
 		value: function stopOpacity() {
 			$(this.selector).css({
 				opacity: this.computedOpacity
@@ -364,6 +404,9 @@ var JABView = function () {
 			this.stopBackgroundColor();
 			this.stopBorderRadius();
 		}
+
+		// Position
+
 	}, {
 		key: 'stopX',
 		value: function stopX() {
@@ -410,14 +453,52 @@ var JABView = function () {
 			this.stopTranslation();
 			this.stopResizing();
 		}
+
+		// Shape
+
+	}, {
+		key: 'stopClipPath',
+		value: function stopClipPath() {
+			clearTimeout(this.clipPathSetTimer);
+			$(this.selector).css({
+				'animation-play-state': 'paused',
+				'-webkit-animation-play-state': 'paused'
+			});
+			$(this.selector).css({
+				'clip-path': this.computedClipPath,
+				'-webkit-clip-path': this.computedClipPath
+			});
+			this._clipPath = new Polygon(this.computedClipPath);
+			this.animation = 'none';
+			$(this.selector).css({
+				'animation-play-state': 'running',
+				'-webkit-animation-play-state': 'running'
+			});
+		}
+	}, {
+		key: 'stopShape',
+		value: function stopShape() {
+			this.stopClipPath();
+		}
 	}, {
 		key: 'stopAllAnimation',
 		value: function stopAllAnimation() {
 			this.stopConfiguration();
 			this.stopPositioning();
+			this.stopShape();
 		}
 
-		// Frame
+		//
+		//
+		// Configuration
+		//
+		//
+
+		//
+		// Animatable
+		//
+
+		// Opacity
 
 	}, {
 		key: 'red',
@@ -503,17 +584,19 @@ var JABView = function () {
 
 	}, {
 		key: 'animatedUpdate',
-		value: function animatedUpdate(options, configureCompletion, positionCompletion) {
+		value: function animatedUpdate(options, configureCompletion, positionCompletion, shapeCompletion) {
 
 			if (typeof options == 'number') {
 				options = {
 					configureDuration: options,
-					positionDuration: options
+					positionDuration: options,
+					shapeDuration: options
 				};
 			} else if (options == null) {
 				options = {
 					configureDuration: defaultAnimationDuration,
-					positionDuration: defaultAnimationDuration
+					positionDuration: defaultAnimationDuration,
+					shapeDuration: defaultAnimationDuration
 				};
 			}
 
@@ -524,6 +607,7 @@ var JABView = function () {
 
 			var longestConfigureTime = this.longestConfigureAnimationTimeOfSelfAndSubviews();
 			var longestPositionTime = this.longestPositionAnimationTimeOfSelfAndSubviews();
+			var longestShapeTime = this.longestShapeAnimationTimeOfSelfAndSubviews();
 			var disableDuration = greaterOfTwo(longestConfigureTime, longestPositionTime);
 
 			var thisView = this;
@@ -535,7 +619,11 @@ var JABView = function () {
 
 					positionDuration: 0,
 					positionEasingFunction: 'ease-in-out',
-					positionDelay: 0
+					positionDelay: 0,
+
+					shapeDuration: 0,
+					shapeEasingFunction: 'ease-in-out',
+					shapeDelay: 0
 				});
 			}, disableDuration);
 
@@ -545,6 +633,10 @@ var JABView = function () {
 
 			if (positionCompletion == null) {
 				positionCompletion = function positionCompletion() {};
+			}
+
+			if (shapeCompletion == null) {
+				shapeCompletion = function shapeCompletion() {};
 				longestConfigureTime = disableDuration; // If there is only one completion passed then ensure that it occurs at the end of all animations
 			}
 
@@ -555,6 +647,10 @@ var JABView = function () {
 			setTimeout(function () {
 				positionCompletion();
 			}, longestPositionTime);
+
+			setTimeout(function () {
+				shapeCompletion();
+			}, longestShapeTime);
 		}
 	}, {
 		key: 'longestConfigureAnimationTimeOfSelfAndSubviews',
@@ -574,6 +670,17 @@ var JABView = function () {
 			var longestTime = (this.animationOptions.positionDelay || 0) + (this.animationOptions.positionDuration || 0);
 			for (var i = 0; i < this.subviews.length; i++) {
 				longestTime = greaterOfTwo(longestTime, this.subviews[i].longestPositionAnimationTimeOfSelfAndSubviews());
+			}
+
+			return longestTime;
+		}
+	}, {
+		key: 'longestShapeAnimationTimeOfSelfAndSubviews',
+		value: function longestShapeAnimationTimeOfSelfAndSubviews() {
+
+			var longestTime = (this.animationOptions.shapeDelay || 0) + (this.animationOptions.shapeDuration || 0);
+			for (var i = 0; i < this.subviews.length; i++) {
+				longestTime = greaterOfTwo(longestTime, this.subviews[i].longestShapeAnimationTimeOfSelfAndSubviews());
 			}
 
 			return longestTime;
@@ -628,6 +735,9 @@ var JABView = function () {
 			this._animationOptions = newAnimationOptions;
 			this.updateTransition();
 		}
+
+		// Configure Animation Options
+
 	}, {
 		key: 'configureDuration',
 		get: function get() {
@@ -655,6 +765,9 @@ var JABView = function () {
 			this.masterAnimationOptions.configureDelay = newConfigureDelay;
 			this.animationOptions.configureDelay = newConfigureDelay;
 		}
+
+		// Position Animation Options
+
 	}, {
 		key: 'positionDuration',
 		get: function get() {
@@ -681,6 +794,36 @@ var JABView = function () {
 		set: function set(newPositionDelay) {
 			this.masterAnimationOptions.positionDelay = newPositionDelay;
 			this.animationOptions.positionDelay = newPositionDelay;
+		}
+
+		// Shape Animation Options
+
+	}, {
+		key: 'shapeDuration',
+		get: function get() {
+			return this.animationOptions.shapeDuration;
+		},
+		set: function set(newShapeDuration) {
+			this.masterAnimationOptions.shapeDuration = newShapeDuration;
+			this.animationOptions.shapeDuration = newShapeDuration;
+		}
+	}, {
+		key: 'shapeEasingFunction',
+		get: function get() {
+			return this.animationOptions.shapeEasingFunction;
+		},
+		set: function set(newShapeEasingFunction) {
+			this.masterAnimationOptions.shapeEasingFunction = newShapeEasingFunction;
+			this.animationOptions.shapeEasingFunction = newShapeEasingFunction;
+		}
+	}, {
+		key: 'shapeDelay',
+		get: function get() {
+			return this.animationOptions.shapeDelay;
+		},
+		set: function set(newShapeDelay) {
+			this.masterAnimationOptions.shapeDelay = newShapeDelay;
+			this.animationOptions.shapeDelay = newShapeDelay;
 		}
 
 		// State
@@ -759,11 +902,16 @@ var JABView = function () {
 		get: function get() {
 			return $(this.selector).css('-webkit-backdrop-blur');
 		}
+
+		// Position
+
 	}, {
 		key: 'computedX',
 		get: function get() {
+
 			var transformString = $(this.selector).css('transform');
-			if (transformString != 'none') {
+			if (transformString != 'none' && transformString != undefined) {
+
 				return $(this.selector).css('transform').split('(')[1].split(')')[0].split(',')[4];
 			}
 			return 0;
@@ -772,7 +920,7 @@ var JABView = function () {
 		key: 'computedY',
 		get: function get() {
 			var transformString = $(this.selector).css('transform');
-			if (transformString != 'none') {
+			if (transformString != 'none' && transformString != undefined) {
 				return $(this.selector).css('transform').split('(')[1].split(')')[0].split(',')[5];
 			}
 			return 0;
@@ -787,126 +935,14 @@ var JABView = function () {
 		get: function get() {
 			return $(this.selector).css('height');
 		}
-	}, {
-		key: 'frame',
-		get: function get() {
-			if (this._frame != null) {
-				return new CGRect(this._frame.origin.x, this._frame.origin.y, this._frame.size.width, this._frame.size.height);
-			}
-			return new CGRect();
-		},
-		set: function set(newFrame) {
 
-			var scaled = newFrame.size.width != this.width || newFrame.size.height != this.height;
-			var moved = newFrame.origin.x != this.x || newFrame.origin.y != this.y;
-			var changed = moved || scaled;
-
-			this._frame = newFrame;
-
-			if (changed) {
-
-				this.updateTransition();
-				this.stopPositioning();
-				$(this.selector).css({
-
-					transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)',
-
-					width: this.width,
-					height: this.height
-				});
-
-				if (scaled) {
-					this.updateAllUI();
-				}
-			}
-		}
-
-		// X
+		// Shape
 
 	}, {
-		key: 'x',
+		key: 'computedClipPath',
 		get: function get() {
-			return this.frame.origin.x;
-		},
-		set: function set(newX) {
-			this.frame = new CGRect(newX, this.frame.origin.y, this.frame.size.width, this.frame.size.height);
+			return $(this.selector).css('-webkit-clip-path');
 		}
-
-		// Y
-
-	}, {
-		key: 'y',
-		get: function get() {
-			return this.frame.origin.y;
-		},
-		set: function set(newY) {
-			this.frame = new CGRect(this.frame.origin.x, newY, this.frame.size.width, this.frame.size.height);
-		}
-
-		// Width
-
-	}, {
-		key: 'width',
-		get: function get() {
-			return this.frame.size.width;
-		},
-		set: function set(newWidth) {
-			this.frame = new CGRect(this.frame.origin.x, this.frame.origin.y, newWidth, this.frame.size.height);
-		}
-
-		// Height
-
-	}, {
-		key: 'height',
-		get: function get() {
-			return this.frame.size.height;
-		},
-		set: function set(newHeight) {
-			this.frame = new CGRect(this.frame.origin.x, this.frame.origin.y, this.frame.size.width, newHeight);
-		}
-
-		// Left
-
-	}, {
-		key: 'left',
-		get: function get() {
-			return this.x;
-		}
-
-		// Top
-
-	}, {
-		key: 'top',
-		get: function get() {
-			return this.y;
-		}
-
-		// Right
-
-	}, {
-		key: 'right',
-		get: function get() {
-			return this.x + this.width;
-		}
-
-		// Bottom
-
-	}, {
-		key: 'bottom',
-		get: function get() {
-			return this.y + this.height;
-		}
-
-		// Bounds
-
-	}, {
-		key: 'bounds',
-		get: function get() {
-			return new CGRect(0, 0, this.width, this.height);
-		}
-
-		// Opacity
-
 	}, {
 		key: 'opacity',
 		get: function get() {
@@ -992,6 +1028,10 @@ var JABView = function () {
 			});
 		}
 
+		//
+		// Non-Animatable
+		//
+
 		// ZIndex
 
 	}, {
@@ -1053,6 +1093,233 @@ var JABView = function () {
 			$(this.selector).find('*').css({
 				'cursor': newCursor
 			});
+		}
+
+		// Animation
+
+	}, {
+		key: 'animation',
+		get: function get() {
+			return this._animation;
+		},
+		set: function set(newAnimation) {
+			this._animation = newAnimation;
+
+			$(this.selector).css({
+				'animation': newAnimation
+			});
+		}
+
+		//
+		//
+		// Position
+		//
+		//
+
+	}, {
+		key: 'frame',
+		get: function get() {
+			if (this._frame != null) {
+				return new CGRect(this._frame.origin.x, this._frame.origin.y, this._frame.size.width, this._frame.size.height);
+			}
+			return new CGRect();
+		},
+		set: function set(newFrame) {
+
+			var scaled = newFrame.size.width != this.width || newFrame.size.height != this.height;
+			var moved = newFrame.origin.x != this.x || newFrame.origin.y != this.y;
+			var changed = moved || scaled;
+
+			this._frame = newFrame;
+
+			if (changed) {
+
+				this.updateTransition();
+				this.stopPositioning();
+
+				var rotationTransform = '';
+				if (this.angle != null && this.angle != 0) {
+					rotationTransform = ' rotate(' + this.angle + 'deg)';
+				}
+
+				$(this.selector).css({
+
+					transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)' + rotationTransform,
+
+					width: this.width,
+					height: this.height
+				});
+
+				if (scaled) {
+					this.updateAllUI();
+				}
+			}
+		}
+
+		// X
+
+	}, {
+		key: 'x',
+		get: function get() {
+			return this.frame.origin.x;
+		},
+		set: function set(newX) {
+			this.frame = new CGRect(newX, this.frame.origin.y, this.frame.size.width, this.frame.size.height);
+		}
+
+		// Y
+
+	}, {
+		key: 'y',
+		get: function get() {
+			return this.frame.origin.y;
+		},
+		set: function set(newY) {
+			this.frame = new CGRect(this.frame.origin.x, newY, this.frame.size.width, this.frame.size.height);
+		}
+
+		// Width
+
+	}, {
+		key: 'width',
+		get: function get() {
+			return this.frame.size.width;
+		},
+		set: function set(newWidth) {
+			this.frame = new CGRect(this.frame.origin.x, this.frame.origin.y, newWidth, this.frame.size.height);
+		}
+
+		// Height
+
+	}, {
+		key: 'height',
+		get: function get() {
+			return this.frame.size.height;
+		},
+		set: function set(newHeight) {
+			this.frame = new CGRect(this.frame.origin.x, this.frame.origin.y, this.frame.size.width, newHeight);
+		}
+
+		// Angle
+
+	}, {
+		key: 'angle',
+		get: function get() {
+			return this._angle;
+		},
+		set: function set(newAngle) {
+			var changed = this.angle != newAngle;
+
+			if (changed) {
+
+				this._angle = newAngle;
+				this.updateTransition();
+				var rotationTransform = '';
+				if (this.angle != null && this.angle != 0) {
+					rotationTransform = ' rotate(' + this.angle + 'deg)';
+				}
+
+				$(this.selector).css({
+					transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)' + rotationTransform
+				});
+			}
+		}
+
+		// Left
+
+	}, {
+		key: 'left',
+		get: function get() {
+			return this.x;
+		}
+
+		// Top
+
+	}, {
+		key: 'top',
+		get: function get() {
+			return this.y;
+		}
+
+		// Right
+
+	}, {
+		key: 'right',
+		get: function get() {
+			return this.x + this.width;
+		}
+
+		// Bottom
+
+	}, {
+		key: 'bottom',
+		get: function get() {
+			return this.y + this.height;
+		}
+
+		// Bounds
+
+	}, {
+		key: 'bounds',
+		get: function get() {
+			return new CGRect(0, 0, this.width, this.height);
+		}
+
+		//
+		//
+		// Shape
+		//
+		//
+
+		// Clip Path
+
+	}, {
+		key: 'clipPath',
+		get: function get() {
+			return this._clipPath;
+		},
+		set: function set(newClipPath) {
+
+			this.stopClipPath();
+
+			var changed = true;
+			var sameNumberOfPoints = false;
+			if (this.clipPath instanceof Polygon && newClipPath instanceof Polygon) {
+				changed = !this.clipPath.isEqualToPolygon(newClipPath);
+				if (this.clipPath.points.length == newClipPath.points.length) {
+					sameNumberOfPoints = true;
+				}
+			}
+
+			if (changed) {
+				this.stopClipPath();
+
+				if (this.shapeDuration != 0 && this.shapeDuration != null && this.clipPath != null && sameNumberOfPoints) {
+
+					globalCSSAnimationEngine.addAnimation(this.id, globalCSSAnimationEngine.polygonMorphAnimationStringWithName(this.id, this.clipPath, newClipPath));
+
+					var easingFunction = this.shapeEasingFunction || 'ease-in-out';
+					var delay = this.shapeDelay || 0;
+
+					this.animation = this.id + ' ' + this.shapeDuration + 'ms ' + easingFunction + ' ' + delay + 'ms';
+				}
+
+				var timeoutDuration = 0;
+				if (this.clipPath != null && sameNumberOfPoints) {
+					timeoutDuration = this.longestShapeAnimationTimeOfSelfAndSubviews();
+				}
+
+				this._clipPath = newClipPath;
+
+				var thisView = this;
+				this.clipPathSetTimer = setTimeout(function () {
+					thisView.animation = 'none';
+					$(thisView.selector).css({
+						'clip-path': newClipPath.polygonString,
+						'-webkit-clip-path': newClipPath.polygonString
+					});
+				}, timeoutDuration);
+			}
 		}
 	}, {
 		key: 'clickable',

@@ -20,7 +20,7 @@ var Footer = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Footer).call(this, customId));
 
-		_this.requiredHeight = 70;
+		_this.requiredHeight = 50;
 
 		// Parameters
 		_this.leftBufferForCopyrightLabel = 5;
@@ -107,7 +107,7 @@ var Footer = function (_JABView) {
 
 			var view = this.copyrightLabel;
 
-			view.text = 'SONJA TSYPIN \u00a9 2016';
+			view.text = 'SONJA TSYPIN <span style=\'color:ffff00\'>\u00a9</span> 2016';
 			view.textColor = 'white';
 			view.fontFamily = 'siteFont';
 			view.fontWeight = 'bold';
