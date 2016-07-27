@@ -6,21 +6,21 @@ class ProjectPage extends JABView {
 		// State
 		this.state = {
 			projectDataBundle: null,
+			
+			handlingClick: false,
 		}
 		
 		// Parameters
 		this.parameters = {
 			reservedTopBuffer: 0,
-			vimeoViewMinimumDistanceFromHeader: 40,
-			vimeoViewVerticalAdjustment: -4,
+			projectUIGroupMinimumDistanceFromHeader: 40,
+			projectUIGroupVerticalAdjustment: -4,
 			
 			
-			bufferBetweenVimeoViewAndTitleLabel: 10,
 		}
 		
 		// UI
-		this.vimeoView = new JABVimeoView('VimeoView')
-		this.titleLabel = new UILabel('TitleLabel')
+		this.projectUIGroup = new ProjectUIGroup('ProjectUIGroup')
 		
 	}
 	
@@ -31,6 +31,8 @@ class ProjectPage extends JABView {
 	
 	init () {
 		super.init()
+		
+		this.parameters.rightBufferForNavigationButtons = this.parameters.leftBufferForTitleLabel
 	}
 	
 	
@@ -43,19 +45,14 @@ class ProjectPage extends JABView {
 	
 	// Add
 	addAllUI () {
-		this.addVimeoView()
-		this.addTitleLabel()
+		this.addProjectUIGroup()
+		
 	}
 	
 	
-	addVimeoView () {
-		this.addSubview(this.vimeoView)
+	addProjectUIGroup () {
+		this.addSubview(this.projectUIGroup)
 	}
-	
-	addTitleLabel () {
-		this.addSubview(this.titleLabel)
-	}
-	
 	
 	
 	
@@ -64,51 +61,45 @@ class ProjectPage extends JABView {
 	updateAllUI () {
 		super.updateAllUI()
 		
-		this.configureVimeoView()
-		this.positionVimeoView()
+		
+		this.configureProjectUIGroup()
+		this.positionProjectUIGroup()
 		
 		
-		this.configureTitleLabel()
-		this.positionTitleLabel()
 	}
 	
 	
 	
 	
-	// Vimeo View
-	configureVimeoView () {
+	// Project UI Group
+	configureProjectUIGroup () {
 		
-		var view = this.vimeoView
+		var view = this.projectUIGroup
 		
-		if (this.state.projectDataBundle != null) {
-			view.vimeoId = this.state.projectDataBundle.vimeoId
-		} else {
-			view.vimeoId = null
+		view.state = {
+			projectDataBundle: this.state.projectDataBundle
 		}
 		
-		view.loadingGif = new LoadingGif()
+		view.updateAllUI()
 		
 	}
 	
-	positionVimeoView () {
+	positionProjectUIGroup () {
 		
-		var aspectRatio = (9.0/16.0)
-		if (this.state.projectDataBundle != null) {
-			aspectRatio = this.state.projectDataBundle.vimeoHeightToWidth
-		}
 		
-		var view = this.vimeoView
+		var view = this.projectUIGroup
 		var newFrame = new CGRect()
 
 		newFrame.size.width = applicationRoot.contentWidth * 0.9
-		newFrame.size.height = newFrame.size.width * aspectRatio
+		newFrame.size.height = view.requiredHeight
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = this.parameters.reservedTopBuffer + (this.height - this.parameters.reservedTopBuffer - newFrame.size.height)/2 + this.parameters.vimeoViewVerticalAdjustment
+		newFrame.origin.y = this.parameters.reservedTopBuffer + (this.height - this.parameters.reservedTopBuffer - newFrame.size.height)/2 + this.parameters.projectUIGroupVerticalAdjustment
 		
-		if (newFrame.origin.y < this.parameters.reservedTopBuffer + this.parameters.vimeoViewMinimumDistanceFromHeader) {
-			newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.vimeoViewMinimumDistanceFromHeader
+		if (newFrame.origin.y < this.parameters.reservedTopBuffer + this.parameters.projectUIGroupMinimumDistanceFromHeader) {
+			newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.projectUIGroupMinimumDistanceFromHeader
 		}
+		
 
 
 		view.frame = newFrame
@@ -116,41 +107,6 @@ class ProjectPage extends JABView {
 	}
 	
 	
-	
-	
-	
-	// Title Label
-	configureTitleLabel () {
-		
-		var view = this.titleLabel
-		var dataBundle = this.state.projectDataBundle
-		
-		view.positionDuration = 0
-		
-		if (dataBundle != null) {
-			
-			view.text = dataBundle.title
-			view.fontFamily = 'siteFont'
-			view.fontSize = 20
-			view.textColor = 'white'
-			view.letterSpacing = 2
-		}
-	}
-	
-	positionTitleLabel () {
-		
-		var view = this.titleLabel
-		var newFrame = new CGRect()
-		var size = view.font.sizeOfString(view.text)
-							
-		newFrame.size.width = size.width
-		newFrame.size.height = size.height
-
-		newFrame.origin.x = this.vimeoView.x
-		newFrame.origin.y = this.vimeoView.bottom + this.parameters.bufferBetweenVimeoViewAndTitleLabel
-							
-		view.frame = newFrame
-	}
 	
 	
 	//
@@ -162,6 +118,12 @@ class ProjectPage extends JABView {
 	// Actions
 	//
 	
+	// Playback
+	pause () {
+		this.projectUIGroup.pause()
+	}
+	
+	
 	//
 	// Delegate
 	//
@@ -169,7 +131,17 @@ class ProjectPage extends JABView {
 	
 	// JABVimeoView
 	vimeoViewDidFinishLoading (vimeoView) {
-		console.log('project finished loading!')
+		
+	}
+	
+	
+	// Video Navigation Buttons
+	videoNavigationButtonsPrevButtonWasClicked (videoNavigationButtons) {
+		this.state.handlingClick = true
+	}
+	
+	videoNavigationButtonsNextButtonWasClicked (videoNavigationButtons) {
+		this.state.handlingClick = true
 	}
 	
 }

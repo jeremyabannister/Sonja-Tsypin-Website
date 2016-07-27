@@ -973,8 +973,6 @@ class JABView {
 
 	set frame (newFrame) {
 		
-		this.debugLog('setting frame')
-		
 		
 		var scaled = ((newFrame.size.width != this.width) || (newFrame.size.height != this.height))
 		var moved = ((newFrame.origin.x != this.x) || (newFrame.origin.y != this.y))

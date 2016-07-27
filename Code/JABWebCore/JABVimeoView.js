@@ -68,13 +68,6 @@ class JABVimeoView extends JABView {
 		}
 	}
 	
-	
-	get hello () {
-		this.animatedUpdate()
-		return 'hello'
-	}
-	
-	
 	get loadingGif () {
 		return this._loadingGif
 	}

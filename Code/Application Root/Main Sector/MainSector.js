@@ -67,6 +67,7 @@ class MainSector extends JABView {
 	
 	
 	get readyToClose () {
+		console.log(this.currentlyActivePage, this.currentlyActivePage.state.readyToClose)
 		return (this.currentlyActivePage.state.readyToClose && !this.state.projectOpen)
 	}
 	
@@ -82,8 +83,6 @@ class MainSector extends JABView {
 		this.addProjectsPage()
 		this.addReelPage()
 		this.addProjectPage()
-		
-		// this.addComingSoonView()
 		
 	}
 	
@@ -108,16 +107,6 @@ class MainSector extends JABView {
 	}
 	
 	
-	
-	
-	
-	
-	addComingSoonView () {
-		this.addSubview(this.comingSoonView)
-	}
-	
-
-
 
 
 	
@@ -136,11 +125,6 @@ class MainSector extends JABView {
 		
 		this.configureProjectPage()
 		this.positionProjectPage()
-		
-		
-		
-		// this.configureComingSoonView()
-		// this.positionComingSoonView()
 
 	}
 	
@@ -328,7 +312,9 @@ class MainSector extends JABView {
 			view.opacity = 1
 			view.configureDelay = 0
 			
-			view.state.projectDataBundle = this.state.projectDataBundle
+			view.state = {
+				projectDataBundle: this.state.projectDataBundle,
+			}
 		} else {
 			view.opacity = 0
 			view.configureDelay = 200
@@ -352,59 +338,7 @@ class MainSector extends JABView {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// Coming Soon View
-	configureComingSoonView () {
-		
-		this.comingSoonView.text = 'COMING SOON...'
-		
-		this.comingSoonView.textColor = 'white'
-		this.comingSoonView.fontSize = 30
-		this.comingSoonView.fontFamily = 'siteFont'
-		this.comingSoonView.fontWeight = 'bold'
-		this.comingSoonView.letterSpacing = 1.5
-		
-		if (this.comingSoon && this.state.currentlyActive) {
-			this.comingSoonView.opacity = 1
-		} else {
-			this.comingSoonView.opacity = 0
-		}
-	}
-	
-	positionComingSoonView () {
-		
-		var size = this.comingSoonView.font.sizeOfString(this.comingSoonView.text)
-		var newFrame = new CGRect()
-					
-		newFrame.size.width = size.width
-		newFrame.size.height = size.height
 
-		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = (this.height - newFrame.size.height)/2
-		
-		if (!this.state.currentlyActive) {
-			newFrame.origin.y += 100
-		}
-		
-		if (!this.state.comingSoon) {
-			newFrame.origin.x = this.width
-		}
-					
-		this.comingSoonView.frame = newFrame
-		
-	}
-	
-	
 	
 
 
@@ -436,7 +370,7 @@ class MainSector extends JABView {
 			projectOpen: false,
 			closingProject: true
 		}
-		this.projectPage.vimeoView.pause()
+		this.projectPage.pause()
 		var mainSector = this
 		this.animatedUpdate(null, function() {
 			mainSector.state = {closingProject: false}
@@ -453,7 +387,11 @@ class MainSector extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		if (view == this.projectPage) {
-			this.closeCurrentlyOpenProject()
+			if (this.projectPage.state.handlingClick) {
+				this.projectPage.state.handlingClick = false
+			} else {
+				this.closeCurrentlyOpenProject()
+			}
 		}
 	}
 	
@@ -463,6 +401,7 @@ class MainSector extends JABView {
 			projectOpen: true,
 			projectDataBundle: project,
 		}
+		// this.updateAllUI()
 		this.parent.mainSectorWantsToDisplayProject(this)
 	}
 	

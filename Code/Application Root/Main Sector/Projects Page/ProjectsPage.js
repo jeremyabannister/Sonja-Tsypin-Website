@@ -408,6 +408,7 @@ class ProjectsPage extends JABView {
 		
 		$(this.selector).bind('mousewheel', function(evt) {
 			
+			console.log('scroll detected by project page')
 			if (!projectsPage.state.scrollable) {
 				evt.preventDefault()
 			} else {
@@ -417,15 +418,19 @@ class ProjectsPage extends JABView {
 			clearTimeout(projectsPage.scrollFinishTimer)
 			if (projectsPage.scrollTop <= 0) {
 				projectsPage.scrollFinishTimer = setTimeout(function () {
-					projectsPage.state.readyToClose = true
+					// projectsPage.state.readyToClose = true // Uncomment this line make website closable from projects page
 				}, 50)
 			} else {
+				console.log('setting to false')
 				projectsPage.state.readyToClose = false
 			}
 			
 			if (projectsPage.state.readyToClose && evt.originalEvent.wheelDelta > 0) {
 				evt.preventDefault()
 			}
+			
+			console.log('readyToClose is:', projectsPage.state.readyToClose)
+			
 		})
 	}
 

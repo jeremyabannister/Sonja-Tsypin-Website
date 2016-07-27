@@ -105,7 +105,7 @@ class AboutPage extends JABView {
 	configureBioText () {
 		
 		
-		this.bioText.text = "<span style='color:#ffff00'>Sonja Tsypin</span> is a director and cinematographer based in New York and Los Angeles. Sonja's most recent short film, <span style='color:white'>POWDER ROOM [2016]</span>, recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja's other recent work as Director of Photography includes upcoming narrative feature-length film <span style='color:white'>ANGELS [2016]</span> dir. Audrey Banks, short psychological drama <span style='color:white'>BIRTH DAY [2016]</span> dir. Eva Evans and short horror film <span style='color:white'>THEODORE [2015]</span> dir. Ondine Vi\u00f1ao. Sonja's directing work includes CONTACT ESTERINA [2014], a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and THE MURDER [2014], a short film remake of Alfred Hitchcock\'s \"Blackmail.\" Sonja comes from a background in fine art (view work <a href='http://www.sonjatsypin.weebly.com'>here</a>); she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master's Degree in cinematography."
+		this.bioText.text = "Sonja Tsypin is a director and cinematographer based in New York and Los Angeles. Sonja's most recent short film, <span style='color:white'>Powder Room</span> (2016), recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja's other recent work as Director of Photography includes upcoming narrative feature-length film <span style='color:white'>Angels</span> (2016, dir. Audrey Banks), short psychological drama <span style='color:white'>Birth Day</span> (2016, dir. Eva Evans) and short horror film <span style='color:white'>Theodore</span> (2015, dir. Ondine Vi\u00f1ao). Sonja's directing work includes <a href='https://vimeo.com/126022343'><span style='color:white'>Contact Esterina</span></a> (2014), a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and <span style='color:white'>Found Guilty</span> (2014), a short film remake of Alfred Hitchcock\'s \"Blackmail.\" Sonja comes from a background in fine art (view work <a href='http://www.sonjatsypin.weebly.com'><span style='color:white'>here</span></a>); she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master's Degree in cinematography."
 		this.bioText.textColor = '#999999'
 		this.bioText.fontSize = 14
 		this.bioText.fontFamily = 'siteFont'
@@ -256,6 +256,10 @@ class AboutPage extends JABView {
 				}, 50)
 			} else {
 				aboutPage.state.readyToClose = false
+			}
+			
+			if (aboutPage.state.readyToClose && evt.originalEvent.wheelDelta > 0) {
+				evt.preventDefault()
 			}
 		})
 	}

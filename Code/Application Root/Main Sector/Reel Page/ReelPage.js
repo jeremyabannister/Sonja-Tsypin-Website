@@ -182,7 +182,7 @@ class ReelPage extends JABView {
 				reelPage.state.readyToClose = false
 			}
 			
-			if (reelPage.readyToClose && evt.originalEvent.wheelDelta > 0) {
+			if (reelPage.state.readyToClose && evt.originalEvent.wheelDelta > 0) {
 				evt.preventDefault()
 			}
 		})
