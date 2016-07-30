@@ -1,26 +1,31 @@
 class ProjectPage extends JABView {
 	
-	constructor (customId) {
+	constructor (customId, projectDataBundles) {
 		super(customId)
 		
 		// State
 		this.state = {
-			projectDataBundle: null,
+			projectIndex: 0,
 			
 			handlingClick: false,
 		}
 		
+		this.projectDataBundles = projectDataBundles
+		this.instantUpdate = false
+		
 		// Parameters
 		this.parameters = {
 			reservedTopBuffer: 0,
-			projectUIGroupMinimumDistanceFromHeader: 40,
-			projectUIGroupVerticalAdjustment: -4,
-			
-			
+			projectVideoUIGroupMinimumDistanceFromHeader: 40,
+			projectVideoUIGroupVerticalAdjustment: -4,
 		}
 		
 		// UI
-		this.projectUIGroup = new ProjectUIGroup('ProjectUIGroup')
+		
+		this.projectVideoUIGroups = []
+		for (var i = 0; i < this.projectDataBundles.length; i++) {
+			this.projectVideoUIGroups.push(new ProjectVideoUIGroup('ProjectVideoUIGroup' + i))
+		}
 		
 	}
 	
@@ -32,7 +37,6 @@ class ProjectPage extends JABView {
 	init () {
 		super.init()
 		
-		this.parameters.rightBufferForNavigationButtons = this.parameters.leftBufferForTitleLabel
 	}
 	
 	
@@ -45,13 +49,15 @@ class ProjectPage extends JABView {
 	
 	// Add
 	addAllUI () {
-		this.addProjectUIGroup()
 		
+		this.addProjectVideoUIGroups()
 	}
 	
 	
-	addProjectUIGroup () {
-		this.addSubview(this.projectUIGroup)
+	addProjectVideoUIGroups () {
+		for (var i = 0; i < this.projectVideoUIGroups.length; i++) {
+			this.addSubview(this.projectVideoUIGroups[i])
+		}
 	}
 	
 	
@@ -62,50 +68,70 @@ class ProjectPage extends JABView {
 		super.updateAllUI()
 		
 		
-		this.configureProjectUIGroup()
-		this.positionProjectUIGroup()
-		
+		this.configureProjectVideoUIGroups()
+		this.positionProjectVideoUIGroups()
 		
 	}
 	
 	
 	
 	
-	// Project UI Group
-	configureProjectUIGroup () {
+	
+	// Project Video UI Groups
+	
+	configureProjectVideoUIGroups () {
 		
-		var view = this.projectUIGroup
-		
-		view.state = {
-			projectDataBundle: this.state.projectDataBundle
+		for (var i = 0; i < this.projectVideoUIGroups.length; i++) {
+			var view = this.projectVideoUIGroups[i]
+			
+			view.state = {
+				projectDataBundle: this.projectDataBundles[i]
+			}
+			
+			if (i == 0) {
+				view.state = {firstGroup: true}
+			}
+			
+			if (i == this.projectVideoUIGroups.length - 1) {
+				view.state = {lastGroup: true}
+			}
+			
+			if (this.instantUpdate) {
+				view.positionDuration = 0
+			} else {
+				view.positionDuration = 400
+			}
+			
+			view.updateAllUI()
 		}
 		
-		view.updateAllUI()
-		
 	}
 	
-	positionProjectUIGroup () {
-		
-		
-		var view = this.projectUIGroup
-		var newFrame = new CGRect()
+	positionProjectVideoUIGroups () {
+		for (var i = 0; i < this.projectVideoUIGroups.length; i++) {
+			var view = this.projectVideoUIGroups[i]
+			var newFrame = new CGRect()
+								
+			newFrame.size.width = applicationRoot.contentWidth * 0.9
+			newFrame.size.height = view.requiredHeight
 
-		newFrame.size.width = applicationRoot.contentWidth * 0.9
-		newFrame.size.height = view.requiredHeight
-
-		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = this.parameters.reservedTopBuffer + (this.height - this.parameters.reservedTopBuffer - newFrame.size.height)/2 + this.parameters.projectUIGroupVerticalAdjustment
-		
-		if (newFrame.origin.y < this.parameters.reservedTopBuffer + this.parameters.projectUIGroupMinimumDistanceFromHeader) {
-			newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.projectUIGroupMinimumDistanceFromHeader
+			newFrame.origin.x = (this.width - newFrame.size.width)/2
+			
+			if (i < this.state.projectIndex) {
+				newFrame.origin.x -= this.width
+			} else if (i > this.state.projectIndex) {
+				newFrame.origin.x += this.width
+			}
+			
+			newFrame.origin.y = this.parameters.reservedTopBuffer + (this.height - this.parameters.reservedTopBuffer - newFrame.size.height)/2 + this.parameters.projectVideoUIGroupVerticalAdjustment
+			
+			if (newFrame.origin.y < this.parameters.reservedTopBuffer + this.parameters.projectVideoUIGroupMinimumDistanceFromHeader) {
+				newFrame.origin.y = this.parameters.reservedTopBuffer + this.parameters.projectVideoUIGroupMinimumDistanceFromHeader
+			}
+								
+			view.frame = newFrame
 		}
-		
-
-
-		view.frame = newFrame
-		
 	}
-	
 	
 	
 	
@@ -120,7 +146,7 @@ class ProjectPage extends JABView {
 	
 	// Playback
 	pause () {
-		this.projectUIGroup.pause()
+		this.projectVideoUIGroups[this.state.projectIndex].pause()
 	}
 	
 	
@@ -135,13 +161,29 @@ class ProjectPage extends JABView {
 	}
 	
 	
-	// Video Navigation Buttons
-	videoNavigationButtonsPrevButtonWasClicked (videoNavigationButtons) {
+	// Project UI Group
+	projectVideoUIGroupPrevButtonWasClicked (projectVideoUIGroup) {
 		this.state.handlingClick = true
+		if (this.state.projectIndex != 0) {
+			this.state.projectIndex -= 1
+			if (this.state.projectIndex == 2) {
+				this.state.projectIndex = 1
+			}
+			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
+			this.animatedUpdate()
+		}
 	}
 	
-	videoNavigationButtonsNextButtonWasClicked (videoNavigationButtons) {
+	projectVideoUIGroupNextButtonWasClicked (projectVideoUIGroup) {
 		this.state.handlingClick = true
+		if (this.state.projectIndex != this.projectDataBundles.length - 1) {
+			this.state.projectIndex += 1
+			if (this.state.projectIndex == 2) {
+				this.state.projectIndex = 3
+			}
+			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
+			this.animatedUpdate()
+		}
 	}
 	
 }

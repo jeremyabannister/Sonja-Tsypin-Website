@@ -74,6 +74,8 @@ class JABView {
 		
 		this.zIndex = 0
 		this.position = 'absolute'
+		this.overflowX = 'visible'
+		this.overflowY = 'visible'
 		this.overflow = 'visible'
 		this.cursor = 'auto'
 		this.animation = 'none'
@@ -902,6 +904,38 @@ class JABView {
 
 
 	// Overflow
+	get overflowX () {
+		return this._overflowX
+	}
+	
+	set overflowX (newOverflowX) {
+		if (this.overflowX != newOverflowX) {
+			this._overflowX = newOverflowX
+			
+			$(this.selector).css({
+				'overflow-x': newOverflowX
+			})
+		}
+	}
+	
+	
+	get overflowY () {
+		return this._overflowY
+	}
+	
+	set overflowY (newOverflowY) {
+		if (this.overflowY != newOverflowY) {
+			this._overflowY = newOverflowY
+			
+			$(this.selector).css({
+				'overflow-y': newOverflowY
+			})
+		}
+	}
+	
+	
+	
+	
 	get overflow () {
 		return this._overflow
 	}

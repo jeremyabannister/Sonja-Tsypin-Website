@@ -8,7 +8,6 @@ class ReelPage extends JABView {
 			readyToClose: true
 		}
 		this.currentlyActive = null
-		this.comingSoon = false
 		
 		this.scrollable = false
 		this.scrollFinishTimer

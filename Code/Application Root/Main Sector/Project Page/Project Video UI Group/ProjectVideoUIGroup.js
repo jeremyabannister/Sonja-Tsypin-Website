@@ -1,4 +1,4 @@
-class ProjectUIGroup extends JABView {
+class ProjectVideoUIGroup extends JABView {
 	
 	constructor (customId) {
 		super(customId)
@@ -6,7 +6,9 @@ class ProjectUIGroup extends JABView {
 		// State
 		this.requiredHeight = 1000
 		this.state = {
-			projectDataBundle: null
+			projectDataBundle: null,
+			firstGroup: false,
+			lastGroup: false,
 		}
 		
 		// Parameters
@@ -96,7 +98,9 @@ class ProjectUIGroup extends JABView {
 			view.vimeoId = null
 		}
 		
-		view.loadingGif = new LoadingGif()
+		if (view.loadingGif == null) {
+			view.loadingGif = new LoadingGif()
+		}
 		
 	}
 	
@@ -166,6 +170,9 @@ class ProjectUIGroup extends JABView {
 	configureNavigationButtons () {
 		var view = this.navigationButtons
 		
+		view.state.firstGroup = this.state.firstGroup
+		view.state.lastGroup = this.state.lastGroup
+		
 		view.positionDuration = 0
 	}
 	
@@ -207,5 +214,15 @@ class ProjectUIGroup extends JABView {
 	//
 	// Delegate
 	//
+	
+	// Video Navigation Buttons
+	videoNavigationButtonsPrevButtonWasClicked (videoNavigationButtons) {
+		this.parent.projectVideoUIGroupPrevButtonWasClicked(this)
+	}
+	
+	videoNavigationButtonsNextButtonWasClicked (videoNavigationButtons) {
+		this.parent.projectVideoUIGroupNextButtonWasClicked(this)
+	}
+	
 	
 }

@@ -1,6 +1,6 @@
 class MainSector extends JABView {
 
-	constructor (customId) {
+	constructor (customId, projectDataBundles) {
 		super(customId)
 
 
@@ -10,12 +10,15 @@ class MainSector extends JABView {
 			pageIndex: 0,
 			projectOpen: false,
 			closingProject: false,
+			
 			projectDataBundle: null,
+			selectedProjectIndex: null,
+			
 			scrollable: false,
 			
-			comingSoon: true,
 		}
 		
+		this.projectDataBundles = projectDataBundles
 
 		// Parameters
 		this.parameters = {
@@ -24,9 +27,9 @@ class MainSector extends JABView {
 
 		// UI
 		this.aboutPage = new AboutPage('AboutPage')
-		this.projectsPage = new ProjectsPage('ProjectsPage')
+		this.projectsPage = new ProjectsPage('ProjectsPage', this.projectDataBundles)
 		this.reelPage = new ReelPage('ReelPage')
-		this.projectPage = new ProjectPage('ProjectPage')
+		this.projectPage = new ProjectPage('ProjectPage', this.projectDataBundles)
 		
 	}
 
@@ -67,7 +70,6 @@ class MainSector extends JABView {
 	
 	
 	get readyToClose () {
-		console.log(this.currentlyActivePage, this.currentlyActivePage.state.readyToClose)
 		return (this.currentlyActivePage.state.readyToClose && !this.state.projectOpen)
 	}
 	
@@ -148,7 +150,12 @@ class MainSector extends JABView {
 				this.bringPageToFront(view)
 			}
 			view.scrollable = this.state.scrollable
-			setComingSoon(view.comingSoon)
+			
+			if (this.state.projectOpen) {
+				view.blur = 20
+			} else {
+				view.blur = 0
+			}
 			
 			if (this.state.currentlyActive) {
 				view.opacity = 1
@@ -187,6 +194,8 @@ class MainSector extends JABView {
 		view.backgroundColor = 'black'
 		view.overflow = 'auto'
 		view.parameters = {reservedTopBuffer: this.parameters.heightOfHeader}
+		view.projectDataBundles = this.projectDataBundles
+		
 		
 		if (this.currentlyActivePage == view) {
 			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
@@ -194,9 +203,6 @@ class MainSector extends JABView {
 			}
 			
 			view.state.scrollable = this.state.scrollable
-			if (view.state.comingSoon) {
-				view.state.scrollable = false
-			}
 			
 			if (this.state.projectOpen) {
 				view.blur = 20
@@ -303,7 +309,9 @@ class MainSector extends JABView {
 		
 		view.clickable = true
 		view.parameters.reservedTopBuffer = this.parameters.heightOfHeader
-		view.overflow = 'auto'
+		view.overflowX = 'hidden'
+		view.overflowY = 'auto'
+		
 		view.configureDuration = 200
 		view.backgroundColor = 'rgba(0,0,0, 0.6)'
 		
@@ -313,8 +321,13 @@ class MainSector extends JABView {
 			view.configureDelay = 0
 			
 			view.state = {
-				projectDataBundle: this.state.projectDataBundle,
+				projectIndex: this.state.selectedProjectIndex,
 			}
+			
+			view.instantUpdate = true
+			view.updateAllUI()
+			view.instantUpdate = false
+			
 		} else {
 			view.opacity = 0
 			view.configureDelay = 200
@@ -349,6 +362,7 @@ class MainSector extends JABView {
 	// Actions
 	//
 	
+	// Navigation
 	bringPageToFront (page) {
 		
 		var otherPages = []
@@ -377,7 +391,8 @@ class MainSector extends JABView {
 			mainSector.animatedUpdate()
 		})
 	}
-
+	
+	
 
 
 	//
@@ -395,17 +410,39 @@ class MainSector extends JABView {
 		}
 	}
 	
-	// Projects Page
-	projectsPageWantsToDisplayProject (projectsPage, project) {
-		this.state = {
-			projectOpen: true,
-			projectDataBundle: project,
+	// About Page
+	aboutPageWantsToDisplayProject (aboutPage, projectIdentifier) {
+		for (var i = 0; i < this.projectDataBundles.length; i++) {
+			if (this.projectDataBundles[i].id == projectIdentifier) {
+				if (i != 2) { // Angels has no trailer right now so ignore it if clicked
+					this.state = {
+						projectOpen: true,
+						projectDataBundle: this.projectDataBundles[i],
+						selectedProjectIndex: i
+					}
+					
+					this.parent.mainSectorWantsToDisplayProject(this, i)
+				}
+			}
 		}
-		// this.updateAllUI()
-		this.parent.mainSectorWantsToDisplayProject(this)
 	}
 	
-
+	// Projects Page
+	projectsPageWantsToDisplayProject (projectsPage, projectIndex) {
+		this.state = {
+			projectOpen: true,
+			projectDataBundle: this.projectDataBundles[projectIndex],
+			selectedProjectIndex: projectIndex,
+		}
+		// this.updateAllUI()
+		this.parent.mainSectorWantsToDisplayProject(this, projectIndex)
+	}
+	
+	
+	// Project Page
+	projectPageDidChangeProjectIndexTo(projectPage, projectIndex) {
+		this.state = {selectedProjectIndex: projectIndex}
+	}
 }
 
 
