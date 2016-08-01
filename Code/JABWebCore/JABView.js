@@ -82,6 +82,10 @@ class JABView {
 		this.overflow = 'visible'
 		this.cursor = 'auto'
 		this.animation = 'none'
+		this.paddingLeft = 0
+		this.paddingRight = 0
+		this.paddingTop = 0
+		this.paddingBottom = 0
 		
 		
 		// Position
@@ -1039,6 +1043,71 @@ class JABView {
 			
 			$(this.selector).css({
 				'animation': newAnimation
+			})
+		}
+	}
+	
+	
+	
+	// Padding Left
+	get paddingLeft () {
+		return this._paddingLeft
+	}
+	
+	set paddingLeft (newPaddingLeft) {
+		if (this.paddingLeft != newPaddingLeft) {
+			this._paddingLeft = newPaddingLeft
+			
+			$(this.selector).css({
+				'padding-left': newPaddingLeft + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Right
+	get paddingRight () {
+		return this._paddingRight
+	}
+	
+	set paddingRight (newPaddingRight) {
+		if (this.paddingRight != newPaddingRight) {
+			this._paddingRight = newPaddingRight
+			
+			$(this.selector).css({
+				'padding-right': newPaddingRight + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Top
+	get paddingTop () {
+		return this._paddingTop
+	}
+	
+	set paddingTop (newPaddingTop) {
+		if (this.paddingTop != newPaddingTop) {
+			this._paddingTop = newPaddingTop
+			
+			$(this.selector).css({
+				'padding-top': newPaddingTop + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Bottom
+	get paddingBottom () {
+		return this._paddingBottom
+	}
+	
+	set paddingBottom (newPaddingBottom) {
+		if (this.paddingBottom != newPaddingBottom) {
+			this._paddingBottom = newPaddingBottom
+			
+			$(this.selector).css({
+				'padding-bottom': newPaddingBottom + 'px'
 			})
 		}
 	}

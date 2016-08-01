@@ -77,7 +77,7 @@ class MailFormPage extends JABView {
 		newFrame.size.height = view.requiredHeight
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = (this.parameters.reservedTopBuffer + (this.height - this.parameters.reservedTopBuffer - newFrame.size.height)/2) * 0.95
+		newFrame.origin.y = (this.parameters.reservedTopBuffer + (this.height - this.parameters.reservedTopBuffer - newFrame.size.height)/2) * 0.85
 		
 		if (this.state.subdued) {
 			newFrame.origin.y += 80

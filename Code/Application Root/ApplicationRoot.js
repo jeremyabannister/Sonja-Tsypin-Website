@@ -201,7 +201,7 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.homeSector.positionDuration = 800
 		}
 		
-		this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+		this.homeSector.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
 		this.homeSector.currentlyActive = this.websiteClosed
 		this.homeSector.updateAllUI()
 	}

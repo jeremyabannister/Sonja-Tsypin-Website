@@ -5,8 +5,8 @@ class VideoNavigationButtons extends JABView {
 		
 		// State
 		this.state = {
-			firstGroup: false,
-			lastGroup: false,
+			prevEnabled: true,
+			nextEnabled: true,
 		}
 		
 		// Parameters
@@ -119,7 +119,7 @@ class VideoNavigationButtons extends JABView {
 		view.text = 'PREV'
 		view.fontSize = this.parameters.fontSizeForButtons
 		
-		if (!this.state.firstGroup) {
+		if (this.state.prevEnabled) {
 			view.textColor = 'white'
 		} else {
 			view.textColor = this.parameters.fadedTextColor
@@ -160,7 +160,7 @@ class VideoNavigationButtons extends JABView {
 		view.text = 'NEXT'
 		view.fontSize = this.parameters.fontSizeForButtons
 		
-		if (!this.state.lastGroup) {
+		if (this.state.nextEnabled) {
 			view.textColor = 'white'
 		} else {
 			view.textColor = this.parameters.fadedTextColor

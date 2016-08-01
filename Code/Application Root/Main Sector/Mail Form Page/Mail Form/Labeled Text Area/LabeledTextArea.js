@@ -100,6 +100,9 @@ class LabeledTextArea extends JABView {
 		view.textColor = 'white'
 		view.fontFamily = 'siteFont'
 		view.fontSize = 12
+		
+		view.paddingLeft = 7
+		view.paddingTop = 7
 	}
 	
 	positionTextArea () {

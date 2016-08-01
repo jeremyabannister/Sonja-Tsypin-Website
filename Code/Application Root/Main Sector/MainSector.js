@@ -11,8 +11,8 @@ class MainSector extends JABView {
 			projectOpen: false,
 			closingProject: false,
 			
-			projectDataBundle: null,
-			selectedProjectIndex: null,
+			selectedProjectGroup: 0,
+			selectedProjectIndex: 0,
 			
 			mailFormOpen: false,
 			closingMailForm: false,
@@ -22,6 +22,15 @@ class MainSector extends JABView {
 		}
 		
 		this.projectDataBundles = projectDataBundles
+		this.projectGroups = [[]]
+		
+		for (var i = 0; i < this.projectDataBundles.length; i++) {
+			if (!this.projectDataBundles[i].hidden) {
+				this.projectGroups[0].push(this.projectDataBundles[i])
+			} else {
+				this.projectGroups.push([this.projectDataBundles[i]])
+			}
+		}
 
 		// Parameters
 		this.parameters = {
@@ -30,10 +39,10 @@ class MainSector extends JABView {
 
 		// UI
 		this.aboutPage = new AboutPage('AboutPage')
-		this.projectsPage = new ProjectsPage('ProjectsPage', this.projectDataBundles)
+		this.projectsPage = new ProjectsPage('ProjectsPage', this.projectGroups[0])
 		this.reelPage = new ReelPage('ReelPage')
 		this.mailFormPage = new MailFormPage('MailFormPage')
-		this.projectPage = new ProjectPage('ProjectPage', this.projectDataBundles)
+		this.projectPage = new ProjectPage('ProjectPage', this.projectGroups)
 		
 	}
 
@@ -375,10 +384,6 @@ class MainSector extends JABView {
 			view.opacity = 1
 			view.configureDelay = 0
 			
-			view.state = {
-				projectIndex: this.state.selectedProjectIndex,
-			}
-			
 			view.instantUpdate = true
 			view.updateAllUI()
 			view.instantUpdate = false
@@ -500,16 +505,17 @@ class MainSector extends JABView {
 	
 	// About Page
 	aboutPageWantsToDisplayProject (aboutPage, projectIdentifier) {
-		for (var i = 0; i < this.projectDataBundles.length; i++) {
-			if (this.projectDataBundles[i].id == projectIdentifier) {
-				if (i != 2) { // Angels has no trailer right now so ignore it if clicked
-					this.state = {
-						projectOpen: true,
-						projectDataBundle: this.projectDataBundles[i],
-						selectedProjectIndex: i
+		for (var i = 0; i < this.projectGroups.length; i++) {
+			for (var j = 0; j < this.projectGroups[i].length; j++) {
+				if (this.projectGroups[i][j].id == projectIdentifier) {
+					if (projectIdentifier != 'angels') { // Angels has no trailer right now so ignore it if clicked
+						this.state = {
+							projectOpen: true,
+						}
+						
+						this.projectPage.loadProjectIdentifier(projectIdentifier)
+						this.parent.mainSectorWantsToUseFullScreen(this)
 					}
-					
-					this.parent.mainSectorWantsToUseFullScreen(this)
 				}
 			}
 		}
@@ -523,14 +529,20 @@ class MainSector extends JABView {
 	
 	
 	// Projects Page
-	projectsPageWantsToDisplayProject (projectsPage, projectIndex) {
-		this.state = {
-			projectOpen: true,
-			projectDataBundle: this.projectDataBundles[projectIndex],
-			selectedProjectIndex: projectIndex,
+	projectsPageWantsToDisplayProject (projectsPage, projectIdentifier) {
+		for (var i = 0; i < this.projectGroups.length; i++) {
+			for (var j = 0; j < this.projectGroups[i].length; j++) {
+				if (this.projectGroups[i][j].id == projectIdentifier) {
+					this.state = {
+						projectOpen: true,
+					}
+				}
+			}
 		}
-		// this.updateAllUI()
+		
+		this.projectPage.loadProjectIdentifier(projectIdentifier)
 		this.parent.mainSectorWantsToUseFullScreen(this)
+		this.animatedUpdate()
 	}
 	
 	projectsPageWantsToOpenMailForm (projectsPage) {
@@ -540,7 +552,7 @@ class MainSector extends JABView {
 	
 	// Reel Page
 	reelPageWantsToOpenMailForm (reelPage) {
-		this.openMailFormPage(0.7)
+		this.openMailFormPage(0.5)
 	}
 	
 	// Project Page

@@ -458,8 +458,6 @@ class ProjectsPage extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		
-		console.log('clicked')
-		
 		if (view == this.marginClickDetectors[0] || view == this.marginClickDetectors[1] || view == this.marginClickDetectors[2]) {
 			this.deselectProjects()
 		} else {
@@ -498,11 +496,12 @@ class ProjectsPage extends JABView {
 	
 	// Project Info Tab
 	projectInfoTabPlayButtonWasClicked (projectInfoTab) {
-		this.parent.projectsPageWantsToDisplayProject(this, this.state.selectedProjectIndex)
+		console.log('clicked')
+		this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id)
 	}
 	
 	projectInfoTabInfoButtonWasClicked (projectInfoTab) {
-		this.parent.projectsPageWantsToDisplayProject(this, this.state.selectedProjectIndex)
+		this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id)
 	}
 	
 	
