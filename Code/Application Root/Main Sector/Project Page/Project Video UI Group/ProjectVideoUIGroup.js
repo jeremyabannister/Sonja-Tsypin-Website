@@ -1,12 +1,12 @@
 class ProjectVideoUIGroup extends JABView {
 	
-	constructor (customId) {
+	constructor (customId, projectDataBundle) {
 		super(customId)
 		
 		// State
-		this.requiredHeight = 1000
+		this.requiredHeight = 0
 		this.state = {
-			projectDataBundle: null,
+			projectDataBundle: projectDataBundle,
 			firstGroup: false,
 			lastGroup: false,
 		}
@@ -121,7 +121,6 @@ class ProjectVideoUIGroup extends JABView {
 		newFrame.origin.y = 0
 
 		view.frame = newFrame
-		
 	}
 	
 	

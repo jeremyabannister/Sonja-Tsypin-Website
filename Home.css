@@ -46,6 +46,8 @@ body {
 	
 	width: 1px;
 	height: 1px;
+	
+	outline-width: 0px;
 }
 
 html {
@@ -91,6 +93,24 @@ a {
 
 .smaller {
 	font-size:90%;
+}
+
+
+
+::-webkit-input-placeholder {
+   color: #777777;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: #777777;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #777777;
+}
+
+:-ms-input-placeholder {  
+   color: #777777;
 }
 
 

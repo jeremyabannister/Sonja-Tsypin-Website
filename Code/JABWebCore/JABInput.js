@@ -1,46 +1,57 @@
-class UILabel extends JABView {
-
+class JABInput extends JABView {
+	
 	constructor (customId) {
 		super(customId)
-
+		
 		// State
+		
+		// Configuration
 		this.text = ''
 		this.font = new UIFont()
-		this.textColor = '#000000'
+		this.textColor = 'black'
 		this.textAlign = null
 		this.wordBreak = null
-		this.hyphenate = false
-
-		// UI
+		this.hyphenate = null
+		this.placeholder = ''
+		
+		
+		// Parameters
+		
+		// UI*
+		this.input = "<input type='text'>"
+		
 	}
-
-
-
-	updateAllUI () {
-		super.updateAllUI()
-
-
-
+	
+	
+	//
+	// Init
+	//
+	
+	init () {
+		super.init()
 	}
-
-
-
+	
+	
+	
 	//
-	// Property Getters and Setters
+	// Getters and Setters
 	//
-
-
+	
+	
 	// Text
 	get text () {
 		return this._text
 	}
-
+	
 	set text (newText) {
-		this._text = newText
-		$(this.selector).html(newText)
+		if (this.text != newText) {
+			this._text = newText
+			
+			$(this.selector + ' > input').val(newText)
+		}
 	}
-
-
+	
+	
 	// Font
 	get font () {
 		return this._font
@@ -56,29 +67,32 @@ class UILabel extends JABView {
 		// 	}
 		// }
 		
-		$(this.selector).css({
+		$(this.selector + ' > input').css({
 			'fontSize': newFont.size,
 			'font-family': newFont.family,
 			'font-weight': newFont.weight,
 			'font-style': newFont.style,
 			'font-variant': newFont.variant,
 			'letter-spacing': newFont.letterSpacing,
-			'line-height': newFont.lineHeight + newFont.lineHeightUnit,
+			'line-height': newFont.lineHeight,
 		})
 	}
-
-
-
+		
+	
+	
 	// Text Color
 	get textColor () {
 		return this._textColor
 	}
-
+	
 	set textColor (newTextColor) {
-		this._textColor = newTextColor
-		$(this.selector).css({
-			'color': newTextColor,
-		})
+		if (this.textColor != newTextColor) {
+			this._textColor = newTextColor
+			
+			$(this.selector + ' > input').css({
+				'color': newTextColor,
+			})
+		}
 	}
 	
 	
@@ -107,7 +121,7 @@ class UILabel extends JABView {
 		this._wordBreak = newWordBreak
 		
 		if (newWordBreak != null) {
-			$(this.selector).css({
+			$(this.selector + ' > input').css({
 				'word-break': newWordBreak
 			})
 		}
@@ -124,14 +138,14 @@ class UILabel extends JABView {
 		this._hyphenate = newHyphenate
 		
 		if (newHyphenate) {
-			$(this.selector).css({
+			$(this.selector + ' > input').css({
 				'-webkit-hyphens': 'auto',
 				'-moz-hyphens': 'auto',
 				'-ms-hyphens': 'auto',
 				'hyphens': 'auto'
 			})
 		} else {
-			$(this.selector).css({
+			$(this.selector + ' > input').css({
 				'-webkit-hyphens': 'none',
 				'-moz-hyphens': 'none',
 				'-ms-hyphens': 'none',
@@ -140,9 +154,24 @@ class UILabel extends JABView {
 		}
 	}
 	
-
-
-
+	
+	// Placeholder
+	get placeholder () {
+		return this._placeholder
+	}
+	
+	set placeholder (newPlaceholder) {
+		if (this.placeholder != newPlaceholder) {
+			this._placeholder = newPlaceholder
+			
+			$(this.selector + ' > input').attr({
+				'placeholder': newPlaceholder,
+			})
+		}
+	}
+	
+	
+	
 	//
 	// Font properties
 	//
@@ -230,26 +259,69 @@ class UILabel extends JABView {
 	}
 	
 	
-	// Line Height Unit
-	get lineHeightUnit () {
-		return this.lineHeightUnit
-	}
-	
-	set lineHeightUnit (newLineHeightUnit) {
-		this.font.lineHeightUnit = newLineHeightUnit
-		this.font = this.font // Reassiging the font triggers set font which updates the DOM
-	}
-
-
 	//
 	// UI
 	//
-
-
-
-
+	
+	
+	// Add
+	addAllUI () {
+		$(this.selector).append(this.input)
+	}
+	
+	
+	// Update
+	updateAllUI () {
+		super.updateAllUI()
+		
+		
+		this.configureInput()
+		this.positionInput()
+	}
+	
+	
+	configureInput () {
+		
+		var configureDuration = this.animationOptions.configureDuration || 0
+		var configureEasingFunction = this.animationOptions.configureEasingFunction || 'ease-in-out'
+		var configureDelay = this.animationOptions.configureDelay || 0
+		
+		
+		var positionDuration = this.animationOptions.positionDuration || 0
+		var positionEasingFunction = this.animationOptions.positionEasingFunction || 'ease-in-out'
+		var positionDelay = this.animationOptions.positionDelay || 0
+		
+		$(this.selector + ' > input').css({
+			transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms',
+			
+			'background': 'none',
+			'border': 'none',
+		})
+		
+	}
+	
+	
+	positionInput () {
+		
+		$(this.selector + ' > input').css({
+			'width': this.width + 'px',
+			'height': this.height + 'px',
+		})
+	}
+	
+	
+	//
+	// Event Listeners
+	//
+	
+	
 	//
 	// Actions
 	//
-
+	
+	
+	//
+	// Delegate
+	//
+	
 }

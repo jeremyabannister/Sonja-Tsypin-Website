@@ -12,7 +12,9 @@ class UIFont {
 		this.style = null
 		this.variant = null
 		this.letterSpacing = null
+		
 		this.lineHeight = null
+		this.lineHeightUnit = ''
 		
 		
 		this.reservedId = 'UIFontReservedIDForTextMeasurement'
@@ -113,6 +115,18 @@ class UIFont {
 		}
 	}
 	
+	
+	// Line Height Unit
+	get lineHeightUnit () {
+		return this._lineHeightUnit
+	}
+	
+	set lineHeightUnit (newLineHeightUnit) {
+		if (this.lineHeightUnit != newLineHeightUnit) {
+			this._lineHeightUnit = newLineHeightUnit
+			this.knownStringSizes = {}
+		}
+	}
 	
 	
 	//

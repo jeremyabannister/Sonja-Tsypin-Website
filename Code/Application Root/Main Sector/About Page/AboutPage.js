@@ -21,7 +21,7 @@ class AboutPage extends JABView {
 		// UI
 		this.bioText = new UILabel('Bio')
 		this.line = new JABView("Line")
-		this.emailAddress = new UILabel('EmailAddress')
+		this.emailAddressLabel = new UILabel('EmailAddressLabel')
 		
 		this.footer = new Footer('Footer')
 	}
@@ -57,7 +57,7 @@ class AboutPage extends JABView {
 		
 		this.addBioText()
 		this.addLine()
-		this.addEmailAddress()
+		this.addEmailAddressLabel()
 		
 		this.addFooter()
 	}
@@ -70,8 +70,8 @@ class AboutPage extends JABView {
 	addLine () {
 		this.addSubview(this.line)
 	}
-	addEmailAddress () {
-		this.addSubview(this.emailAddress)
+	addEmailAddressLabel () {
+		this.addSubview(this.emailAddressLabel)
 	}
 	
 	
@@ -88,8 +88,8 @@ class AboutPage extends JABView {
 		this.configureBioText()
 		this.positionBioText()
 		
-		this.configureEmailAddress()
-		this.positionEmailAddress()
+		this.configureEmailAddressLabel()
+		this.positionEmailAddressLabel()
 		
 		this.configureLine()
 		this.positionLine()
@@ -184,34 +184,44 @@ class AboutPage extends JABView {
 		newFrame.size.width = 60
 		newFrame.size.height = 1
 
-		newFrame.origin.x = this.emailAddress.x
-		newFrame.origin.y = this.emailAddress.y - newFrame.size.height - 25
+		newFrame.origin.x = this.emailAddressLabel.x
+		newFrame.origin.y = this.emailAddressLabel.y - newFrame.size.height - 25
 					
 		this.line.frame = newFrame
 	}
 	
 	
 	// Email Address
-	configureEmailAddress () {
+	configureEmailAddressLabel () {
 		
-		this.emailAddress.text = "e-mail &nbsp;:: &nbsp;<span style='color:white'>sonjatsypin@gmail.com</span>"
-		this.emailAddress.textColor = '#999999'
-		this.emailAddress.fontSize = 13
-		this.emailAddress.fontFamily = 'siteFont'
-		this.emailAddress.fontWeight = 'normal'
+		var view = this.emailAddressLabel
+		if (view.text == '') {
+			view.text = "e-mail &nbsp;:: &nbsp;<span id='emailAddress---" + this.id + "' style='color:white; cursor: pointer'>sonjatsypin@gmail.com</span>"
+			
+			var parent = this.parent
+			$('#emailAddress---' + this.id).click(function() {
+				parent.aboutPageWantsToOpenMailForm(this)
+			})
+		}
+		
+		view.textColor = '#999999'
+		view.fontSize = 13
+		view.fontFamily = 'siteFont'
+		view.fontWeight = 'normal'
 		
 		
 		if (this.subdued) {
-			this.emailAddress.opacity = 0
+			view.opacity = 0
 		} else {
-			this.emailAddress.opacity = 1
+			view.opacity = 1
 		}
 		
 	}
 	
-	positionEmailAddress () {
+	positionEmailAddressLabel () {
 		
-		var size = this.emailAddress.font.sizeOfString(this.emailAddress.text)
+		var view = this.emailAddressLabel
+		var size = view.font.sizeOfString(view.text)
 		var newFrame = new CGRect()
 					
 		newFrame.size.width = size.width
@@ -221,7 +231,7 @@ class AboutPage extends JABView {
 		newFrame.origin.y = this.bioText.bottom + 56
 		
 					
-		this.emailAddress.frame = newFrame
+		view.frame = newFrame
 		
 	}
 	
@@ -244,7 +254,7 @@ class AboutPage extends JABView {
 		newFrame.size.height = this.footer.requiredHeight
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = this.emailAddress.bottom + this.bottomBufferForEmailAddress
+		newFrame.origin.y = this.emailAddressLabel.bottom + this.bottomBufferForEmailAddress
 		
 		if (newFrame.origin.y < this.height - this.footer.requiredHeight) {
 			newFrame.origin.y = this.height - this.footer.requiredHeight
@@ -296,5 +306,10 @@ class AboutPage extends JABView {
 	//
 	// Delegate
 	//
+	
+	// Footer
+	footerMailButtonWasClicked (footer) {
+		this.parent.aboutPageWantsToOpenMailForm(this)
+	}
 	
 }

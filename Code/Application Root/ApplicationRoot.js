@@ -446,7 +446,9 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.movieType = 'FEATURE'
 		dataBundle.year = '2016'
 		dataBundle.description = "<span style='color:white'>Starring Moni Bell, Eva Evans, Gabriel Sommer, Joanna Janetakis</span><br/>A man who goes by 'Sir' is holding a mansion full of beautiful women prisoner when a new arrival threatens his power."
+		
 		dataBundle.noVideoMessage = 'TRAILER COMING SOON'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
 		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
@@ -536,6 +538,39 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 		
 		
+		
+		//
+		// Hidden
+		//
+		
+		
+		
+		// Contact Esterina
+		dataBundle = new ProjectDataBundle()
+		dataBundle.id = 'contactEsterina'
+		dataBundle.title = 'CONTACT ESTERINA'
+		dataBundle.director = 'SONJA TSYPIN'
+		dataBundle.movieType = 'DOCUMENTARY'
+		dataBundle.year = '2014'
+		dataBundle.description = "<span style='color:white'>Starring Esterina Seto</span><br/>"
+		dataBundle.hidden = true
+		
+		dataBundle.vimeoId = '126022343'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
+		
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
+		for (var i = 0; i < 1; i++) {
+			var index = i + 1
+			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
+		}
+		dataBundle.mainStillIndex = 0
+		
+
+		dataBundles.push(dataBundle)
+		
+		
+		
+		
 
 		return dataBundles
 	}
@@ -551,6 +586,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 		if (view == this.header) {
 			this.mainSector.closeCurrentlyOpenProject()
+			this.mainSector.closeMailFormPage()
 			this.mainSector.projectsPage.deselectProjects()
 		}
 		
@@ -558,24 +594,19 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	
 	// Main Sector
-	mainSectorWantsToDisplayProject (mainSector, projectIndex) {
-		
-		// For now the applicatio root does nothing with the projectIndex, because it behaves identically for all projects
-		
-		this.state = {
-			headerBackdropHidden: true
-		}
-		
+	mainSectorWantsToUseFullScreen (mainSector) {
+		this.state = {headerBackdropHidden: true}
 		this.animatedUpdate()
-		
 	}
 	
 	
-	mainSectorWantsToCloseProject (mainSector) {
+	mainSectorWantsToRelinquishFullScreen (mainSector) {
 		this.state = {headerBackdropHidden: false}
-		
 		this.animatedUpdate()
 	}
+	
+	
+	
 	
 	
 	// Home Sector

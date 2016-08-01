@@ -215,4 +215,9 @@ class ReelPage extends JABView {
 		
 	}
 	
+	// Footer
+	footerMailButtonWasClicked (footer) {
+		this.parent.reelPageWantsToOpenMailForm(this)
+	}
+	
 }

@@ -94,6 +94,17 @@ class ProjectDataBundle {
 	}
 	
 	
+	// Hidden
+	get hidden () {
+		return this.metaDataBundle.hidden
+	}
+	
+	set hidden (newHidden) {
+		this.metaDataBundle.hidden = newHidden
+		this.metaDataBundle = this.metaDataBundle
+	}
+	
+	
 	
 	
 	

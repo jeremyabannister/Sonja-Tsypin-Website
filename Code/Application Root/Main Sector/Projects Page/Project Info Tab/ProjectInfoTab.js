@@ -1,11 +1,11 @@
 class ProjectInfoTab extends JABView {
 	
-	constructor (customId) {
+	constructor (customId, projectDataBundle) {
 		super(customId)
 		
 		// State
 		this.state = {
-			projectDataBundle: null,
+			projectDataBundle: projectDataBundle,
 			leftHanded: false,
 			usedAtleastOnce: false,
 		}

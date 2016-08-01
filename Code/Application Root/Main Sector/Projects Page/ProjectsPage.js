@@ -42,14 +42,18 @@ class ProjectsPage extends JABView {
 		// UI
 		this.projectPanes = []
 		for (var i = 0; i < this.projectDataBundles.length; i++) {
-			this.projectPanes.push(new ProjectImageView())
-			this.parameters.truePositionsOfProjectPanes.push(new CGRect())
+			if (!this.projectDataBundles[i].hidden) {
+				this.projectPanes.push(new ProjectImageView(null, this.projectDataBundles[i]))
+				this.parameters.truePositionsOfProjectPanes.push(new CGRect())
+			}
 		}
 		
 		
 		this.projectInfoTabs = []
 		for (var i = 0; i < this.projectDataBundles.length; i++) {
-			this.projectInfoTabs.push(new ProjectInfoTab())
+			if (!this.projectDataBundles[i].hidden) {
+				this.projectInfoTabs.push(new ProjectInfoTab(null, this.projectDataBundles[i]))
+			}
 		}
 		
 		this.footer = new Footer('Footer')
@@ -160,7 +164,6 @@ class ProjectsPage extends JABView {
 		for (var i = 0; i < this.projectPanes.length; i++) {
 			var view = this.projectPanes[i]
 			
-			view.state.src = this.projectDataBundles[i].stills[this.projectDataBundles[i].mainStillIndex]
 			if (this.state.comingSoon) {
 				view.opacity = 0
 			}
@@ -252,7 +255,6 @@ class ProjectsPage extends JABView {
 				this.pushSubviewToBack(view)
 			}
 			
-			view.state.projectDataBundle = this.projectDataBundles[i]
 			view.configureDuration = this.parameters.gridAnimationDuration
 			
 			if (this.state.selectedProject == correspondingProjectPane) {
@@ -502,5 +504,11 @@ class ProjectsPage extends JABView {
 	projectInfoTabInfoButtonWasClicked (projectInfoTab) {
 		this.parent.projectsPageWantsToDisplayProject(this, this.state.selectedProjectIndex)
 	}
-
+	
+	
+	
+	// Footer
+	footerMailButtonWasClicked (footer) {
+		this.parent.projectsPageWantsToOpenMailForm(this)
+	}
 }

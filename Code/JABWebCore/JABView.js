@@ -69,7 +69,10 @@ class JABView {
 		// Configuration
 		this.opacity = 1
 		this.backgroundColor = 'transparent'
-		this.borderRadius = 0
+		this.borderStyle = null
+		this.borderWidth = null
+		this.borderColor = null
+		this.borderRadius = null
 		this.blur = 0
 		
 		this.zIndex = 0
@@ -91,6 +94,7 @@ class JABView {
 	
 		// Other
 		this.clickable = false
+		this.hoverable = false
 		
 		
 		
@@ -805,6 +809,57 @@ class JABView {
 	}
 	
 	
+	
+	// Border Style
+	get borderStyle () {
+		return this._borderStyle
+	}
+	
+	set borderStyle (newBorderStyle) {
+		if (this.borderStyle != newBorderStyle) {
+			this._borderStyle = newBorderStyle
+			
+			$(this.selector).css({
+				'border-style': newBorderStyle
+			})
+		}
+	}
+	
+	
+	// Border Width
+	get borderWidth () {
+		return this._borderWidth
+	}
+	
+	set borderWidth (newBorderWidth) {
+		if (this.borderWidth != newBorderWidth) {
+			this._borderWidth = newBorderWidth
+			
+			$(this.selector).css({
+				'border-width': newBorderWidth + 'px'
+			})
+		}
+	}
+	
+	
+	
+	// Border Color
+	get borderColor () {
+		return this._borderColor
+	}
+	
+	set borderColor (newBorderColor) {
+		if (this.borderColor != newBorderColor) {
+			this._borderColor = newBorderColor
+			
+			$(this.selector).css({
+				'border-color': newBorderColor
+			})
+		}
+	}
+	
+	
+	
 	// Border Radius
 	get borderRadius () {
 		return this._borderRadius
@@ -1284,7 +1339,36 @@ class JABView {
 			}
 		}
 	}
-
+	
+	
+	
+	get hoverable () {
+		return this._hoverable
+	}
+	
+	set hoverable (newHoverable) {
+		
+		var changed = this.hoverable != newHoverable
+		
+		if (changed) {
+			this._hoverable = newHoverable
+			
+			var thisView = this
+			$(this.selector).off()
+			if (this.hoverable) {
+				$(this.selector).hover(function() {
+					thisView.parent.viewWasHovered(thisView)
+				}, function(){
+					thisView.parent.viewWasUnhovered(thisView)
+				})
+			} else {
+				$(this.selector).hover(function() {}, function() {})
+			}
+		}
+	}
+	
+	
+	
 
 	//
 	// Init

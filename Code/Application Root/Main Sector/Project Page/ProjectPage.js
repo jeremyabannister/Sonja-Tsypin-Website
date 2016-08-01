@@ -24,8 +24,11 @@ class ProjectPage extends JABView {
 		
 		this.projectVideoUIGroups = []
 		for (var i = 0; i < this.projectDataBundles.length; i++) {
-			this.projectVideoUIGroups.push(new ProjectVideoUIGroup('ProjectVideoUIGroup' + i))
+			if (!this.projectDataBundles[i].hidden) {
+				this.projectVideoUIGroups.push(new ProjectVideoUIGroup('ProjectVideoUIGroup' + i, this.projectDataBundles[i]))
+			}
 		}
+		
 		
 	}
 	
@@ -84,9 +87,6 @@ class ProjectPage extends JABView {
 		for (var i = 0; i < this.projectVideoUIGroups.length; i++) {
 			var view = this.projectVideoUIGroups[i]
 			
-			view.state = {
-				projectDataBundle: this.projectDataBundles[i]
-			}
 			
 			if (i == 0) {
 				view.state = {firstGroup: true}
@@ -176,7 +176,7 @@ class ProjectPage extends JABView {
 	
 	projectVideoUIGroupNextButtonWasClicked (projectVideoUIGroup) {
 		this.state.handlingClick = true
-		if (this.state.projectIndex != this.projectDataBundles.length - 1) {
+		if (this.state.projectIndex != this.projectVideoUIGroups.length - 1) {
 			this.state.projectIndex += 1
 			if (this.state.projectIndex == 2) {
 				this.state.projectIndex = 3
