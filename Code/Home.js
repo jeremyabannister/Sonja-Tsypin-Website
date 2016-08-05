@@ -40,6 +40,16 @@ $(window).resize(function() {
 
 })
 
+$(document).keydown(function(event) {
+  var keyCode = event.keyCode || event.which
+  console.log(keyCode)
+  if (keyCode == 37) {
+    applicationRoot.leftArrowWasPressed()
+  } else if (keyCode == 39) {
+    applicationRoot.rightArrowWasPressed()
+  }
+})
+
 function positionApplicationRoot () {
   applicationRoot.frame = new CGRect(0, 0, $('body').width(), $('body').height())
 }

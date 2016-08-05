@@ -8,7 +8,8 @@ class ProjectPage extends JABView {
 			projectGroupIndex: 0,
 			projectIndex: 0,
 			
-			switchingProject: false,
+			switchingProject: false, // This indicates whether or not the switching-project-animation is in progress
+			advancingToNextProject: false, // This indicates which direction the switching-project-animation is going which is necessary to tune the animation parameters
 			handlingClick: false,
 		}
 		
@@ -27,7 +28,9 @@ class ProjectPage extends JABView {
 			leftBufferForTitleLabel: 5,
 			topBufferForTitleLabel: 10,
 			
-			heightOfNavigationButtons: 20,
+			heightOfNavigationButtons: 50,
+			positioningHeightOfNavigationButtons: 20,
+			widthAdditionForNavigationButtons: 20,
 			topBufferForNavigationButtons: 10,
 			rightBufferForNavigationButtons: 0,
 			
@@ -37,14 +40,25 @@ class ProjectPage extends JABView {
 		// UI
 		
 		this.vimeoViews = []
+		var counter = 0
 		for (var i = 0; i < this.projectGroups.length; i++) {
 			this.vimeoViews.push([])
 			for (var j = 0; j < this.projectGroups[i].length; j++) {
-				this.vimeoViews[i].push(new JABVimeoView())
+				this.vimeoViews[i].push(new JABVimeoView('VimeoView' + counter))
+				counter++
 			}
 		}
 		
-		this.titleLabel = new UILabel('TitleLabel')
+		this.titleLabels = []
+		counter = 0
+		for (var i = 0; i < this.projectGroups.length; i++) {
+			this.titleLabels.push([])
+			for (var j = 0; j < this.projectGroups[i].length; j++) {
+				this.titleLabels[i].push(new UILabel('TitleLabel' + counter))
+				counter++
+			}
+		}
+		
 		this.navigationButtons = new VideoNavigationButtons('NavigationButtons')
 		
 	}
@@ -56,7 +70,6 @@ class ProjectPage extends JABView {
 	
 	init () {
 		super.init()
-		
 	}
 	
 	
@@ -72,6 +85,10 @@ class ProjectPage extends JABView {
 		return this.vimeoViews[this.state.projectGroupIndex][this.state.projectIndex]
 	}
 	
+	get currentTitleLabel () {
+		return this.titleLabels[this.state.projectGroupIndex][this.state.projectIndex]
+	}
+	
 	
 	
 	//
@@ -82,9 +99,10 @@ class ProjectPage extends JABView {
 	// Add
 	addAllUI () {
 		
+		this.addNavigationButtons() // Navigation buttons are taller than the buffer but should not block the clickability of the vimeo view, and so must be underneath it
+		
 		this.addVimeoViews()
-		this.addTitleLabel()
-		this.addNavigationButtons()
+		this.addTitleLabels()
 	}
 	
 	
@@ -97,8 +115,13 @@ class ProjectPage extends JABView {
 		}
 	}
 	
-	addTitleLabel () {
-		this.addSubview(this.titleLabel)
+	
+	addTitleLabels () {
+		for (var i = 0; i < this.titleLabels.length; i++) {
+			for (var j = 0; j < this.titleLabels[i].length; j++) {
+				this.addSubview(this.titleLabels[i][j])
+			}
+		}
 	}
 	
 	addNavigationButtons() {
@@ -115,10 +138,8 @@ class ProjectPage extends JABView {
 		this.configureVimeoViews()
 		this.positionVimeoViews()
 		
-		
-		
-		this.configureTitleLabel()
-		this.positionTitleLabel()
+		this.configureTitleLabels()
+		this.positionTitleLabels()
 		
 		this.configureNavigationButtons()
 		this.positionNavigationButtons()
@@ -128,7 +149,7 @@ class ProjectPage extends JABView {
 	
 	
 	
-	// Project Video UI Groups
+	// Vimeo Views
 	
 	configureVimeoViews () {
 		
@@ -142,7 +163,7 @@ class ProjectPage extends JABView {
 				if (this.instantUpdate) {
 					view.positionDuration = 0
 				} else {
-					view.positionDuration = 500
+					view.positionDuration = 800
 				}
 				
 				view.vimeoId = projectDataBundle.vimeoId
@@ -216,43 +237,92 @@ class ProjectPage extends JABView {
 	
 	
 	
-	
-	// Title Label
-	configureTitleLabel () {
-		var view = this.titleLabel
-		var dataBundle = this.projectDataBundle
-		
-		view.positionDuration = 0
-		
-		if (this.state.switchingProject) {
-			view.configureDuration = this.currentVimeoView.positionDuration/4 // Fade out duration
-			view.opacity = 0
-		} else {
-			view.configureDuration = this.currentVimeoView.positionDuration/4 // Fade in duration
-			view.opacity = 1
-			if (dataBundle != null) {
-				view.text = dataBundle.title
-				view.fontFamily = 'siteFont'
-				view.fontSize = 18
-				view.textColor = 'white'
-				view.letterSpacing = 2
+	// Title Labels
+	configureTitleLabels () {
+		for (var i = 0; i < this.titleLabels.length; i++) {
+			for (var j = 0; j < this.titleLabels[i].length; j++) {
+				
+				var view = this.titleLabels[i][j]
+				var dataBundle = this.projectGroups[i][j]
+				
+				if (dataBundle != null) {
+					view.text = dataBundle.title
+					view.fontFamily = 'siteFont'
+					view.fontSize = 18
+					view.textColor = 'white'
+					view.letterSpacing = 2
+				}
+				
+				
+				view.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+				if (this.instantUpdate) {
+					view.configureDuration = 0
+					view.positionDuration = 0
+				} else {
+					view.configureDuration = 225
+					view.configureEasingFunction = 'ease-in'
+					view.positionDuration = 800
+					if (i == this.state.projectGroupIndex) {
+						if (j == this.state.projectIndex) {
+							if (this.state.advancingToNextProject) {
+								view.configureDuration = 600
+								view.configureEasingFunction = 'ease-in-out'
+								view.configureDelay = view.positionDuration - view.configureDuration
+							} else {
+								view.configureDuration = 0
+								view.configureEasingFunction = 'ease-out'
+								view.configureDelay = 0
+							}
+							
+						} else {
+							view.configureDelay = 0
+						}
+					} else {
+						view.configureDelay = 0
+					}
+				}
+				
+				
+				if (!(i == this.state.projectGroupIndex && j == this.state.projectIndex)) {
+					view.opacity = 0
+				} else {
+					view.opacity = 1
+				}
 			}
 		}
 	}
 	
-	positionTitleLabel () {
-		var view = this.titleLabel
-		var newFrame = new CGRect()
-		var size = view.font.sizeOfString(view.text)
-							
-		newFrame.size.width = size.width
-		newFrame.size.height = size.height
-
-		newFrame.origin.x = this.currentVimeoView.x + this.parameters.leftBufferForTitleLabel
-		newFrame.origin.y = this.parameters.standardVimeoViewFrame.bottom + this.parameters.topBufferForTitleLabel
-							
-		view.frame = newFrame
+	positionTitleLabels () {
+		for (var i = 0; i < this.titleLabels.length; i++) {
+			for (var j = 0; j < this.titleLabels[i].length; j++) {
+				
+				var view = this.titleLabels[i][j]
+				var newFrame = new CGRect()
+				var size = view.font.sizeOfString(view.text)
+									
+				newFrame.size.width = size.width
+				newFrame.size.height = size.height
+				
+				var offset = this.width
+				newFrame.origin.x = this.currentVimeoView.x + this.parameters.leftBufferForTitleLabel
+				if (i == this.state.projectGroupIndex) {
+					if (j < this.state.projectIndex) {
+						newFrame.origin.x -= offset
+					} else if (j > this.state.projectIndex) {
+						newFrame.origin.x += offset
+					}
+				} else {
+					newFrame.origin.x += offset
+				}
+				
+				newFrame.origin.y = this.parameters.standardVimeoViewFrame.bottom + this.parameters.topBufferForTitleLabel
+				
+				view.frame = newFrame
+			}
+		}
 	}
+	
+	
 	
 	
 	
@@ -266,6 +336,7 @@ class ProjectPage extends JABView {
 		}
 		
 		view.positionDuration = 0
+		view.parameters.widthAddition = this.parameters.widthAdditionForNavigationButtons
 		
 		view.updateAllUI()
 	}
@@ -274,11 +345,11 @@ class ProjectPage extends JABView {
 		var view = this.navigationButtons
 		var newFrame = new CGRect()
 							
-		newFrame.size.width = view.requiredWidth
+		newFrame.size.width = view.requiredWidth + this.parameters.widthAdditionForNavigationButtons
 		newFrame.size.height = this.parameters.heightOfNavigationButtons
 
-		newFrame.origin.x = this.currentVimeoView.right - newFrame.size.width - this.parameters.rightBufferForNavigationButtons
-		newFrame.origin.y = this.titleLabel.top + (this.titleLabel.height - newFrame.size.height)/4
+		newFrame.origin.x = this.currentVimeoView.right - newFrame.size.width - this.parameters.rightBufferForNavigationButtons + this.parameters.widthAdditionForNavigationButtons/2
+		newFrame.origin.y = this.currentTitleLabel.top + (this.currentTitleLabel.height - this.parameters.positioningHeightOfNavigationButtons)/4 - (this.parameters.heightOfNavigationButtons - this.parameters.positioningHeightOfNavigationButtons)/2
 							
 		view.frame = newFrame
 	}
@@ -289,11 +360,40 @@ class ProjectPage extends JABView {
 	//
 	// Event Listeners
 	//
-	
+
 	
 	//
 	// Actions
 	//
+	
+	// Navigation
+	goToPreviousProject () {
+		if (this.state.projectIndex != 0) {
+			this.state.projectIndex -= 1
+			if (this.state.projectIndex == 2) {
+				this.state.projectIndex = 1
+			}
+			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
+			
+			var projectPage = this
+			projectPage.state = {advancingToNextProject: false}
+			this.animatedUpdate()
+		}
+	}
+	
+	goToNextProject () {
+		if (this.state.projectIndex != this.projectGroups[this.state.projectGroupIndex].length - 1) {
+			this.state.projectIndex += 1
+			if (this.state.projectIndex == 2) {
+				this.state.projectIndex = 3
+			}
+			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
+			
+			var projectPage = this
+			projectPage.state = {advancingToNextProject: true}
+			this.animatedUpdate()
+		}
+	}
 	
 	// Load
 	loadProjectIdentifier (projectIdentifier) {
@@ -318,6 +418,17 @@ class ProjectPage extends JABView {
 	}
 	
 	
+	
+	// Keys
+	leftArrowWasPressed () {
+		this.goToPreviousProject()
+	}
+	
+	rightArrowWasPressed () {
+		this.goToNextProject()
+	}
+	
+	
 	//
 	// Delegate
 	//
@@ -332,40 +443,12 @@ class ProjectPage extends JABView {
 	// Video Navigation Buttons
 	videoNavigationButtonsPrevButtonWasClicked (videoNavigationButtons) {
 		this.state.handlingClick = true
-		if (this.state.projectIndex != 0) {
-			this.state.projectIndex -= 1
-			if (this.state.projectIndex == 2) {
-				this.state.projectIndex = 1
-			}
-			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
-			
-			var projectPage = this
-			projectPage.state = {switchingProject: true}
-			this.animatedUpdate()
-			setTimeout(function() {
-				projectPage.state = {switchingProject: false}
-				projectPage.animatedUpdate()
-			}, projectPage.currentVimeoView.positionDuration/2)
-		}
+		this.goToPreviousProject()
 	}
 	
 	videoNavigationButtonsNextButtonWasClicked (videoNavigationButtons) {
 		this.state.handlingClick = true
-		if (this.state.projectIndex != this.projectGroups[this.state.projectGroupIndex].length - 1) {
-			this.state.projectIndex += 1
-			if (this.state.projectIndex == 2) {
-				this.state.projectIndex = 3
-			}
-			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
-			
-			var projectPage = this
-			projectPage.state = {switchingProject: true}
-			this.animatedUpdate()
-			setTimeout(function() {
-				projectPage.state = {switchingProject: false}
-				projectPage.animatedUpdate()
-			}, projectPage.currentVimeoView.positionDuration/2)
-		}
+		this.goToNextProject()
 	}
 	
 	

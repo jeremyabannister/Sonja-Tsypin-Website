@@ -19,6 +19,7 @@ class ProjectsPage extends JABView {
 		// Parameters
 		this.parameters = {
 			reservedTopBuffer: 0,
+			heightOfHeader: 0,
 			
 			numberOfColumns: 2,
 			topBufferForGrid: 58,
@@ -27,7 +28,7 @@ class ProjectsPage extends JABView {
 			bottomBufferForGrid: 50,
 			heightOfProjectInfoTabsAsFractionOfProjectPaneHeight: 0.5, // Relative to height of project panes, set below
 			
-			gridAnimationDuration: 250,
+			gridAnimationDuration: 300,
 			gridAnimationEasingFunction: 'ease-in-out',
 			
 			truePositionsOfProjectPanes: [],
@@ -60,6 +61,8 @@ class ProjectsPage extends JABView {
 		
 		
 		this.marginClickDetectors = [new JABView('MarginClickDetectorLeft'), new JABView('MarginClickDetectorRight'), new JABView('MarginClickDetectorTop')]
+		
+		
 		
 	}
 	
@@ -440,6 +443,33 @@ class ProjectsPage extends JABView {
 	
 	
 	// Selection
+	selectProject (view, animated) {
+		
+		var index = null
+		if (view != null) {
+			index = this.projectPanes.indexOf(view)
+		}
+		this.state = {
+			selectedProject: view,
+			selectedProjectIndex: index,
+		}
+		
+		if (animated) {
+			this.animatedUpdate()
+			if (view != null) {
+				var selectedInfoTab = this.projectInfoTabs[this.state.selectedProjectIndex]
+				var newScrollTop = view.top - (this.parameters.heightOfHeader + (this.height - this.parameters.heightOfHeader - view.height)/2)
+				this.scrollTo(newScrollTop, view.positionDuration, 'swing')
+			}
+		} else {
+			this.updateAllUI()
+			if (view != null) {
+				this.scrollTo(view.top, 0, 'swing')
+			}
+		}
+	}
+	
+	
 	deselectProjects () {
 		this.state = {
 			selectedProject: null,
@@ -464,30 +494,14 @@ class ProjectsPage extends JABView {
 			if (this.state.selectedProject != null) {
 				if (view != this.state.selectedProject) {
 					// If a project is currently open and now we need to open a different one
-					this.state = {
-						selectedProject: view,
-						selectedProjectIndex: this.projectPanes.indexOf(view)
-					}
-					// this.switchCurrentInfoTab()
-					// this.positionCurrentInfoTab()
-					this.animatedUpdate()
+					this.selectProject(view, true)
 				} else {
 					// If the currently open project has just been clicked on (close it)
-					this.state = {
-						selectedProject: null,
-						selectedProjectIndex: null,
-					}
-					this.animatedUpdate()
+					this.selectProject(null, true)
 				}
 			} else {
 				// If no project is currently open and a project has just been selected
-				this.state = {
-					selectedProject: view,
-					selectedProjectIndex: this.projectPanes.indexOf(view),
-				}
-				// this.switchCurrentInfoTab()
-				// this.positionCurrentInfoTab()
-				this.animatedUpdate()
+				this.selectProject(view, true)
 			}
 		}
 	}
@@ -496,7 +510,6 @@ class ProjectsPage extends JABView {
 	
 	// Project Info Tab
 	projectInfoTabPlayButtonWasClicked (projectInfoTab) {
-		console.log('clicked')
 		this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id)
 	}
 	

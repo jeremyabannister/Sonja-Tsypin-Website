@@ -34,6 +34,7 @@ class MainSector extends JABView {
 
 		// Parameters
 		this.parameters = {
+			reservedTopBuffer: 0,
 			heightOfHeader: 0,
 		}
 
@@ -163,7 +164,7 @@ class MainSector extends JABView {
 		
 		view.backgroundColor = 'black'
 		view.overflow = 'auto'
-		view.reservedTopBuffer = this.parameters.heightOfHeader
+		view.reservedTopBuffer = this.parameters.reservedTopBuffer
 		
 		if (this.currentlyActivePage == view) {
 			
@@ -214,7 +215,10 @@ class MainSector extends JABView {
 		
 		view.backgroundColor = 'black'
 		view.overflow = 'auto'
-		view.parameters = {reservedTopBuffer: this.parameters.heightOfHeader}
+		view.parameters = {
+			reservedTopBuffer: this.parameters.reservedTopBuffer,
+			heightOfHeader: this.parameters.heightOfHeader,
+		}
 		view.projectDataBundles = this.projectDataBundles
 		
 		
@@ -248,6 +252,12 @@ class MainSector extends JABView {
 		
 		view.updateAllUI()
 		
+		
+		
+		$(view.selector).css({
+			'scroll-behavior': 'smooth'
+		})
+		
 	}
 	
 	positionProjectsPage () {
@@ -278,7 +288,7 @@ class MainSector extends JABView {
 		
 		view.backgroundColor = 'black'
 		view.overflow = 'auto'
-		view.reservedTopBuffer = this.parameters.heightOfHeader
+		view.reservedTopBuffer = this.parameters.reservedTopBuffer
 		
 		if (this.currentlyActivePage == view) {
 			if (!this.state.closingProject && !this.state.closingMailForm) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
@@ -336,7 +346,7 @@ class MainSector extends JABView {
 		
 		view.backgroundColor = 'rgba(0, 0, 0, ' + this.state.mailFormOpacity + ')'
 		
-		view.parameters = {reservedTopBuffer: this.parameters.heightOfHeader}
+		view.parameters = {reservedTopBuffer: this.parameters.reservedTopBuffer}
 		view.clickable = true
 		
 		if (this.state.mailFormOpen) {
@@ -372,7 +382,7 @@ class MainSector extends JABView {
 		var view = this.projectPage
 		
 		view.clickable = true
-		view.parameters.reservedTopBuffer = this.parameters.heightOfHeader
+		view.parameters.reservedTopBuffer = this.parameters.reservedTopBuffer
 		view.overflowX = 'hidden'
 		view.overflowY = 'auto'
 		
@@ -480,6 +490,19 @@ class MainSector extends JABView {
 	}
 	
 	
+	
+	// Keys
+	leftArrowWasPressed () {
+		if (this.state.projectOpen) {
+			this.projectPage.leftArrowWasPressed()
+		}
+	}
+	
+	rightArrowWasPressed () {
+		if (this.state.projectOpen) {
+			this.projectPage.rightArrowWasPressed()
+		}
+	}
 
 
 	//

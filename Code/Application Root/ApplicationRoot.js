@@ -144,7 +144,10 @@ class ApplicationRoot extends JABApplicationRoot {
 		var view = this.mainSector
 		
 		view.backgroundColor = 'black'
-		view.parameters.heightOfHeader = this.header.logo.bottom
+		view.parameters = {
+			reservedTopBuffer: this.header.logo.bottom,
+			heightOfHeader: this.parameters.heightOfHeader,
+		}
 		view.projectDataBundles = this.projectDataBundles
 		
 		view.state.currentlyActive = !this.websiteClosed
@@ -371,6 +374,15 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 	}
 	
+	
+	// Keys
+	leftArrowWasPressed () {
+		this.mainSector.leftArrowWasPressed()
+	}
+	
+	rightArrowWasPressed () {
+		this.mainSector.rightArrowWasPressed()
+	}
 	
 	
 	

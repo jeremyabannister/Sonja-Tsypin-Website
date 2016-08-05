@@ -101,7 +101,6 @@ class JABView {
 		this.hoverable = false
 		
 		
-		
 		viewHierarchy.push(this)
 	}
 
@@ -172,6 +171,10 @@ class JABView {
 	
 	get scrollTop () {
 		return $(this.selector).scrollTop()
+	}
+	
+	set scrollTop (newScrollTop) {
+		$(this.selector).scrollTop(newScrollTop)
 	}
 	
 	
@@ -1114,6 +1117,19 @@ class JABView {
 	
 	
 	
+	//
+	// Scrolling
+	//
+	
+	scrollTo (newScrollTop, duration, easingFunction) {
+		$(this.selector).animate({
+			'scrollTop': newScrollTop
+		}, {
+			duration: duration + 'ms',
+			easingFunction: easingFunction,
+		})
+	}
+	
 	
 	//
 	//
@@ -1403,8 +1419,25 @@ class JABView {
 				$(this.selector).click(function() {
 					thisView.parent.viewWasClicked(thisView)
 				})
+				
+				$(this.selector).css({
+					'-webkit-touch-callout': 'none',
+					'-webkit-user-select': 'none',
+					'-khtml-user-select': 'none',
+					'moz-user-select': 'none',
+					'-ms-user-select': 'none',
+					'user-select': 'none',
+				})
 			} else {
 				$(this.selector).click(function() {})
+				$(this.selector).css({
+					'-webkit-touch-callout': 'text',
+					'-webkit-user-select': 'text',
+					'-khtml-user-select': 'text',
+					'moz-user-select': 'text',
+					'-ms-user-select': 'text',
+					'user-select': 'text',
+				})
 			}
 		}
 	}
