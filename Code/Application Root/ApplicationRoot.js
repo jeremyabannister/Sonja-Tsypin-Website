@@ -6,7 +6,7 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// State
 		this.laboratoryEnabled = false
-		this.contentWidth = {'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
+		this.contentWidth = {'xxs': 315, 'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
 		this.state = {
 			headerBackdropHidden: false,
 		}
@@ -377,13 +377,34 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	// Keys
 	leftArrowWasPressed () {
-		this.mainSector.leftArrowWasPressed()
+		if (!this.websiteClosed) {
+			this.mainSector.leftArrowWasPressed()
+		}
+	}
+	
+	upArrowWasPressed () {
+		if (!this.websiteClosed) {
+			if (this.mainSector.state.pageIndex == 0 || this.mainSector.state.pageIndex == 2) {
+				this.closeWebsite()
+			} else {
+				this.mainSector.upArrowWasPressed()
+			}
+		}
 	}
 	
 	rightArrowWasPressed () {
-		this.mainSector.rightArrowWasPressed()
+		if (!this.websiteClosed) {
+			this.mainSector.rightArrowWasPressed()
+		}
 	}
 	
+	downArrowWasPressed () {
+		if (!this.websiteClosed) {
+			this.mainSector.downArrowWasPressed()
+		} else {
+			this.openWebsite()
+		}
+	}
 	
 	
 	// Project Data

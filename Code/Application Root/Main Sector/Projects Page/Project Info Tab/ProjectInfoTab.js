@@ -16,8 +16,10 @@ class ProjectInfoTab extends JABView {
 			sizeOfPlayButton: 80,
 			sideBufferForPlayButton: 23,
 			
+			fontSizeForTitleLabel: 20,
 			leftBufferForTitleLabel: 10,
 			topBufferForTitleLabel: 0,
+			
 			bufferBetweenTitleLabelAndSubtitleLabel: 3,
 			bufferBetweenSubtitleLabelAndDescriptionLabel: 7,
 			
@@ -49,16 +51,6 @@ class ProjectInfoTab extends JABView {
 	//
 	// Getters and Setters
 	//
-	
-	get titleFontSize () {
-		if (sizeClass == 'xs') {
-			return 14
-		} else if (sizeClass == 's') {
-			return 16
-		} else {
-			return 20
-		}
-	}
 	
 	
 	
@@ -126,8 +118,7 @@ class ProjectInfoTab extends JABView {
 		super.updateAllUI()
 		
 		
-		this.parameters.sizeOfPlayButton = this.height * 0.5
-		
+		this.updateParameters()
 		
 		
 		this.configureBottomLine()
@@ -160,6 +151,18 @@ class ProjectInfoTab extends JABView {
 		this.positionDescriptionLabel()
 	}
 	
+	
+	
+	// Parameters
+	updateParameters () {
+		
+		var titleFontSizes = {'xxs': 14, 'xs': 14, 's': 16, 'm': 20, 'l': 20, 'xl': 20}
+		this.parameters = {
+			sizeOfPlayButton: this.height * 0.5,
+			fontSizeForTitleLabel: titleFontSizes[sizeClass],
+		}
+		
+	}
 	
 	
 	// Bottom Line
@@ -237,7 +240,7 @@ class ProjectInfoTab extends JABView {
 				
 				view.text = this.state.projectDataBundle.noVideoMessage
 				view.fontFamily = 'siteFont'
-				view.fontSize = 12
+				view.fontSize = this.titleLabel.fontSize * (12.0/20.0)
 				view.textColor = 'white'
 				view.textAlign = 'center'
 				
@@ -245,12 +248,19 @@ class ProjectInfoTab extends JABView {
 				view.opacity = 0
 			}
 		}
+		
 	}
 	
 	positionNoVideoMessageLabel () {
 		var view = this.noVideoMessageLabel
 		var newFrame = new CGRect()
-		var size = view.font.sizeOfString(view.text, 80)
+		var size
+		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			size = view.font.sizeOfString(view.text, 60)
+		} else {
+			size = view.font.sizeOfString(view.text, 80)
+		}
 		
 		newFrame.size.width = size.width
 		newFrame.size.height = size.height
@@ -317,7 +327,7 @@ class ProjectInfoTab extends JABView {
 		if (dataBundle != null) {
 			view.text = this.state.projectDataBundle.title
 			view.fontFamily = 'siteFont'
-			view.fontSize = this.titleFontSize
+			view.fontSize = this.parameters.fontSizeForTitleLabel
 			view.letterSpacing = 1.5
 			view.textColor = 'white'
 		}
@@ -358,7 +368,7 @@ class ProjectInfoTab extends JABView {
 		if (dataBundle != null) {
 			view.text = 'dir. ' + this.state.projectDataBundle.director + ' | ' + this.state.projectDataBundle.movieType + ' | ' + this.state.projectDataBundle.year
 			view.fontFamily = 'siteFont'
-			view.fontSize = this.titleFontSize * (13.0/20.0)
+			view.fontSize = this.titleLabel.fontSize * (13.0/20.0)
 			view.letterSpacing = 1.5
 			view.textColor = '#ffffff'
 		}
@@ -400,7 +410,7 @@ class ProjectInfoTab extends JABView {
 			view.text = this.state.projectDataBundle.description
 		}
 		view.fontFamily = 'siteFont'
-		view.fontSize = this.titleFontSize * (11.0/20.0)
+		view.fontSize = this.titleLabel.fontSize * (10.0/20.0)
 		view.hyphenate = true
 		view.positionDuration = 0
 		

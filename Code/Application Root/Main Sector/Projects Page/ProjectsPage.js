@@ -11,6 +11,9 @@ class ProjectsPage extends JABView {
 			
 			selectedProject: null,
 			selectedProjectIndex: null,
+			
+			arrowKeysDroppedBelowBottom: false,
+			columnInWhichArrowKeysDroppedBelowBottom: 0,
 		}
 		
 		this.projectDataBundles = projectDataBundles
@@ -136,6 +139,8 @@ class ProjectsPage extends JABView {
 		super.updateAllUI()
 		
 		
+		this.updateParameters()
+		
 		
 		this.configureProjectPanes()
 		this.positionProjectPanes()
@@ -153,6 +158,18 @@ class ProjectsPage extends JABView {
 		
 	}
 	
+	
+	
+	// Parameters
+	updateParameters () {
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			this.parameters.numberOfColumns = 1
+		} else if (sizeClass == 'xl') {
+			this.parameters.numberOfColumns = 3
+		} else {
+			this.parameters.numberOfColumns = 2
+		}
+	}
 	
 	
 	
@@ -212,15 +229,22 @@ class ProjectsPage extends JABView {
 				var verticalAdjustment = 0
 				if (this.state.selectedProject != null) {
 					if (i >= this.state.selectedProjectIndex - (this.state.selectedProjectIndex % this.parameters.numberOfColumns)) {
-						if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
-							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) + 1) {
+						if (sizeClass == 'xxs' || sizeClass == 'xs') {
+							if (i != this.state.selectedProjectIndex) {
 								verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
 							}
 						} else {
-							if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) - 1) {
-								verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
+							if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
+								if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) + 1) {
+									verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
+								}
+							} else {
+								if (i % this.parameters.numberOfColumns == (this.state.selectedProjectIndex % this.parameters.numberOfColumns) - 1) {
+									verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows
+								}
 							}
 						}
+						
 					}
 				}
 				
@@ -292,6 +316,11 @@ class ProjectsPage extends JABView {
 			}
 			
 			newFrame.origin.y = correspondingTruePosition.y
+			
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				newFrame.origin.x = (this.width - newFrame.size.width)/2
+				newFrame.origin.y = correspondingTruePosition.bottom + this.parameters.betweenBufferForGridRows
+			}
 								
 			view.frame = newFrame
 			
@@ -331,9 +360,16 @@ class ProjectsPage extends JABView {
 				newFrame.origin.y = lowestBottom + this.parameters.bottomBufferForGrid
 			}
 			
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				if (this.state.selectedProjectIndex == this.projectPanes.length - 1) {
+					newFrame.origin.y = this.projectInfoTabs[this.state.selectedProjectIndex].bottom + this.parameters.bottomBufferForGrid
+				}
+			}
+			
 			if (newFrame.origin.y + newFrame.size.height < this.height) {
 				newFrame.origin.y = this.height - newFrame.size.height
 			}
+			
 		} else {
 			newFrame.origin.y = this.height - newFrame.size.height
 		}
@@ -449,23 +485,38 @@ class ProjectsPage extends JABView {
 		if (view != null) {
 			index = this.projectPanes.indexOf(view)
 		}
+		if (animated == null) {
+			animated = false
+		}
 		this.state = {
 			selectedProject: view,
 			selectedProjectIndex: index,
 		}
 		
+		if (view != null) {
+			this.state = {arrowKeysDroppedBelowBottom: false}
+		}
+		
+		var selectedInfoTab
+		var newScrollTop
+		if (view != null) {
+			var trueViewFrame = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex]
+			selectedInfoTab = this.projectInfoTabs[this.state.selectedProjectIndex]
+			newScrollTop = view.top - (this.parameters.heightOfHeader + (this.height - this.parameters.heightOfHeader - view.height)/2)
+			
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				newScrollTop = trueViewFrame.top - (this.parameters.heightOfHeader + (this.height - this.parameters.heightOfHeader - (trueViewFrame.height + selectedInfoTab.height + this.parameters.betweenBufferForGridRows))/2)
+			}
+			
+		}
+		
 		if (animated) {
 			this.animatedUpdate()
-			if (view != null) {
-				var selectedInfoTab = this.projectInfoTabs[this.state.selectedProjectIndex]
-				var newScrollTop = view.top - (this.parameters.heightOfHeader + (this.height - this.parameters.heightOfHeader - view.height)/2)
-				this.scrollTo(newScrollTop, view.positionDuration, 'swing')
-			}
+			this.scrollTo(newScrollTop, this.projectPanes[0].positionDuration, 'swing')
+			
 		} else {
+			this.scrollTo(view.top, 0, 'swing')
 			this.updateAllUI()
-			if (view != null) {
-				this.scrollTo(view.top, 0, 'swing')
-			}
 		}
 	}
 	
@@ -477,6 +528,89 @@ class ProjectsPage extends JABView {
 		}
 		
 		this.animatedUpdate()
+	}
+	
+	
+	
+	// Keys
+	leftArrowWasPressed () {
+		if (this.state.selectedProject == null) {
+			if (this.projectPanes.length > 0) {
+				if (this.state.arrowKeysDroppedBelowBottom) {
+					this.selectProject(this.projectPanes[this.projectPanes.length - 1], true)
+				} else {
+					this.selectProject(this.projectPanes[0], true)
+				}
+			}
+		} else {
+			var destinationIndex = this.state.selectedProjectIndex - 1
+			if (destinationIndex >= 0) {
+				if (destinationIndex < this.projectPanes.length) {
+					this.selectProject(this.projectPanes[destinationIndex], true)
+				}
+			} else {
+				this.selectProject(null, true)
+			}
+		}
+	}
+	
+	upArrowWasPressed () {
+		if (this.state.selectedProject == null) {
+			if (this.projectPanes.length > 0) {
+				if (this.state.arrowKeysDroppedBelowBottom) {
+					this.selectProject(this.projectPanes[this.projectPanes.length - this.parameters.numberOfColumns + this.state.columnInWhichArrowKeysDroppedBelowBottom], true)
+				} else {
+					this.selectProject(this.projectPanes[0], true)
+				}
+			}
+		} else {
+			var destinationIndex = this.state.selectedProjectIndex - this.parameters.numberOfColumns
+			if (destinationIndex >= 0) {
+				if (destinationIndex < this.projectPanes.length) {
+					this.selectProject(this.projectPanes[destinationIndex], true)
+				}
+			} else {
+				this.selectProject(null, true)
+			}
+		}
+	}
+	
+	rightArrowWasPressed () {
+		if (this.state.selectedProject == null) {
+			if (this.projectPanes.length > 0) {
+				this.selectProject(this.projectPanes[0], true)
+			}
+		} else {
+			var destinationIndex = this.state.selectedProjectIndex + 1
+			if (destinationIndex < this.projectPanes.length) {
+				if (destinationIndex >= 0) {
+					this.selectProject(this.projectPanes[destinationIndex], true)
+				}
+			} else {
+				this.selectProject(null, true)
+				this.state = {arrowKeysDroppedBelowBottom: true, columnInWhichArrowKeysDroppedBelowBottom: this.parameters.numberOfColumns - 1}
+			}
+		}
+	}
+	
+	downArrowWasPressed () {
+		if (this.state.selectedProject == null) {
+			if (this.projectPanes.length > 0) {
+				if (!this.state.arrowKeysDroppedBelowBottom) {
+					this.selectProject(this.projectPanes[0], true)
+				}
+			}
+		} else {
+			var destinationIndex = this.state.selectedProjectIndex + this.parameters.numberOfColumns
+			if (destinationIndex < this.projectPanes.length) {
+				if (destinationIndex >= 0) {
+					this.selectProject(this.projectPanes[destinationIndex], true)
+				}
+			} else {
+				this.selectProject(null, true)
+				this.state = {arrowKeysDroppedBelowBottom: true, columnInWhichArrowKeysDroppedBelowBottom: destinationIndex % this.parameters.numberOfColumns}
+			}
+		}
 	}
 	
 	

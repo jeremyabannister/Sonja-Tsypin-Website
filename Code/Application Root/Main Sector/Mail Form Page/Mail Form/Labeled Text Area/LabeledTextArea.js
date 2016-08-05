@@ -103,14 +103,15 @@ class LabeledTextArea extends JABView {
 		
 		view.paddingLeft = 7
 		view.paddingTop = 7
+		
 	}
 	
 	positionTextArea () {
 		var view = this.textArea
 		var newFrame = new CGRect()
 							
-		newFrame.size.width = this.width
-		newFrame.size.height = this.parameters.heightOfTextArea
+		newFrame.size.width = this.width - view.paddingLeft
+		newFrame.size.height = this.parameters.heightOfTextArea - view.paddingTop
 
 		newFrame.origin.x = 0
 		newFrame.origin.y = this.label.bottom + this.parameters.bufferBetweenLabelAndTextArea

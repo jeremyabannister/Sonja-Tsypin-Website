@@ -192,7 +192,7 @@ class HomePage extends JABView {
 
 	positionEnterArrow () {
 
-		var widthsOfEnterArrow = {'xs': 50, 's': 70, 'm': 40, 'l': 40, 'xl': 40}
+		var widthsOfEnterArrow = {'xxs': 45, 'xs': 60, 's': 60, 'm': 40, 'l': 40, 'xl': 40}
 		var widthOfEnterArrow = widthsOfEnterArrow[sizeClass]
 		var bottomBufferForEnterArrow = 10
 

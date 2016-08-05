@@ -35,6 +35,7 @@ class ProjectPage extends JABView {
 			rightBufferForNavigationButtons: 0,
 			
 			standardVimeoViewFrame: null,
+			wideVimeoViewFrame: null,
 		}
 		
 		// UI
@@ -203,6 +204,10 @@ class ProjectPage extends JABView {
 				var newFrame = new CGRect()
 									
 				newFrame.size.width = applicationRoot.contentWidth * 0.9
+				if (sizeClass == 'xxs' || sizeClass == 'xs') {
+					newFrame.size.width = applicationRoot.contentWidth
+				}
+				
 				newFrame.size.height = newFrame.size.width * aspectRatio
 
 				newFrame.origin.x = (this.width - newFrame.size.width)/2
@@ -229,6 +234,9 @@ class ProjectPage extends JABView {
 				if (aspectRatio == (9.0)/(16.0)) {
 					var standardFrame = newFrame.copy()
 					this.parameters = {standardVimeoViewFrame: standardFrame}
+				} else if (aspectRatio == (1.0)/(2.35)) {
+					var wideFrame = newFrame.copy()
+					this.parameters = {wideVimeoViewFrame: wideFrame}
 				}
 			}
 		}
@@ -244,11 +252,12 @@ class ProjectPage extends JABView {
 				
 				var view = this.titleLabels[i][j]
 				var dataBundle = this.projectGroups[i][j]
+				var fontSizes = {'xxs': 18, 'xs': 18, 's': 18, 'm': 18, 'l': 18, 'xl': 18}
 				
 				if (dataBundle != null) {
 					view.text = dataBundle.title
 					view.fontFamily = 'siteFont'
-					view.fontSize = 18
+					view.fontSize = fontSizes[sizeClass]
 					view.textColor = 'white'
 					view.letterSpacing = 2
 				}
@@ -272,6 +281,12 @@ class ProjectPage extends JABView {
 								view.configureDuration = 0
 								view.configureEasingFunction = 'ease-out'
 								view.configureDelay = 0
+								
+								if (sizeClass == 'xxs' || sizeClass == 'xs') {
+									view.configureDuration = 600
+									view.configureEasingFunction = 'ease-in-out'
+									view.configureDelay = view.positionDuration - view.configureDuration
+								}
 							}
 							
 						} else {
@@ -305,6 +320,15 @@ class ProjectPage extends JABView {
 				
 				var offset = this.width
 				newFrame.origin.x = this.currentVimeoView.x + this.parameters.leftBufferForTitleLabel
+				newFrame.origin.y = this.parameters.standardVimeoViewFrame.bottom + this.parameters.topBufferForTitleLabel
+				
+				
+				if (sizeClass == 'xxs' || sizeClass == 'xs') {
+					newFrame.origin.y = this.parameters.standardVimeoViewFrame.top - newFrame.size.height - this.parameters.topBufferForTitleLabel
+					newFrame.origin.x = (this.width - newFrame.size.width)/2
+				}
+				
+				
 				if (i == this.state.projectGroupIndex) {
 					if (j < this.state.projectIndex) {
 						newFrame.origin.x -= offset
@@ -315,7 +339,6 @@ class ProjectPage extends JABView {
 					newFrame.origin.x += offset
 				}
 				
-				newFrame.origin.y = this.parameters.standardVimeoViewFrame.bottom + this.parameters.topBufferForTitleLabel
 				
 				view.frame = newFrame
 			}
@@ -350,6 +373,12 @@ class ProjectPage extends JABView {
 
 		newFrame.origin.x = this.currentVimeoView.right - newFrame.size.width - this.parameters.rightBufferForNavigationButtons + this.parameters.widthAdditionForNavigationButtons/2
 		newFrame.origin.y = this.currentTitleLabel.top + (this.currentTitleLabel.height - this.parameters.positioningHeightOfNavigationButtons)/4 - (this.parameters.heightOfNavigationButtons - this.parameters.positioningHeightOfNavigationButtons)/2
+		
+		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			newFrame.origin.y = this.parameters.wideVimeoViewFrame.bottom + (this.height - this.parameters.standardVimeoViewFrame.bottom - newFrame.size.height)/2
+			newFrame.origin.x = (this.width - newFrame.size.width)/2
+		}
 							
 		view.frame = newFrame
 	}

@@ -84,6 +84,7 @@ class AboutPage extends JABView {
 	updateAllUI () {
 		super.updateAllUI()
 		
+		this.updateParameters()
 		
 		this.configureBioText()
 		this.positionBioText()
@@ -99,6 +100,15 @@ class AboutPage extends JABView {
 		this.positionFooter()
 	}
 	
+	
+	// Parameters
+	updateParameters () {
+		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			this.topBufferForBioText = 70
+		}
+		
+	}
 	
 	// Bio
 	configureBioText () {
@@ -136,6 +146,15 @@ class AboutPage extends JABView {
 		this.bioText.fontWeight = 'normal'
 		this.bioText.lineHeight = 1.7
 		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			this.bioText.textAlign = 'justify'
+			this.bioText.fontSize = 13
+			this.bioText.lineHeight = 1.5
+			$(this.bioText.selector).css({
+				'text-justify': 'inter-word'
+			})
+		}
+		
 		if (this.subdued) {
 			this.bioText.opacity = 0
 		} else {
@@ -157,6 +176,9 @@ class AboutPage extends JABView {
 		var newFrame = new CGRect()
 					
 		newFrame.size.width = 740
+		if (newFrame.size.width > applicationRoot.contentWidth - 10) {
+			newFrame.size.width = applicationRoot.contentWidth - 10
+		}
 		
 		var size = this.bioText.font.sizeOfString(this.bioText.text, newFrame.size.width)
 		newFrame.size.height = size.height

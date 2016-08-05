@@ -52,9 +52,19 @@ class MailFormPage extends JABView {
 	updateAllUI () {
 		super.updateAllUI()
 		
+		this.updateParameters()
 		
 		this.configureMailForm()
 		this.positionMailForm()
+	}
+	
+	
+	
+	// Parameters
+	updateParameters () {
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			this.parameters = {widthOfMailForm: 300}
+		}
 	}
 	
 	

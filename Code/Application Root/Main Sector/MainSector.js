@@ -493,14 +493,38 @@ class MainSector extends JABView {
 	
 	// Keys
 	leftArrowWasPressed () {
-		if (this.state.projectOpen) {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.leftArrowWasPressed()
+			}
+		} else {
 			this.projectPage.leftArrowWasPressed()
 		}
 	}
 	
+	upArrowWasPressed () {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.upArrowWasPressed()
+			}
+		}
+	}
+	
 	rightArrowWasPressed () {
-		if (this.state.projectOpen) {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.rightArrowWasPressed()
+			}
+		} else {
 			this.projectPage.rightArrowWasPressed()
+		}
+	}
+	
+	downArrowWasPressed () {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.downArrowWasPressed()
+			}
 		}
 	}
 
