@@ -181,7 +181,6 @@ class ProjectPage extends JABView {
 				
 				view.updateAllUI()
 				
-				view.blue()
 			}
 		}
 		
@@ -442,8 +441,12 @@ class ProjectPage extends JABView {
 	}
 	
 	// Playback
+	play () {
+		this.currentVimeoView.play()
+	}
+	
 	pause () {
-		this.vimeoViews[this.state.projectGroupIndex][this.state.projectIndex].pause()
+		this.currentVimeoView.pause()
 	}
 	
 	

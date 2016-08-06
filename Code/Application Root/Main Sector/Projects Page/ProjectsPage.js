@@ -644,11 +644,11 @@ class ProjectsPage extends JABView {
 	
 	// Project Info Tab
 	projectInfoTabPlayButtonWasClicked (projectInfoTab) {
-		this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id)
+		this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id, true)
 	}
 	
 	projectInfoTabInfoButtonWasClicked (projectInfoTab) {
-		this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id)
+		this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id, false)
 	}
 	
 	

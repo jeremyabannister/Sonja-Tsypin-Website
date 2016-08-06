@@ -97,8 +97,8 @@ class HomeSector extends JABView {
 	//
 	
 	// Home Page
-	homePageDownArrowWasClicked () {
-		this.parent.homeSectorEnterButtonWasClicked()
+	homePageDownArrowWasClicked (homePage) {
+		this.parent.homeSectorEnterButtonWasClicked(this)
 	}
 	
 }

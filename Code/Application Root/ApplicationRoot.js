@@ -643,7 +643,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	
 	// Home Sector
-	homeSectorEnterButtonWasClicked () {
+	homeSectorEnterButtonWasClicked (homeSector) {
 		this.openWebsite()
 	}
 

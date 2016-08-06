@@ -466,6 +466,7 @@ class MainSector extends JABView {
 	
 	openMailFormPage (opacity) {
 		
+		/*
 		if (opacity == null) {
 			opacity = 0.6
 		}
@@ -487,6 +488,7 @@ class MainSector extends JABView {
 			mainSector.state = {closingMailForm: false}
 			mainSector.animatedUpdate()
 		})
+		*/
 	}
 	
 	
@@ -551,7 +553,7 @@ class MainSector extends JABView {
 	}
 	
 	// About Page
-	aboutPageWantsToDisplayProject (aboutPage, projectIdentifier) {
+	aboutPageWantsToDisplayProject (aboutPage, projectIdentifier, startPlaying) {
 		for (var i = 0; i < this.projectGroups.length; i++) {
 			for (var j = 0; j < this.projectGroups[i].length; j++) {
 				if (this.projectGroups[i][j].id == projectIdentifier) {
@@ -561,6 +563,9 @@ class MainSector extends JABView {
 						}
 						
 						this.projectPage.loadProjectIdentifier(projectIdentifier)
+						if (startPlaying) {
+							this.projectPage.play()
+						}
 						this.parent.mainSectorWantsToUseFullScreen(this)
 					}
 				}
@@ -576,7 +581,7 @@ class MainSector extends JABView {
 	
 	
 	// Projects Page
-	projectsPageWantsToDisplayProject (projectsPage, projectIdentifier) {
+	projectsPageWantsToDisplayProject (projectsPage, projectIdentifier, startPlaying) {
 		for (var i = 0; i < this.projectGroups.length; i++) {
 			for (var j = 0; j < this.projectGroups[i].length; j++) {
 				if (this.projectGroups[i][j].id == projectIdentifier) {
@@ -588,6 +593,9 @@ class MainSector extends JABView {
 		}
 		
 		this.projectPage.loadProjectIdentifier(projectIdentifier)
+		if (startPlaying) {
+			this.projectPage.play()
+		}
 		this.parent.mainSectorWantsToUseFullScreen(this)
 		this.animatedUpdate()
 	}
