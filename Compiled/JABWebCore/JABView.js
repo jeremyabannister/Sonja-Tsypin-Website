@@ -1185,7 +1185,8 @@ var JABView = function () {
 				this._overflowX = newOverflowX;
 
 				$(this.selector).css({
-					'overflow-x': newOverflowX
+					'overflow-x': newOverflowX,
+					'-webkit-overflow-scrolling': 'touch'
 				});
 			}
 		}
@@ -1199,7 +1200,8 @@ var JABView = function () {
 				this._overflowY = newOverflowY;
 
 				$(this.selector).css({
-					'overflow-y': newOverflowY
+					'overflow-y': newOverflowY,
+					'-webkit-overflow-scrolling': 'touch'
 				});
 			}
 		}

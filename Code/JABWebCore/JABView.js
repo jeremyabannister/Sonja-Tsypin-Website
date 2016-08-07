@@ -975,7 +975,8 @@ class JABView {
 			this._overflowX = newOverflowX
 			
 			$(this.selector).css({
-				'overflow-x': newOverflowX
+				'overflow-x': newOverflowX,
+				'-webkit-overflow-scrolling': 'touch',
 			})
 		}
 	}
@@ -990,7 +991,8 @@ class JABView {
 			this._overflowY = newOverflowY
 			
 			$(this.selector).css({
-				'overflow-y': newOverflowY
+				'overflow-y': newOverflowY,
+				'-webkit-overflow-scrolling': 'touch',
 			})
 		}
 	}
