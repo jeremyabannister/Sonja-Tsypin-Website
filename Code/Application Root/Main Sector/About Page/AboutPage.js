@@ -146,14 +146,25 @@ class AboutPage extends JABView {
 		this.bioText.fontWeight = 'normal'
 		this.bioText.lineHeight = 1.7
 		
-		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+		if (sizeClass == 'xxs') {
 			this.bioText.textAlign = 'justify'
-			this.bioText.fontSize = 13
-			this.bioText.lineHeight = 1.5
 			$(this.bioText.selector).css({
 				'text-justify': 'inter-word'
 			})
+			
+			this.bioText.fontSize = 13
+			this.bioText.lineHeight = 1.5
+			
+		} else if (sizeClass == 'xs') {
+			this.bioText.textAlign = 'justify'
+			$(this.bioText.selector).css({
+				'text-justify': 'inter-word'
+			})
+			
+			this.bioText.fontSize = 20
+			this.bioText.lineHeight = 1.8
 		}
+		
 		
 		if (this.subdued) {
 			this.bioText.opacity = 0
@@ -235,6 +246,13 @@ class AboutPage extends JABView {
 		view.fontSize = 13
 		view.fontFamily = 'siteFont'
 		view.fontWeight = 'normal'
+		
+		
+		if (sizeClass == 'xxs') {
+			view.fontSize = 16
+		} else if (sizeClass == 'xs') {
+			view.fontSize = 20
+		}
 		
 		
 		if (this.subdued) {

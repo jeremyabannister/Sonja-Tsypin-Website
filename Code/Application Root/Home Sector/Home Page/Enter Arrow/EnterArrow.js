@@ -182,7 +182,7 @@ class EnterArrow extends JABView {
 	
 	// Image View
 	configureImageView () {
-		this.imageView.src = '/Resources/Images/Buttons/Enter Arrow.png'
+		this.imageView.src = './Resources/Images/Buttons/Enter Arrow.png'
 		
 		
 		if (this.updatingForFade) {
