@@ -184,7 +184,6 @@ var ProjectPage = function (_JABView) {
 					}
 
 					view.updateAllUI();
-
 				}
 			}
 		}
@@ -443,9 +442,14 @@ var ProjectPage = function (_JABView) {
 		// Playback
 
 	}, {
+		key: 'play',
+		value: function play() {
+			this.currentVimeoView.play();
+		}
+	}, {
 		key: 'pause',
 		value: function pause() {
-			this.vimeoViews[this.state.projectGroupIndex][this.state.projectIndex].pause();
+			this.currentVimeoView.pause();
 		}
 
 		// Keys

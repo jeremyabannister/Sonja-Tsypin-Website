@@ -21,7 +21,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ApplicationRoot).call(this, customId));
 
 		_this.laboratoryEnabled = false;
-		_this.contentWidth = { 'xxs': 315, 'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
+		_this.contentWidth = { 'xxs': 0, 'xs': 0, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
 		_this.state = {
 			headerBackdropHidden: false
 		};
@@ -635,7 +635,11 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'contentWidth',
 		get: function get() {
-			return this._contentWidth[sizeClass];
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				return this.width - 10;
+			} else {
+				return this._contentWidth[sizeClass];
+			}
 		},
 		set: function set(newContentWidth) {
 			this._contentWidth = newContentWidth;

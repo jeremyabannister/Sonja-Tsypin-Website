@@ -163,7 +163,7 @@ class MainSector extends JABView {
 		var view = this.aboutPage
 		
 		view.backgroundColor = 'black'
-		view.overflow = 'auto'
+		view.overflow = 'scroll'
 		view.reservedTopBuffer = this.parameters.reservedTopBuffer
 		
 		if (this.currentlyActivePage == view) {
@@ -214,7 +214,8 @@ class MainSector extends JABView {
 		var view = this.projectsPage
 		
 		view.backgroundColor = 'black'
-		view.overflow = 'auto'
+		view.overflowX = 'hidden'
+		view.overflowY = 'scroll'
 		view.parameters = {
 			reservedTopBuffer: this.parameters.reservedTopBuffer,
 			heightOfHeader: this.parameters.heightOfHeader,
@@ -287,7 +288,7 @@ class MainSector extends JABView {
 		var view = this.reelPage
 		
 		view.backgroundColor = 'black'
-		view.overflow = 'auto'
+		view.overflow = 'scroll'
 		view.reservedTopBuffer = this.parameters.reservedTopBuffer
 		
 		if (this.currentlyActivePage == view) {
@@ -384,7 +385,7 @@ class MainSector extends JABView {
 		view.clickable = true
 		view.parameters.reservedTopBuffer = this.parameters.reservedTopBuffer
 		view.overflowX = 'hidden'
-		view.overflowY = 'auto'
+		view.overflowY = 'scroll'
 		
 		view.configureDuration = 200
 		view.backgroundColor = 'rgba(0,0,0, 0.6)'
@@ -474,6 +475,7 @@ class MainSector extends JABView {
 		this.parent.mainSectorWantsToUseFullScreen(this)
 		this.state = {mailFormOpen: true, mailFormOpacity: opacity}
 		this.animatedUpdate(250)
+		*/
 	}
 	
 	
@@ -488,7 +490,6 @@ class MainSector extends JABView {
 			mainSector.state = {closingMailForm: false}
 			mainSector.animatedUpdate()
 		})
-		*/
 	}
 	
 	

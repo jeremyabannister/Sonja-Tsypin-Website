@@ -1,4 +1,5 @@
-console.log('happening')
+/*
+console.log('phpTest.js is running')
 var hello = 'this is a string'
 $.ajax({
 	type: 'POST',
@@ -7,6 +8,5 @@ $.ajax({
 	data: {
 		hello: hello,
 	}
-}).done(function() {
-	console.log('done')
 })
+*/

@@ -225,7 +225,6 @@ var HomePage = function (_JABView) {
 		key: 'startTimeoutForNextImage',
 		value: function startTimeoutForNextImage() {
 
-			console.log(this.backgroundImageIndex);
 			var homePage = this;
 
 			setTimeout(function () {

@@ -624,12 +624,12 @@ var ProjectsPage = function (_JABView) {
 	}, {
 		key: 'projectInfoTabPlayButtonWasClicked',
 		value: function projectInfoTabPlayButtonWasClicked(projectInfoTab) {
-			this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id);
+			this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id, true);
 		}
 	}, {
 		key: 'projectInfoTabInfoButtonWasClicked',
 		value: function projectInfoTabInfoButtonWasClicked(projectInfoTab) {
-			this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id);
+			this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id, false);
 		}
 
 		// Footer

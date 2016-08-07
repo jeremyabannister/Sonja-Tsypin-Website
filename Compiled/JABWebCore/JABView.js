@@ -1214,7 +1214,8 @@ var JABView = function () {
 				this._overflow = newOverflow;
 
 				$(this.selector).css({
-					'overflow': newOverflow
+					'overflow': newOverflow,
+					'-webkit-overflow-scrolling': 'touch'
 				});
 			}
 		}

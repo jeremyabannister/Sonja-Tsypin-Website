@@ -6,7 +6,7 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// State
 		this.laboratoryEnabled = false
-		this.contentWidth = {'xxs': 315, 'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
+		this.contentWidth = {'xxs': 0, 'xs': 0, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
 		this.state = {
 			headerBackdropHidden: false,
 		}
@@ -50,7 +50,11 @@ class ApplicationRoot extends JABApplicationRoot {
 	//
 	
 	get contentWidth () {
-		return this._contentWidth[sizeClass]
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			return this.width - 10
+		} else {
+			return this._contentWidth[sizeClass]
+		}
 	}
 	
 	set contentWidth (newContentWidth) {

@@ -1009,6 +1009,7 @@ class JABView {
 
 			$(this.selector).css({
 				'overflow': newOverflow,
+				'-webkit-overflow-scrolling': 'touch',
 			})
 		}
 	}

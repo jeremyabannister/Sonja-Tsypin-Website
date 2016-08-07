@@ -152,7 +152,7 @@ var MainSector = function (_JABView) {
 			var view = this.aboutPage;
 
 			view.backgroundColor = 'black';
-			view.overflow = 'auto';
+			view.overflow = 'scroll';
 			view.reservedTopBuffer = this.parameters.reservedTopBuffer;
 
 			if (this.currentlyActivePage == view) {
@@ -203,7 +203,8 @@ var MainSector = function (_JABView) {
 			var view = this.projectsPage;
 
 			view.backgroundColor = 'black';
-			view.overflow = 'auto';
+			view.overflowX = 'hidden';
+			view.overflowY = 'scroll';
 			view.parameters = {
 				reservedTopBuffer: this.parameters.reservedTopBuffer,
 				heightOfHeader: this.parameters.heightOfHeader
@@ -264,7 +265,7 @@ var MainSector = function (_JABView) {
 			var view = this.reelPage;
 
 			view.backgroundColor = 'black';
-			view.overflow = 'auto';
+			view.overflow = 'scroll';
 			view.reservedTopBuffer = this.parameters.reservedTopBuffer;
 
 			if (this.currentlyActivePage == view) {
@@ -357,7 +358,7 @@ var MainSector = function (_JABView) {
 			view.clickable = true;
 			view.parameters.reservedTopBuffer = this.parameters.reservedTopBuffer;
 			view.overflowX = 'hidden';
-			view.overflowY = 'auto';
+			view.overflowY = 'scroll';
 
 			view.configureDuration = 200;
 			view.backgroundColor = 'rgba(0,0,0, 0.6)';
@@ -429,31 +430,32 @@ var MainSector = function (_JABView) {
 		}
 	}, {
 		key: 'openMailFormPage',
-		value: function openMailFormPage(opacity) {}
+		value: function openMailFormPage(opacity) {
 
-		/*
-  if (opacity == null) {
-  	opacity = 0.6
-  }
-  
-  this.parent.mainSectorWantsToUseFullScreen(this)
-  this.state = {mailFormOpen: true, mailFormOpacity: opacity}
-  this.animatedUpdate(250)
-  }
-  	
-  closeMailFormPage () {
-  this.parent.mainSectorWantsToRelinquishFullScreen(this)
-  this.state = {
-  	mailFormOpen: false,
-  	closingMailForm: true,
-  }
-  var mainSector = this
-  this.animatedUpdate(250, function() {
-  	mainSector.state = {closingMailForm: false}
-  	mainSector.animatedUpdate()
-  })
-  */
-
+			/*
+   if (opacity == null) {
+   	opacity = 0.6
+   }
+   
+   this.parent.mainSectorWantsToUseFullScreen(this)
+   this.state = {mailFormOpen: true, mailFormOpacity: opacity}
+   this.animatedUpdate(250)
+   */
+		}
+	}, {
+		key: 'closeMailFormPage',
+		value: function closeMailFormPage() {
+			this.parent.mainSectorWantsToRelinquishFullScreen(this);
+			this.state = {
+				mailFormOpen: false,
+				closingMailForm: true
+			};
+			var mainSector = this;
+			this.animatedUpdate(250, function () {
+				mainSector.state = { closingMailForm: false };
+				mainSector.animatedUpdate();
+			});
+		}
 
 		// Keys
 
@@ -526,7 +528,7 @@ var MainSector = function (_JABView) {
 
 	}, {
 		key: 'aboutPageWantsToDisplayProject',
-		value: function aboutPageWantsToDisplayProject(aboutPage, projectIdentifier) {
+		value: function aboutPageWantsToDisplayProject(aboutPage, projectIdentifier, startPlaying) {
 			for (var i = 0; i < this.projectGroups.length; i++) {
 				for (var j = 0; j < this.projectGroups[i].length; j++) {
 					if (this.projectGroups[i][j].id == projectIdentifier) {
@@ -537,6 +539,9 @@ var MainSector = function (_JABView) {
 							};
 
 							this.projectPage.loadProjectIdentifier(projectIdentifier);
+							if (startPlaying) {
+								this.projectPage.play();
+							}
 							this.parent.mainSectorWantsToUseFullScreen(this);
 						}
 					}
@@ -553,7 +558,7 @@ var MainSector = function (_JABView) {
 
 	}, {
 		key: 'projectsPageWantsToDisplayProject',
-		value: function projectsPageWantsToDisplayProject(projectsPage, projectIdentifier) {
+		value: function projectsPageWantsToDisplayProject(projectsPage, projectIdentifier, startPlaying) {
 			for (var i = 0; i < this.projectGroups.length; i++) {
 				for (var j = 0; j < this.projectGroups[i].length; j++) {
 					if (this.projectGroups[i][j].id == projectIdentifier) {
@@ -565,6 +570,9 @@ var MainSector = function (_JABView) {
 			}
 
 			this.projectPage.loadProjectIdentifier(projectIdentifier);
+			if (startPlaying) {
+				this.projectPage.play();
+			}
 			this.parent.mainSectorWantsToUseFullScreen(this);
 			this.animatedUpdate();
 		}
