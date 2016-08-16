@@ -193,9 +193,7 @@ var Footer = function (_JABView) {
 			} else if (view == this.buttons[1]) {
 				window.open('http://www.sonjatsypin.weebly.com');
 			} else if (view == this.buttons[2]) {
-				var test = document.querySelector(this.copyrightLabel.selector);
-				test.select();
-				document.execCommand('copy');
+				this.parent.footerMailButtonWasClicked(this);
 			}
 		}
 	}]);

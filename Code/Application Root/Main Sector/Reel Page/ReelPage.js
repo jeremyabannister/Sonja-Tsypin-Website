@@ -8,7 +8,6 @@ class ReelPage extends JABView {
 			readyToClose: true
 		}
 		this.currentlyActive = null
-		this.comingSoon = false
 		
 		this.scrollable = false
 		this.scrollFinishTimer
@@ -112,7 +111,9 @@ class ReelPage extends JABView {
 		
 		view.blur = 0
 		
-		
+		view.coverImage = new UIImage("./Resources/Images/Reel Page/Reel Cover Photo.png")
+		view.playButtonImage = new UIImage("./Resources/Images/Buttons/Play Button.png")
+		view.labelText = "REEL"
 		
 	}
 	
@@ -182,7 +183,7 @@ class ReelPage extends JABView {
 				reelPage.state.readyToClose = false
 			}
 			
-			if (reelPage.readyToClose && evt.originalEvent.wheelDelta > 0) {
+			if (reelPage.state.readyToClose && evt.originalEvent.wheelDelta > 0) {
 				evt.preventDefault()
 			}
 		})
@@ -214,6 +215,11 @@ class ReelPage extends JABView {
 	// JABVimeoView
 	vimeoViewDidFinishLoading (vimeoView) {
 		
+	}
+	
+	// Footer
+	footerMailButtonWasClicked (footer) {
+		this.parent.reelPageWantsToOpenMailForm(this)
 	}
 	
 }

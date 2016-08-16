@@ -9,7 +9,6 @@ class UILabel extends JABView {
 		this.textColor = '#000000'
 		this.textAlign = null
 		this.wordBreak = null
-
 		this.hyphenate = false
 
 		// UI
@@ -64,7 +63,7 @@ class UILabel extends JABView {
 			'font-style': newFont.style,
 			'font-variant': newFont.variant,
 			'letter-spacing': newFont.letterSpacing,
-			'line-height': newFont.lineHeight
+			'line-height': newFont.lineHeight + newFont.lineHeightUnit,
 		})
 	}
 
@@ -155,7 +154,7 @@ class UILabel extends JABView {
 
 	set fontSize (newFontSize) {
 		this.font.size = newFontSize
-		this.font = this.font
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
 	}
 
 
@@ -167,7 +166,7 @@ class UILabel extends JABView {
 
 	set fontFamily (newFontFamily) {
 		this.font.family = newFontFamily
-		this.font = this.font
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
 	}
 
 
@@ -179,7 +178,7 @@ class UILabel extends JABView {
 
 	set fontWeight (newFontWeight) {
 		this.font.weight = newFontWeight
-		this.font = this.font
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
 	}
 
 
@@ -191,7 +190,7 @@ class UILabel extends JABView {
 
 	set fontStyle (newFontStyle) {
 		this.font.style = newFontStyle
-		this.font = this.font
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
 	}
 
 
@@ -203,7 +202,7 @@ class UILabel extends JABView {
 
 	set fontVariant (newFontVariant) {
 		this.font.variant = newFontVariant
-		this.font = this.font
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
 	}
 
 
@@ -215,7 +214,7 @@ class UILabel extends JABView {
 
 	set letterSpacing (newLetterSpacing) {
 		this.font.letterSpacing = newLetterSpacing
-		this.font = this.font
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
 	}
 
 	
@@ -227,9 +226,19 @@ class UILabel extends JABView {
 	
 	set lineHeight (newLineHeight) {
 		this.font.lineHeight = newLineHeight
-		this.font = this.font
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
 	}
-
+	
+	
+	// Line Height Unit
+	get lineHeightUnit () {
+		return this.lineHeightUnit
+	}
+	
+	set lineHeightUnit (newLineHeightUnit) {
+		this.font.lineHeightUnit = newLineHeightUnit
+		this.font = this.font // Reassiging the font triggers set font which updates the DOM
+	}
 
 
 	//

@@ -8,7 +8,6 @@ class AboutPage extends JABView {
 			readyToClose: true
 		}
 		this.subdued = false
-		this.comingSoon = false
 		
 		this.scrollable = false
 		this.scrollFinishTimer
@@ -22,7 +21,7 @@ class AboutPage extends JABView {
 		// UI
 		this.bioText = new UILabel('Bio')
 		this.line = new JABView("Line")
-		this.emailAddress = new UILabel('EmailAddress')
+		this.emailAddressLabel = new UILabel('EmailAddressLabel')
 		
 		this.footer = new Footer('Footer')
 	}
@@ -58,7 +57,7 @@ class AboutPage extends JABView {
 		
 		this.addBioText()
 		this.addLine()
-		this.addEmailAddress()
+		this.addEmailAddressLabel()
 		
 		this.addFooter()
 	}
@@ -71,8 +70,8 @@ class AboutPage extends JABView {
 	addLine () {
 		this.addSubview(this.line)
 	}
-	addEmailAddress () {
-		this.addSubview(this.emailAddress)
+	addEmailAddressLabel () {
+		this.addSubview(this.emailAddressLabel)
 	}
 	
 	
@@ -85,12 +84,13 @@ class AboutPage extends JABView {
 	updateAllUI () {
 		super.updateAllUI()
 		
+		this.updateParameters()
 		
 		this.configureBioText()
 		this.positionBioText()
 		
-		this.configureEmailAddress()
-		this.positionEmailAddress()
+		this.configureEmailAddressLabel()
+		this.positionEmailAddressLabel()
 		
 		this.configureLine()
 		this.positionLine()
@@ -101,16 +101,70 @@ class AboutPage extends JABView {
 	}
 	
 	
+	// Parameters
+	updateParameters () {
+		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			this.topBufferForBioText = 70
+		}
+		
+	}
+	
 	// Bio
 	configureBioText () {
 		
+		if (this.bioText.text == '') {
+			this.bioText.text = "Sonja Tsypin is a director and cinematographer based in New York and Los Angeles. Sonja's most recent short film, <span id='powderRoomSpan---" + this.id + "' style='color:white; cursor:pointer'>Powder Room</span> (2016), recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja's other recent work as Director of Photography includes upcoming narrative feature-length film <span id='angelsSpan---" + this.id + "' style='color:white;'>Angels</span> (2016, dir. Audrey Banks), short psychological drama <span id='birthDaySpan---" + this.id + "' style='color:white; cursor:pointer'>Birth Day</span> (2016, dir. Eva Evans) and short horror film <span id='theodoreSpan---" + this.id + "' style='color:white; cursor:pointer'>Theodore</span> (2015, dir. Ondine Vi\u00f1ao). Sonja's directing work includes <span id='contactEsterinaSpan---" + this.id + "' style='color:white; cursor:pointer;'>Contact Esterina</span> (2014), a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and <span id='foundGuiltySpan---" + this.id + "' style='color:white; cursor:pointer'>Found Guilty</span> (2014), a short film remake of Alfred Hitchcock\'s \"Blackmail.\" Sonja comes from a background in fine art (view work <a target='_blank' href='http://www.sonjatsypin.weebly.com'><span style='color:white'>here</span></a>); she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master's Degree in cinematography."
+			
+			var parent = this.parent
+			$('#powderRoomSpan---' + this.id).click(function(){
+				parent.aboutPageWantsToDisplayProject(this, 'powderRoom')
+			})
+			$('#angelsSpan---' + this.id).click(function(){
+				parent.aboutPageWantsToDisplayProject(this, 'angels')
+			})
+			$('#birthDaySpan---' + this.id).click(function(){
+				parent.aboutPageWantsToDisplayProject(this, 'birthDay')
+			})
+			$('#theodoreSpan---' + this.id).click(function(){
+				parent.aboutPageWantsToDisplayProject(this, 'theodore')
+			})
+			$('#foundGuiltySpan---' + this.id).click(function(){
+				parent.aboutPageWantsToDisplayProject(this, 'foundGuilty')
+			})
+			
+			
+			$('#contactEsterinaSpan---' + this.id).click(function() {
+				parent.aboutPageWantsToDisplayProject(this, 'contactEsterina')
+			})
+		}
 		
-		this.bioText.text = "<span style='color:#ffff00'>Sonja Tsypin</span> is a director and cinematographer based in New York and Los Angeles. Sonja's most recent short film, <span style='color:white'>POWDER ROOM [2016]</span>, recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja's other recent work as Director of Photography includes upcoming narrative feature-length film <span style='color:white'>ANGELS [2016]</span> dir. Audrey Banks, short psychological drama <span style='color:white'>BIRTH DAY [2016]</span> dir. Eva Evans and short horror film <span style='color:white'>THEODORE [2015]</span> dir. Ondine Vi\u00f1ao. Sonja's directing work includes CONTACT ESTERINA [2014], a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and THE MURDER [2014], a short film remake of Alfred Hitchcock\'s \"Blackmail.\" Sonja comes from a background in fine art (view work <a href='http://www.sonjatsypin.weebly.com'>here</a>); she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja will attend the American Film Institute (AFI) Conservatory in Los Angeles starting in Fall 2016 for a Master's Degree in cinematography."
+		
 		this.bioText.textColor = '#999999'
 		this.bioText.fontSize = 14
 		this.bioText.fontFamily = 'siteFont'
 		this.bioText.fontWeight = 'normal'
 		this.bioText.lineHeight = 1.7
+		
+		if (sizeClass == 'xxs') {
+			this.bioText.textAlign = 'justify'
+			$(this.bioText.selector).css({
+				'text-justify': 'inter-word'
+			})
+			
+			this.bioText.fontSize = 13
+			this.bioText.lineHeight = 1.5
+			
+		} else if (sizeClass == 'xs') {
+			this.bioText.textAlign = 'justify'
+			$(this.bioText.selector).css({
+				'text-justify': 'inter-word'
+			})
+			
+			this.bioText.fontSize = 20
+			this.bioText.lineHeight = 1.8
+		}
+		
 		
 		if (this.subdued) {
 			this.bioText.opacity = 0
@@ -118,9 +172,13 @@ class AboutPage extends JABView {
 			this.bioText.opacity = 1
 		}
 		
-		$(this.bioText.selector).css({
-			textIndent: '40px'
-		})
+		if ($(this.bioText.selector).css('textIndent') != '40px') {
+			$(this.bioText.selector).css({
+				textIndent: '40px'
+			})
+		}
+		
+		
 		
 	}
 	
@@ -129,6 +187,9 @@ class AboutPage extends JABView {
 		var newFrame = new CGRect()
 					
 		newFrame.size.width = 740
+		if (newFrame.size.width > applicationRoot.contentWidth - 10) {
+			newFrame.size.width = applicationRoot.contentWidth - 10
+		}
 		
 		var size = this.bioText.font.sizeOfString(this.bioText.text, newFrame.size.width)
 		newFrame.size.height = size.height
@@ -161,34 +222,51 @@ class AboutPage extends JABView {
 		newFrame.size.width = 60
 		newFrame.size.height = 1
 
-		newFrame.origin.x = this.emailAddress.x
-		newFrame.origin.y = this.emailAddress.y - newFrame.size.height - 25
+		newFrame.origin.x = this.emailAddressLabel.x
+		newFrame.origin.y = this.emailAddressLabel.y - newFrame.size.height - 25
 					
 		this.line.frame = newFrame
 	}
 	
 	
 	// Email Address
-	configureEmailAddress () {
+	configureEmailAddressLabel () {
 		
-		this.emailAddress.text = "e-mail &nbsp;:: &nbsp;<span style='color:white'>sonjatsypin@gmail.com</span>"
-		this.emailAddress.textColor = '#999999'
-		this.emailAddress.fontSize = 13
-		this.emailAddress.fontFamily = 'siteFont'
-		this.emailAddress.fontWeight = 'normal'
+		var view = this.emailAddressLabel
+		if (view.text == '') {
+			view.text = "e-mail &nbsp;:: &nbsp;<span id='emailAddress---" + this.id + "' style='color:white; cursor: pointer'>sonjatsypin@gmail.com</span>"
+			
+			var parent = this.parent
+			$('#emailAddress---' + this.id).click(function() {
+				parent.aboutPageWantsToOpenMailForm(this)
+			})
+		}
+		
+		view.textColor = '#999999'
+		view.fontSize = 13
+		view.fontFamily = 'siteFont'
+		view.fontWeight = 'normal'
+		
+		
+		if (sizeClass == 'xxs') {
+			view.fontSize = 16
+		} else if (sizeClass == 'xs') {
+			view.fontSize = 20
+		}
 		
 		
 		if (this.subdued) {
-			this.emailAddress.opacity = 0
+			view.opacity = 0
 		} else {
-			this.emailAddress.opacity = 1
+			view.opacity = 1
 		}
 		
 	}
 	
-	positionEmailAddress () {
+	positionEmailAddressLabel () {
 		
-		var size = this.emailAddress.font.sizeOfString(this.emailAddress.text)
+		var view = this.emailAddressLabel
+		var size = view.font.sizeOfString(view.text)
 		var newFrame = new CGRect()
 					
 		newFrame.size.width = size.width
@@ -198,7 +276,7 @@ class AboutPage extends JABView {
 		newFrame.origin.y = this.bioText.bottom + 56
 		
 					
-		this.emailAddress.frame = newFrame
+		view.frame = newFrame
 		
 	}
 	
@@ -221,7 +299,7 @@ class AboutPage extends JABView {
 		newFrame.size.height = this.footer.requiredHeight
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = this.emailAddress.bottom + this.bottomBufferForEmailAddress
+		newFrame.origin.y = this.emailAddressLabel.bottom + this.bottomBufferForEmailAddress
 		
 		if (newFrame.origin.y < this.height - this.footer.requiredHeight) {
 			newFrame.origin.y = this.height - this.footer.requiredHeight
@@ -257,6 +335,10 @@ class AboutPage extends JABView {
 			} else {
 				aboutPage.state.readyToClose = false
 			}
+			
+			if (aboutPage.state.readyToClose && evt.originalEvent.wheelDelta > 0) {
+				evt.preventDefault()
+			}
 		})
 	}
 	
@@ -269,5 +351,10 @@ class AboutPage extends JABView {
 	//
 	// Delegate
 	//
+	
+	// Footer
+	footerMailButtonWasClicked (footer) {
+		this.parent.aboutPageWantsToOpenMailForm(this)
+	}
 	
 }

@@ -9,7 +9,9 @@ var sizeClass = 'xs';
 function updateSizeClassForWidth(width) {
 	if (typeof width == 'number') {
 		if (width >= 0) {
-			if (width < 768) {
+			if (width < 420) {
+				sizeClass = 'xxs';
+			} else if (width < 780) {
 				sizeClass = 'xs';
 			} else if (width < 1035) {
 				sizeClass = 's';

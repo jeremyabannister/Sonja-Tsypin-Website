@@ -13,7 +13,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ProjectImageView = function (_JABView) {
 	_inherits(ProjectImageView, _JABView);
 
-	function ProjectImageView(customId) {
+	function ProjectImageView(customId, projectDataBundle) {
 		_classCallCheck(this, ProjectImageView);
 
 		// State
@@ -21,7 +21,7 @@ var ProjectImageView = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProjectImageView).call(this, customId));
 
 		_this.state = {
-			src: '',
+			projectDataBundle: projectDataBundle,
 			covered: false
 		};
 
@@ -92,7 +92,7 @@ var ProjectImageView = function (_JABView) {
 
 			var view = this.imageView;
 
-			view.src = this.state.src;
+			view.src = this.state.projectDataBundle.stills[this.state.projectDataBundle.mainStillIndex];
 			view.configureDuration = 150;
 			view.positionDuration = 150;
 

@@ -1,6 +1,6 @@
 class MainSector extends JABView {
 
-	constructor (customId) {
+	constructor (customId, projectDataBundles) {
 		super(customId)
 
 
@@ -10,23 +10,40 @@ class MainSector extends JABView {
 			pageIndex: 0,
 			projectOpen: false,
 			closingProject: false,
-			projectDataBundle: null,
-			scrollable: false,
 			
-			comingSoon: true,
+			selectedProjectGroup: 0,
+			selectedProjectIndex: 0,
+			
+			mailFormOpen: false,
+			closingMailForm: false,
+			mailFormOpacity: 0.5,
+			
+			scrollable: false,
 		}
 		
+		this.projectDataBundles = projectDataBundles
+		this.projectGroups = [[]]
+		
+		for (var i = 0; i < this.projectDataBundles.length; i++) {
+			if (!this.projectDataBundles[i].hidden) {
+				this.projectGroups[0].push(this.projectDataBundles[i])
+			} else {
+				this.projectGroups.push([this.projectDataBundles[i]])
+			}
+		}
 
 		// Parameters
 		this.parameters = {
+			reservedTopBuffer: 0,
 			heightOfHeader: 0,
 		}
 
 		// UI
 		this.aboutPage = new AboutPage('AboutPage')
-		this.projectsPage = new ProjectsPage('ProjectsPage')
+		this.projectsPage = new ProjectsPage('ProjectsPage', this.projectGroups[0])
 		this.reelPage = new ReelPage('ReelPage')
-		this.projectPage = new ProjectPage('ProjectPage')
+		this.mailFormPage = new MailFormPage('MailFormPage')
+		this.projectPage = new ProjectPage('ProjectPage', this.projectGroups)
 		
 	}
 
@@ -62,12 +79,12 @@ class MainSector extends JABView {
 	}
 	
 	get pages () {
-		return [this.reelPage, this.projectsPage, this.aboutPage, this.projectPage]
+		return [this.reelPage, this.projectsPage, this.aboutPage, this.mailFormPage, this.projectPage]
 	}
 	
 	
 	get readyToClose () {
-		return (this.currentlyActivePage.state.readyToClose && !this.state.projectOpen)
+		return (this.currentlyActivePage.state.readyToClose && !this.state.projectOpen && !this.state.mailFormOpen)
 	}
 	
 
@@ -81,9 +98,8 @@ class MainSector extends JABView {
 		this.addAboutPage()
 		this.addProjectsPage()
 		this.addReelPage()
+		this.addMailFormPage()
 		this.addProjectPage()
-		
-		// this.addComingSoonView()
 		
 	}
 	
@@ -103,21 +119,15 @@ class MainSector extends JABView {
 		this.addSubview(this.reelPage)
 	}
 	
+	addMailFormPage () {
+		this.addSubview(this.mailFormPage)
+	}
+	
 	addProjectPage () {
 		this.addSubview(this.projectPage)
 	}
 	
 	
-	
-	
-	
-	
-	addComingSoonView () {
-		this.addSubview(this.comingSoonView)
-	}
-	
-
-
 
 
 	
@@ -134,13 +144,11 @@ class MainSector extends JABView {
 		this.configureReelPage()
 		this.positionReelPage()
 		
+		this.configureMailFormPage()
+		this.positionMailFormPage()
+		
 		this.configureProjectPage()
 		this.positionProjectPage()
-		
-		
-		
-		// this.configureComingSoonView()
-		// this.positionComingSoonView()
 
 	}
 	
@@ -155,16 +163,21 @@ class MainSector extends JABView {
 		var view = this.aboutPage
 		
 		view.backgroundColor = 'black'
-		view.overflow = 'auto'
-		view.reservedTopBuffer = this.parameters.heightOfHeader
+		view.overflow = 'scroll'
+		view.reservedTopBuffer = this.parameters.reservedTopBuffer
 		
 		if (this.currentlyActivePage == view) {
 			
-			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+			if (!this.state.closingProject && !this.state.closingMailForm) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
 				this.bringPageToFront(view)
 			}
 			view.scrollable = this.state.scrollable
-			setComingSoon(view.comingSoon)
+			
+			if (this.state.projectOpen || this.state.mailFormOpen) {
+				view.blur = 20
+			} else {
+				view.blur = 0
+			}
 			
 			if (this.state.currentlyActive) {
 				view.opacity = 1
@@ -201,20 +214,23 @@ class MainSector extends JABView {
 		var view = this.projectsPage
 		
 		view.backgroundColor = 'black'
-		view.overflow = 'auto'
-		view.parameters = {reservedTopBuffer: this.parameters.heightOfHeader}
+		view.overflowX = 'hidden'
+		view.overflowY = 'scroll'
+		view.parameters = {
+			reservedTopBuffer: this.parameters.reservedTopBuffer,
+			heightOfHeader: this.parameters.heightOfHeader,
+		}
+		view.projectDataBundles = this.projectDataBundles
+		
 		
 		if (this.currentlyActivePage == view) {
-			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+			if (!this.state.closingProject && !this.state.closingMailForm) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
 				this.bringPageToFront(view)
 			}
 			
 			view.state.scrollable = this.state.scrollable
-			if (view.state.comingSoon) {
-				view.state.scrollable = false
-			}
 			
-			if (this.state.projectOpen) {
+			if (this.state.projectOpen || this.state.mailFormOpen) {
 				view.blur = 20
 			} else {
 				view.blur = 0
@@ -236,6 +252,12 @@ class MainSector extends JABView {
 		
 		
 		view.updateAllUI()
+		
+		
+		
+		$(view.selector).css({
+			'scroll-behavior': 'smooth'
+		})
 		
 	}
 	
@@ -266,11 +288,11 @@ class MainSector extends JABView {
 		var view = this.reelPage
 		
 		view.backgroundColor = 'black'
-		view.overflow = 'auto'
-		view.reservedTopBuffer = this.parameters.heightOfHeader
+		view.overflow = 'scroll'
+		view.reservedTopBuffer = this.parameters.reservedTopBuffer
 		
 		if (this.currentlyActivePage == view) {
-			if (!this.state.closingProject) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
+			if (!this.state.closingProject && !this.state.closingMailForm) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
 				this.bringPageToFront(view)
 			}
 			
@@ -279,6 +301,12 @@ class MainSector extends JABView {
 				view.scrollable = this.state.scrollable
 			} else {
 				view.currentlyActive = false
+			}
+			
+			if (this.state.projectOpen || this.state.mailFormOpen) {
+				view.blur = 20
+			} else {
+				view.blur = 0
 			}
 			
 			if (this.state.currentlyActive) {
@@ -312,14 +340,53 @@ class MainSector extends JABView {
 	
 	
 	
+	// Mail Form Page
+	configureMailFormPage () {
+		
+		var view = this.mailFormPage
+		
+		view.backgroundColor = 'rgba(0, 0, 0, ' + this.state.mailFormOpacity + ')'
+		
+		view.parameters = {reservedTopBuffer: this.parameters.reservedTopBuffer}
+		view.clickable = true
+		
+		if (this.state.mailFormOpen) {
+			view.opacity = 1
+			view.state = {subdued: false}
+			this.bringPageToFront(view)
+		} else {
+			view.opacity = 0
+			view.state = {subdued: true}
+		}
+		
+		
+		view.updateAllUI()
+		
+	}
+	
+	positionMailFormPage () {
+		
+		var view = this.mailFormPage
+		var newFrame = this.bounds
+		
+		
+		view.frame = newFrame
+		
+	}
+	
+	
+	
+	
 	// Project Page
 	configureProjectPage () {
 		
 		var view = this.projectPage
 		
 		view.clickable = true
-		view.parameters.reservedTopBuffer = this.parameters.heightOfHeader
-		view.overflow = 'auto'
+		view.parameters.reservedTopBuffer = this.parameters.reservedTopBuffer
+		view.overflowX = 'hidden'
+		view.overflowY = 'scroll'
+		
 		view.configureDuration = 200
 		view.backgroundColor = 'rgba(0,0,0, 0.6)'
 		
@@ -328,13 +395,17 @@ class MainSector extends JABView {
 			view.opacity = 1
 			view.configureDelay = 0
 			
-			view.state.projectDataBundle = this.state.projectDataBundle
+			view.instantUpdate = true
+			view.updateAllUI()
+			view.instantUpdate = false
+			
 		} else {
 			view.opacity = 0
 			view.configureDelay = 200
 		}
 		
 		this.projectPage.updateAllUI()
+		
 		
 	}
 	
@@ -352,59 +423,7 @@ class MainSector extends JABView {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	// Coming Soon View
-	configureComingSoonView () {
-		
-		this.comingSoonView.text = 'COMING SOON...'
-		
-		this.comingSoonView.textColor = 'white'
-		this.comingSoonView.fontSize = 30
-		this.comingSoonView.fontFamily = 'siteFont'
-		this.comingSoonView.fontWeight = 'bold'
-		this.comingSoonView.letterSpacing = 1.5
-		
-		if (this.comingSoon && this.state.currentlyActive) {
-			this.comingSoonView.opacity = 1
-		} else {
-			this.comingSoonView.opacity = 0
-		}
-	}
-	
-	positionComingSoonView () {
-		
-		var size = this.comingSoonView.font.sizeOfString(this.comingSoonView.text)
-		var newFrame = new CGRect()
-					
-		newFrame.size.width = size.width
-		newFrame.size.height = size.height
 
-		newFrame.origin.x = (this.width - newFrame.size.width)/2
-		newFrame.origin.y = (this.height - newFrame.size.height)/2
-		
-		if (!this.state.currentlyActive) {
-			newFrame.origin.y += 100
-		}
-		
-		if (!this.state.comingSoon) {
-			newFrame.origin.x = this.width
-		}
-					
-		this.comingSoonView.frame = newFrame
-		
-	}
-	
-	
 	
 
 
@@ -415,6 +434,7 @@ class MainSector extends JABView {
 	// Actions
 	//
 	
+	// Navigation
 	bringPageToFront (page) {
 		
 		var otherPages = []
@@ -431,19 +451,85 @@ class MainSector extends JABView {
 	
 	
 	closeCurrentlyOpenProject () {
-		this.parent.mainSectorWantsToCloseProject(this)
+		this.parent.mainSectorWantsToRelinquishFullScreen(this)
 		this.state = {
 			projectOpen: false,
 			closingProject: true
 		}
-		this.projectPage.vimeoView.pause()
+		this.projectPage.pause()
 		var mainSector = this
 		this.animatedUpdate(null, function() {
 			mainSector.state = {closingProject: false}
 			mainSector.animatedUpdate()
 		})
 	}
-
+	
+	
+	openMailFormPage (opacity) {
+		
+		/*
+		if (opacity == null) {
+			opacity = 0.6
+		}
+		
+		this.parent.mainSectorWantsToUseFullScreen(this)
+		this.state = {mailFormOpen: true, mailFormOpacity: opacity}
+		this.animatedUpdate(250)
+		*/
+	}
+	
+	
+	closeMailFormPage () {
+		this.parent.mainSectorWantsToRelinquishFullScreen(this)
+		this.state = {
+			mailFormOpen: false,
+			closingMailForm: true,
+		}
+		var mainSector = this
+		this.animatedUpdate(250, function() {
+			mainSector.state = {closingMailForm: false}
+			mainSector.animatedUpdate()
+		})
+	}
+	
+	
+	
+	// Keys
+	leftArrowWasPressed () {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.leftArrowWasPressed()
+			}
+		} else {
+			this.projectPage.leftArrowWasPressed()
+		}
+	}
+	
+	upArrowWasPressed () {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.upArrowWasPressed()
+			}
+		}
+	}
+	
+	rightArrowWasPressed () {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.rightArrowWasPressed()
+			}
+		} else {
+			this.projectPage.rightArrowWasPressed()
+		}
+	}
+	
+	downArrowWasPressed () {
+		if (!this.state.projectOpen) {
+			if (this.state.pageIndex == 1) {
+				this.projectsPage.downArrowWasPressed()
+			}
+		}
+	}
 
 
 	//
@@ -453,20 +539,82 @@ class MainSector extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		if (view == this.projectPage) {
-			this.closeCurrentlyOpenProject()
+			if (this.projectPage.state.handlingClick) {
+				this.projectPage.state = {handlingClick: false}
+			} else {
+				this.closeCurrentlyOpenProject()
+			}
+		} else if (view == this.mailFormPage) {
+			if (this.mailFormPage.state.handlingClick) {
+				this.mailFormPage.state = {handlingClick: false}
+			} else {
+				this.closeMailFormPage()
+			}
 		}
 	}
+	
+	// About Page
+	aboutPageWantsToDisplayProject (aboutPage, projectIdentifier, startPlaying) {
+		for (var i = 0; i < this.projectGroups.length; i++) {
+			for (var j = 0; j < this.projectGroups[i].length; j++) {
+				if (this.projectGroups[i][j].id == projectIdentifier) {
+					if (projectIdentifier != 'angels') { // Angels has no trailer right now so ignore it if clicked
+						this.state = {
+							projectOpen: true,
+						}
+						
+						this.projectPage.loadProjectIdentifier(projectIdentifier)
+						if (startPlaying) {
+							this.projectPage.play()
+						}
+						this.parent.mainSectorWantsToUseFullScreen(this)
+					}
+				}
+			}
+		}
+	}
+	
+	
+	aboutPageWantsToOpenMailForm (aboutPage) {
+		this.openMailFormPage(0)
+	}
+	
+	
 	
 	// Projects Page
-	projectsPageWantsToDisplayProject (projectsPage, project) {
-		this.state = {
-			projectOpen: true,
-			projectDataBundle: project,
+	projectsPageWantsToDisplayProject (projectsPage, projectIdentifier, startPlaying) {
+		for (var i = 0; i < this.projectGroups.length; i++) {
+			for (var j = 0; j < this.projectGroups[i].length; j++) {
+				if (this.projectGroups[i][j].id == projectIdentifier) {
+					this.state = {
+						projectOpen: true,
+					}
+				}
+			}
 		}
-		this.parent.mainSectorWantsToDisplayProject(this)
+		
+		this.projectPage.loadProjectIdentifier(projectIdentifier)
+		if (startPlaying) {
+			this.projectPage.play()
+		}
+		this.parent.mainSectorWantsToUseFullScreen(this)
+		this.animatedUpdate()
 	}
 	
-
+	projectsPageWantsToOpenMailForm (projectsPage) {
+		this.openMailFormPage(0.8)
+	}
+	
+	
+	// Reel Page
+	reelPageWantsToOpenMailForm (reelPage) {
+		this.openMailFormPage(0.5)
+	}
+	
+	// Project Page
+	projectPageDidChangeProjectIndexTo(projectPage, projectIndex) {
+		this.state = {selectedProjectIndex: projectIndex}
+	}
 }
 
 

@@ -118,8 +118,8 @@ var HomeSector = function (_JABView) {
 
 	}, {
 		key: 'homePageDownArrowWasClicked',
-		value: function homePageDownArrowWasClicked() {
-			this.parent.homeSectorEnterButtonWasClicked();
+		value: function homePageDownArrowWasClicked(homePage) {
+			this.parent.homeSectorEnterButtonWasClicked(this);
 		}
 	}]);
 
