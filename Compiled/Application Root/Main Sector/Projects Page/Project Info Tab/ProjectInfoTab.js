@@ -161,7 +161,6 @@ var ProjectInfoTab = function (_JABView) {
 		key: 'updateParameters',
 		value: function updateParameters() {
 
-			console.log(this.height);
 			var titleFontSizes = { 'xxs': this.height / 8, 'xs': this.height / 8, 's': 16, 'm': 20, 'l': 20, 'xl': 20 };
 			this.parameters = {
 				sizeOfPlayButton: this.height * 0.5,

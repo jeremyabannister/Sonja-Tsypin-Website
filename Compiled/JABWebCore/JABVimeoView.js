@@ -25,6 +25,11 @@ var JABVimeoView = function (_JABView) {
 		_this.loadingGif = null;
 		_this.loadedOnce = false;
 
+		_this.coverImage = null; // Should be a UIImage
+		_this.playButtonImage = null; // Should be a UIImage
+		_this.labelText = null;
+		_this.unplayed = true;
+
 		// UI
 		_this.loadingGifWrapper = new JABGifWrapper('LoadingGifWrapper');
 		_this.iFrameWrapper = new JABView('IFrameWrapper');
@@ -32,7 +37,15 @@ var JABVimeoView = function (_JABView) {
 		_this.player = null;
 		_this.iframe = "<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>";
 
+		_this.coverImageView = new JABImageView('CoverImageView');
+		_this.playButton = new JABImageView('PlayButton');
+		_this.label = new UILabel('Label');
+
 		// Parameters
+		_this.parameters = {
+			sizeOfPlayButton: 80,
+			bufferBetweenPlayButtonAndLabel: 10
+		};
 
 		return _this;
 	}
@@ -52,20 +65,20 @@ var JABVimeoView = function (_JABView) {
 		//
 
 	}, {
-		key: 'test',
-		value: function test() {
-			console.log('here');
-		}
+		key: 'addAllUI',
+
 
 		//
 		// UI
 		//
 
 		// Add
-
-	}, {
-		key: 'addAllUI',
 		value: function addAllUI() {
+
+			// These go behind the rest by default so that they are not blocking the vimeo player unless a cover image is specified
+			this.addCoverImageView();
+			this.addPlayButton();
+			this.addLabel();
 
 			this.addLoadingGifWrapper();
 			this.addIFrameWrapper();
@@ -87,6 +100,21 @@ var JABVimeoView = function (_JABView) {
 		value: function addIFrame() {
 			$(this.iFrameWrapper.selector).append(this.iframe);
 		}
+	}, {
+		key: 'addCoverImageView',
+		value: function addCoverImageView() {
+			this.addSubview(this.coverImageView);
+		}
+	}, {
+		key: 'addPlayButton',
+		value: function addPlayButton() {
+			this.addSubview(this.playButton);
+		}
+	}, {
+		key: 'addLabel',
+		value: function addLabel() {
+			this.addSubview(this.label);
+		}
 
 		// Update
 
@@ -103,6 +131,15 @@ var JABVimeoView = function (_JABView) {
 
 			this.configureIframe();
 			this.positionIframe();
+
+			this.configureCoverImageView();
+			this.positionCoverImageView();
+
+			this.configurePlayButton();
+			this.positionPlayButton();
+
+			this.configureLabel();
+			this.positionLabel();
 		}
 
 		// Loading Gif
@@ -176,6 +213,124 @@ var JABVimeoView = function (_JABView) {
 			});
 		}
 
+		// Cover Image
+
+	}, {
+		key: 'configureCoverImageView',
+		value: function configureCoverImageView() {
+			var view = this.coverImageView;
+
+			var insertBelow = !this.unplayed;
+			if (this.coverImage != null) {
+
+				view.src = this.coverImage.src;
+
+				if (this.unplayed) {
+					view.opacity = 1;
+				} else {
+					view.opacity = 0;
+				}
+			} else {
+				view.opacity = 0;
+				insertBelow = true;
+			}
+
+			view.clickable = true;
+		}
+	}, {
+		key: 'positionCoverImageView',
+		value: function positionCoverImageView() {
+			var view = this.coverImageView;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.width;
+			newFrame.size.height = this.height;
+
+			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+			newFrame.origin.y = (this.height - newFrame.size.height) / 2;
+
+			view.frame = newFrame;
+		}
+
+		// Play Button
+
+	}, {
+		key: 'configurePlayButton',
+		value: function configurePlayButton() {
+
+			var view = this.playButton;
+
+			if (this.playButtonImage != null) {
+				view.src = this.playButtonImage.src;
+				if (this.unplayed) {
+					view.opacity = 1;
+				} else {
+					view.opacity = 0;
+				}
+			} else {
+				view.opacity = 0;
+			}
+
+			view.clickable = true;
+			view.cursor = 'pointer';
+		}
+	}, {
+		key: 'positionPlayButton',
+		value: function positionPlayButton() {
+			var view = this.playButton;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.parameters.sizeOfPlayButton;
+			newFrame.size.height = newFrame.size.width;
+
+			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+			newFrame.origin.y = (this.height - newFrame.size.height) / 2;
+
+			view.frame = newFrame;
+		}
+
+		// Label
+
+	}, {
+		key: 'configureLabel',
+		value: function configureLabel() {
+
+			var view = this.label;
+
+			if (this.labelText != null) {
+				if (this.unplayed) {
+					view.opacity = 1;
+				} else {
+					view.opacity = 0;
+				}
+
+				view.text = this.labelText;
+				view.fontFamily = 'siteFont';
+				view.fontSize = 12;
+				view.textColor = 'white';
+				view.letterSpacing = 1.5;
+			} else {
+				view.opacity = 0;
+			}
+		}
+	}, {
+		key: 'positionLabel',
+		value: function positionLabel() {
+			var view = this.label;
+			var newFrame = new CGRect();
+
+			if (view.text != null) {
+				var size = view.font.sizeOfString(view.text);
+				newFrame.size.width = size.width;
+				newFrame.size.height = size.height;
+
+				newFrame.origin.x = this.playButton.x + (this.playButton.width - newFrame.size.width) / 2;
+				newFrame.origin.y = this.playButton.bottom + this.parameters.bufferBetweenPlayButtonAndLabel;
+			}
+
+			view.frame = newFrame;
+		}
+
 		//
 		// Event Listeners
 		//
@@ -183,6 +338,8 @@ var JABVimeoView = function (_JABView) {
 		//
 		// Actions
 		//
+
+		// Vimeo Player
 
 	}, {
 		key: 'play',
@@ -199,10 +356,45 @@ var JABVimeoView = function (_JABView) {
 			}
 		}
 
+		// Subviews
+
+	}, {
+		key: 'updateSubviewOrder',
+		value: function updateSubviewOrder() {
+			var bringToFront = this.unplayed;
+			if (this.coverImage == null) {
+				bringToFront = false;
+			}
+
+			if (bringToFront) {
+				this.bringSubviewToFront(this.coverImageView);
+				this.bringSubviewToFront(this.playButton);
+				this.bringSubviewToFront(this.label);
+			} else {
+				this.pushSubviewToBack(this.coverImageView);
+				this.pushSubviewToBack(this.playButton);
+				this.pushSubviewToBack(this.label);
+			}
+		}
+
 		//
 		// Delegate
 		//
 
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+			if (view == this.coverImageView || view == this.playButton) {
+				this.unplayed = false;
+				var vimeoView = this;
+				this.animatedUpdate(null, function () {
+					vimeoView.updateSubviewOrder();
+					vimeoView.play();
+				});
+			}
+		}
 	}, {
 		key: 'vimeoId',
 		get: function get() {
@@ -248,6 +440,18 @@ var JABVimeoView = function (_JABView) {
 					this._loadingGif = newLoadingGif;
 					this.loadingGifWrapper.gif = this.loadingGif;
 				}
+			}
+		}
+	}, {
+		key: 'coverImage',
+		get: function get() {
+			return this._coverImage;
+		},
+		set: function set(newCoverImage) {
+			if (this.coverImage != newCoverImage) {
+				this._coverImage = newCoverImage;
+
+				this.updateSubviewOrder();
 			}
 		}
 	}]);
