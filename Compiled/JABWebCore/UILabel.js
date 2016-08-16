@@ -25,7 +25,6 @@ var UILabel = function (_JABView) {
 		_this.textColor = '#000000';
 		_this.textAlign = null;
 		_this.wordBreak = null;
-
 		_this.hyphenate = false;
 
 		// UI
@@ -78,7 +77,7 @@ var UILabel = function (_JABView) {
 				'font-style': newFont.style,
 				'font-variant': newFont.variant,
 				'letter-spacing': newFont.letterSpacing,
-				'line-height': newFont.lineHeight
+				'line-height': newFont.lineHeight + newFont.lineHeightUnit
 			});
 		}
 
@@ -170,7 +169,7 @@ var UILabel = function (_JABView) {
 		},
 		set: function set(newFontSize) {
 			this.font.size = newFontSize;
-			this.font = this.font;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
 
 		// Font Family
@@ -182,7 +181,7 @@ var UILabel = function (_JABView) {
 		},
 		set: function set(newFontFamily) {
 			this.font.family = newFontFamily;
-			this.font = this.font;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
 
 		// Font Weight
@@ -194,7 +193,7 @@ var UILabel = function (_JABView) {
 		},
 		set: function set(newFontWeight) {
 			this.font.weight = newFontWeight;
-			this.font = this.font;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
 
 		// Font Style
@@ -206,7 +205,7 @@ var UILabel = function (_JABView) {
 		},
 		set: function set(newFontStyle) {
 			this.font.style = newFontStyle;
-			this.font = this.font;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
 
 		// Font Variant
@@ -218,7 +217,7 @@ var UILabel = function (_JABView) {
 		},
 		set: function set(newFontVariant) {
 			this.font.variant = newFontVariant;
-			this.font = this.font;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
 
 		// Letter Spacing
@@ -230,7 +229,7 @@ var UILabel = function (_JABView) {
 		},
 		set: function set(newLetterSpacing) {
 			this.font.letterSpacing = newLetterSpacing;
-			this.font = this.font;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
 
 		// Line Height
@@ -242,7 +241,19 @@ var UILabel = function (_JABView) {
 		},
 		set: function set(newLineHeight) {
 			this.font.lineHeight = newLineHeight;
-			this.font = this.font;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
+		}
+
+		// Line Height Unit
+
+	}, {
+		key: 'lineHeightUnit',
+		get: function get() {
+			return this.lineHeightUnit;
+		},
+		set: function set(newLineHeightUnit) {
+			this.font.lineHeightUnit = newLineHeightUnit;
+			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
 
 		//

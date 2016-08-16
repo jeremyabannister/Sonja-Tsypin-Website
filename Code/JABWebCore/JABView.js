@@ -69,14 +69,23 @@ class JABView {
 		// Configuration
 		this.opacity = 1
 		this.backgroundColor = 'transparent'
-		this.borderRadius = 0
+		this.borderStyle = null
+		this.borderWidth = null
+		this.borderColor = null
+		this.borderRadius = null
 		this.blur = 0
 		
 		this.zIndex = 0
 		this.position = 'absolute'
+		this.overflowX = 'visible'
+		this.overflowY = 'visible'
 		this.overflow = 'visible'
 		this.cursor = 'auto'
 		this.animation = 'none'
+		this.paddingLeft = 0
+		this.paddingRight = 0
+		this.paddingTop = 0
+		this.paddingBottom = 0
 		
 		
 		// Position
@@ -89,7 +98,7 @@ class JABView {
 	
 		// Other
 		this.clickable = false
-		
+		this.hoverable = false
 		
 		
 		viewHierarchy.push(this)
@@ -162,6 +171,10 @@ class JABView {
 	
 	get scrollTop () {
 		return $(this.selector).scrollTop()
+	}
+	
+	set scrollTop (newScrollTop) {
+		$(this.selector).scrollTop(newScrollTop)
 	}
 	
 	
@@ -803,6 +816,57 @@ class JABView {
 	}
 	
 	
+	
+	// Border Style
+	get borderStyle () {
+		return this._borderStyle
+	}
+	
+	set borderStyle (newBorderStyle) {
+		if (this.borderStyle != newBorderStyle) {
+			this._borderStyle = newBorderStyle
+			
+			$(this.selector).css({
+				'border-style': newBorderStyle
+			})
+		}
+	}
+	
+	
+	// Border Width
+	get borderWidth () {
+		return this._borderWidth
+	}
+	
+	set borderWidth (newBorderWidth) {
+		if (this.borderWidth != newBorderWidth) {
+			this._borderWidth = newBorderWidth
+			
+			$(this.selector).css({
+				'border-width': newBorderWidth + 'px'
+			})
+		}
+	}
+	
+	
+	
+	// Border Color
+	get borderColor () {
+		return this._borderColor
+	}
+	
+	set borderColor (newBorderColor) {
+		if (this.borderColor != newBorderColor) {
+			this._borderColor = newBorderColor
+			
+			$(this.selector).css({
+				'border-color': newBorderColor
+			})
+		}
+	}
+	
+	
+	
 	// Border Radius
 	get borderRadius () {
 		return this._borderRadius
@@ -902,6 +966,40 @@ class JABView {
 
 
 	// Overflow
+	get overflowX () {
+		return this._overflowX
+	}
+	
+	set overflowX (newOverflowX) {
+		if (this.overflowX != newOverflowX) {
+			this._overflowX = newOverflowX
+			
+			$(this.selector).css({
+				'overflow-x': newOverflowX,
+				'-webkit-overflow-scrolling': 'touch',
+			})
+		}
+	}
+	
+	
+	get overflowY () {
+		return this._overflowY
+	}
+	
+	set overflowY (newOverflowY) {
+		if (this.overflowY != newOverflowY) {
+			this._overflowY = newOverflowY
+			
+			$(this.selector).css({
+				'overflow-y': newOverflowY,
+				'-webkit-overflow-scrolling': 'touch',
+			})
+		}
+	}
+	
+	
+	
+	
 	get overflow () {
 		return this._overflow
 	}
@@ -913,6 +1011,7 @@ class JABView {
 
 			$(this.selector).css({
 				'overflow': newOverflow,
+				'-webkit-overflow-scrolling': 'touch',
 			})
 		}
 	}
@@ -956,6 +1055,84 @@ class JABView {
 	
 	
 	
+	// Padding Left
+	get paddingLeft () {
+		return this._paddingLeft
+	}
+	
+	set paddingLeft (newPaddingLeft) {
+		if (this.paddingLeft != newPaddingLeft) {
+			this._paddingLeft = newPaddingLeft
+			
+			$(this.selector).css({
+				'padding-left': newPaddingLeft + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Right
+	get paddingRight () {
+		return this._paddingRight
+	}
+	
+	set paddingRight (newPaddingRight) {
+		if (this.paddingRight != newPaddingRight) {
+			this._paddingRight = newPaddingRight
+			
+			$(this.selector).css({
+				'padding-right': newPaddingRight + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Top
+	get paddingTop () {
+		return this._paddingTop
+	}
+	
+	set paddingTop (newPaddingTop) {
+		if (this.paddingTop != newPaddingTop) {
+			this._paddingTop = newPaddingTop
+			
+			$(this.selector).css({
+				'padding-top': newPaddingTop + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Bottom
+	get paddingBottom () {
+		return this._paddingBottom
+	}
+	
+	set paddingBottom (newPaddingBottom) {
+		if (this.paddingBottom != newPaddingBottom) {
+			this._paddingBottom = newPaddingBottom
+			
+			$(this.selector).css({
+				'padding-bottom': newPaddingBottom + 'px'
+			})
+		}
+	}
+	
+	
+	
+	//
+	// Scrolling
+	//
+	
+	scrollTo (newScrollTop, duration, easingFunction) {
+		$(this.selector).animate({
+			'scrollTop': newScrollTop
+		}, {
+			duration: duration + 'ms',
+			easingFunction: easingFunction,
+		})
+	}
+	
 	
 	//
 	//
@@ -972,8 +1149,6 @@ class JABView {
 	}
 
 	set frame (newFrame) {
-		
-		this.debugLog('setting frame')
 		
 		
 		var scaled = ((newFrame.size.width != this.width) || (newFrame.size.height != this.height))
@@ -1247,12 +1422,58 @@ class JABView {
 				$(this.selector).click(function() {
 					thisView.parent.viewWasClicked(thisView)
 				})
+				
+				$(this.selector).css({
+					'-webkit-touch-callout': 'none',
+					'-webkit-user-select': 'none',
+					'-khtml-user-select': 'none',
+					'moz-user-select': 'none',
+					'-ms-user-select': 'none',
+					'user-select': 'none',
+				})
 			} else {
 				$(this.selector).click(function() {})
+				$(this.selector).css({
+					'-webkit-touch-callout': 'text',
+					'-webkit-user-select': 'text',
+					'-khtml-user-select': 'text',
+					'moz-user-select': 'text',
+					'-ms-user-select': 'text',
+					'user-select': 'text',
+				})
 			}
 		}
 	}
-
+	
+	
+	
+	get hoverable () {
+		return this._hoverable
+	}
+	
+	set hoverable (newHoverable) {
+		
+		var changed = this.hoverable != newHoverable
+		
+		if (changed) {
+			this._hoverable = newHoverable
+			
+			var thisView = this
+			$(this.selector).off()
+			if (this.hoverable) {
+				$(this.selector).hover(function() {
+					thisView.parent.viewWasHovered(thisView)
+				}, function(){
+					thisView.parent.viewWasUnhovered(thisView)
+				})
+			} else {
+				$(this.selector).hover(function() {}, function() {})
+			}
+		}
+	}
+	
+	
+	
 
 	//
 	// Init

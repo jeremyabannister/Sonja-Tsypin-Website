@@ -89,11 +89,24 @@ class Header extends JABView {
 	}
 
 	positionLogo () {
+		
+		var view = this.logo
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = this.logo.requiredWidth
+		newFrame.size.height = this.logo.requiredHeight
 
-		var leftBufferForLogo = (this.width - applicationRoot.contentWidth)/2
-		var topBufferForLogo = 39
+		newFrame.origin.x = (this.width - applicationRoot.contentWidth)/2
+		newFrame.origin.y = 39
+		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			newFrame.origin.x = (this.width - newFrame.size.width)/2
+			newFrame.origin.y = 14
+		}
+		
+							
+		view.frame = newFrame
 
-		this.logo.frame = new CGRect(leftBufferForLogo, 39, this.logo.requiredWidth, this.logo.requiredHeight)
 
 	}
 
@@ -108,7 +121,7 @@ class Header extends JABView {
 		
 		this.menu.textColor = 'white'
 		
-		var fontSizes = {'xs': 11, 's': 16, 'm': 12, 'l': 12, 'xl': 12}
+		var fontSizes = {'xxs': 12, 'xs': 12, 's': 16, 'm': 12, 'l': 12, 'xl': 12}
 		this.menu.fontSize = fontSizes[sizeClass]
 		this.menu.letterSpacing = 1.5
 		this.menu.fontWeight = 'bold'
@@ -133,7 +146,11 @@ class Header extends JABView {
 		newFrame.size.height = this.menu.requiredHeight
 
 		newFrame.origin.x = this.width - newFrame.size.width - rightBufferForMenu
-		newFrame.origin.y = topBufferForMenu
+		newFrame.origin.y = 42
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			newFrame.origin.x = (this.width - newFrame.size.width)/2
+			newFrame.origin.y = this.logo.bottom + 10
+		}
 
 		this.menu.frame = newFrame
 

@@ -14,4 +14,5 @@ var ProjectMetaDataBundle = function ProjectMetaDataBundle() {
 	this.description = '';
 
 	this.noVideoMessgae = null;
+	this.hidden = false;
 };

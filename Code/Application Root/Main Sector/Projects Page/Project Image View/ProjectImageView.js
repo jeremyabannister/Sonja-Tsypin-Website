@@ -1,11 +1,11 @@
 class ProjectImageView extends JABView {
 	
-	constructor (customId) {
+	constructor (customId, projectDataBundle) {
 		super(customId)
 		
 		// State
 		this.state = {
-			src: '',
+			projectDataBundle: projectDataBundle,
 			covered: false,
 		}
 		
@@ -75,7 +75,7 @@ class ProjectImageView extends JABView {
 		
 		var view = this.imageView
 		
-		view.src = this.state.src
+		view.src = this.state.projectDataBundle.stills[this.state.projectDataBundle.mainStillIndex]
 		view.configureDuration = 150
 		view.positionDuration = 150
 		

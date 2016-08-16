@@ -24,7 +24,6 @@ var ReelPage = function (_JABView) {
 			readyToClose: true
 		};
 		_this.currentlyActive = null;
-		_this.comingSoon = false;
 
 		_this.scrollable = false;
 		_this.scrollFinishTimer;
@@ -117,6 +116,10 @@ var ReelPage = function (_JABView) {
 			}
 
 			view.blur = 0;
+
+			view.coverImage = new UIImage("./Resources/Images/Reel Page/Reel Cover Photo.png");
+			view.playButtonImage = new UIImage("./Resources/Images/Buttons/Play Button.png");
+			view.labelText = "REEL";
 		}
 	}, {
 		key: 'positionVimeoView',
@@ -182,7 +185,7 @@ var ReelPage = function (_JABView) {
 					reelPage.state.readyToClose = false;
 				}
 
-				if (reelPage.readyToClose && evt.originalEvent.wheelDelta > 0) {
+				if (reelPage.state.readyToClose && evt.originalEvent.wheelDelta > 0) {
 					evt.preventDefault();
 				}
 			});
@@ -218,6 +221,14 @@ var ReelPage = function (_JABView) {
 	}, {
 		key: 'vimeoViewDidFinishLoading',
 		value: function vimeoViewDidFinishLoading(vimeoView) {}
+
+		// Footer
+
+	}, {
+		key: 'footerMailButtonWasClicked',
+		value: function footerMailButtonWasClicked(footer) {
+			this.parent.reelPageWantsToOpenMailForm(this);
+		}
 	}, {
 		key: 'currentlyActive',
 		get: function get() {

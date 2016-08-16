@@ -12,6 +12,7 @@ class ProjectMetaDataBundle {
 		
 		
 		this.noVideoMessgae = null
+		this.hidden = false
 	}
 
 

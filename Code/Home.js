@@ -34,11 +34,28 @@ $(window).load(function() {
 
 $(window).resize(function() {
   
-  console.log('1')
   websiteIsResizing = true
 	positionApplicationRoot()
   websiteIsResizing = false
 
+})
+
+$(document).keydown(function(event) {
+  var keyCode = event.keyCode || event.which
+  if (keyCode == 37) {
+    event.preventDefault()
+    applicationRoot.leftArrowWasPressed()
+  } else if (keyCode == 38) {
+    event.preventDefault()
+    applicationRoot.upArrowWasPressed()
+  } else if (keyCode == 39) {
+    event.preventDefault()
+    applicationRoot.rightArrowWasPressed()
+  } else if (keyCode == 40) {
+    event.preventDefault()
+    applicationRoot.downArrowWasPressed()
+  }
+  
 })
 
 function positionApplicationRoot () {

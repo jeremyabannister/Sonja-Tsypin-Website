@@ -102,6 +102,18 @@ var ProjectDataBundle = function () {
 			this.metaDataBundle = this.metaDataBundle;
 		}
 
+		// Hidden
+
+	}, {
+		key: "hidden",
+		get: function get() {
+			return this.metaDataBundle.hidden;
+		},
+		set: function set(newHidden) {
+			this.metaDataBundle.hidden = newHidden;
+			this.metaDataBundle = this.metaDataBundle;
+		}
+
 		// Vimeo Id
 
 	}, {

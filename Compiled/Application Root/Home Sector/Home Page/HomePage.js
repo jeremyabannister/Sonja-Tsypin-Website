@@ -20,15 +20,21 @@ var HomePage = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HomePage).call(this, customId));
 
-		_this.backgroundImageIndex = 1;
-		_this.backgroundLayer1IsActive = true;
+		_this.numberOfImages = 10;
+		_this.backgroundImageIndex = 0;
+
 		_this.arrowFaded = true;
 		_this.currentlyActive = true;
 
+		_this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [300, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]];
+
 		// UI
 		_this.blackBackground = new JABView('BlackBackground');
-		_this.backgroundLayer1 = new JABImageView('BackgroundLayer1');
-		_this.backgroundLayer2 = new JABImageView('BackgroundLayer2');
+		_this.backgroundImageViews = [];
+		for (var i = 0; i < 10; i++) {
+			_this.backgroundImageViews.push(new JABImageView('BackgroundImageView' + i));
+		}
+
 		_this.enterArrow = new EnterArrow('EnterArrow');
 
 		return _this;
@@ -43,7 +49,6 @@ var HomePage = function (_JABView) {
 		value: function init() {
 			_get(Object.getPrototypeOf(HomePage.prototype), 'init', this).call(this);
 			this.startTimeoutForNextImage();
-			this.startEventListeners();
 		}
 
 		//
@@ -57,8 +62,7 @@ var HomePage = function (_JABView) {
 		value: function addAllUI() {
 
 			this.addBlackBackground();
-			this.addBackgroundLayer1();
-			this.addBackgroundLayer2();
+			this.addBackgroundImageViews();
 			this.addEnterArrow();
 		}
 	}, {
@@ -67,14 +71,11 @@ var HomePage = function (_JABView) {
 			this.addSubview(this.blackBackground);
 		}
 	}, {
-		key: 'addBackgroundLayer1',
-		value: function addBackgroundLayer1() {
-			this.addSubview(this.backgroundLayer1);
-		}
-	}, {
-		key: 'addBackgroundLayer2',
-		value: function addBackgroundLayer2() {
-			this.addSubview(this.backgroundLayer2);
+		key: 'addBackgroundImageViews',
+		value: function addBackgroundImageViews() {
+			for (var i = 0; i < this.backgroundImageViews.length; i++) {
+				this.addSubview(this.backgroundImageViews[i]);
+			}
 		}
 	}, {
 		key: 'addEnterArrow',
@@ -92,11 +93,8 @@ var HomePage = function (_JABView) {
 			this.configureBlackBackground();
 			this.positionBlackBackground();
 
-			this.configureBackgroundLayer1();
-			this.positionBackgroundLayer1();
-
-			this.configureBackgroundLayer2();
-			this.positionBackgroundLayer2();
+			this.configureBackgroundImageViews();
+			this.positionBackgroundImageViews();
 
 			this.configureEnterArrow();
 			this.positionEnterArrow();
@@ -115,67 +113,65 @@ var HomePage = function (_JABView) {
 			this.blackBackground.frame = this.bounds;
 		}
 
-		// Background Layer 1
+		// Background Image Views
 
 	}, {
-		key: 'configureBackgroundLayer1',
-		value: function configureBackgroundLayer1() {
+		key: 'configureBackgroundImageViews',
+		value: function configureBackgroundImageViews() {
+			for (var i = 0; i < this.backgroundImageViews.length; i++) {
+				var view = this.backgroundImageViews[i];
 
-			this.backgroundLayer1.animationsDisabled = ['frame'];
+				view.src = './Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
 
-			if (this.backgroundLayer1IsActive) {
-				this.backgroundLayer1.opacity = 1;
-				this.backgroundLayer1.src = './Resources/Images/Home Page/Featured Stills/' + this.backgroundImageIndex + '.jpg';
-			} else {
-				this.backgroundLayer1.opacity = 0;
+				if (this.backgroundImageIndex != this.numberOfImages - 1) {
+					if (i > this.backgroundImageIndex) {
+						view.opacity = 0;
+					} else {
+						view.opacity = 1;
+					}
+				} else {
+					if (i == this.numberOfImages - 1 || i == 0) {
+						view.opacity = 1;
+					} else {
+						view.opacity = 0;
+					}
+				}
 			}
 		}
 	}, {
-		key: 'positionBackgroundLayer1',
-		value: function positionBackgroundLayer1() {
+		key: 'positionBackgroundImageViews',
+		value: function positionBackgroundImageViews() {
+			for (var i = 0; i < this.backgroundImageViews.length; i++) {
+				var view = this.backgroundImageViews[i];
 
-			var widthToHeightRatio = 1.777777777;
-			var contentDomainWidthToHeightRatio = 0;
-			if (this.height != 0) {
-				contentDomainWidthToHeightRatio = this.width / this.height;
-			}
+				var newFrame = new CGRect();
 
-			if (contentDomainWidthToHeightRatio < widthToHeightRatio) {
-				this.backgroundLayer1.frame = new CGRect((this.width - this.height * widthToHeightRatio) / 2, 0, this.height * widthToHeightRatio, this.height);
-			} else {
-				this.backgroundLayer1.frame = new CGRect(0, (this.height - this.width / widthToHeightRatio) / 2, this.width, this.width / widthToHeightRatio);
-			}
-		}
+				var widthToHeightRatio = 1.777777777;
+				var contentDomainWidthToHeightRatio = 0;
+				if (this.height != 0) {
+					contentDomainWidthToHeightRatio = this.width / this.height;
+				}
 
-		// Background Layer 2
+				if (contentDomainWidthToHeightRatio < widthToHeightRatio) {
+					newFrame.size.width = this.height * widthToHeightRatio;
+					newFrame.size.height = this.height;
+				} else {
+					newFrame.size.width = this.width;
+					newFrame.size.height = this.width / widthToHeightRatio;
+				}
 
-	}, {
-		key: 'configureBackgroundLayer2',
-		value: function configureBackgroundLayer2() {
+				newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+				newFrame.origin.y = (this.height - newFrame.size.height) / 2;
 
-			this.backgroundLayer2.animationsDisabled = ['frame'];
+				if (sizeClass == 'xxs' || sizeClass == 'xs') {
+					if (contentDomainWidthToHeightRatio < widthToHeightRatio) {
+						newFrame.origin.x += this.imageOffsets[i][0];
+					} else {
+						newFrame.origin.y += this.imageOffsets[i][1];
+					}
+				}
 
-			if (this.backgroundLayer1IsActive) {
-				this.backgroundLayer2.opacity = 0;
-			} else {
-				this.backgroundLayer2.src = './Resources/Images/Home Page/Featured Stills/' + this.backgroundImageIndex + '.jpg';
-				this.backgroundLayer2.opacity = 1;
-			}
-		}
-	}, {
-		key: 'positionBackgroundLayer2',
-		value: function positionBackgroundLayer2() {
-
-			var widthToHeightRatio = 1.777777777;
-			var contentDomainWidthToHeightRatio = 0;
-			if (this.height != 0) {
-				contentDomainWidthToHeightRatio = this.width / this.height;
-			}
-
-			if (contentDomainWidthToHeightRatio < widthToHeightRatio) {
-				this.backgroundLayer2.frame = new CGRect((this.width - this.height * widthToHeightRatio) / 2, 0, this.height * widthToHeightRatio, this.height);
-			} else {
-				this.backgroundLayer2.frame = new CGRect(0, (this.height - this.width / widthToHeightRatio) / 2, this.width, this.width / widthToHeightRatio);
+				view.frame = newFrame;
 			}
 		}
 
@@ -194,12 +190,13 @@ var HomePage = function (_JABView) {
 			}
 
 			this.enterArrow.configureDuration = 300;
+			this.enterArrow.clickable = true;
 		}
 	}, {
 		key: 'positionEnterArrow',
 		value: function positionEnterArrow() {
 
-			var widthsOfEnterArrow = { 'xs': 50, 's': 70, 'm': 40, 'l': 40, 'xl': 40 };
+			var widthsOfEnterArrow = { 'xxs': 45, 'xs': 60, 's': 60, 'm': 40, 'l': 40, 'xl': 40 };
 			var widthOfEnterArrow = widthsOfEnterArrow[sizeClass];
 			var bottomBufferForEnterArrow = 10;
 
@@ -218,15 +215,6 @@ var HomePage = function (_JABView) {
 		// Event Listeners
 		//
 
-	}, {
-		key: 'startEventListeners',
-		value: function startEventListeners() {
-			var homePage = this;
-			$(this.enterArrow.selector).click(function () {
-				homePage.parent.homePageDownArrowWasClicked();
-			});
-		}
-
 		//
 		// Actions
 		//
@@ -242,9 +230,8 @@ var HomePage = function (_JABView) {
 			setTimeout(function () {
 
 				homePage.backgroundImageIndex += 1;
-				homePage.backgroundLayer1IsActive = !homePage.backgroundLayer1IsActive;
-				if (homePage.backgroundImageIndex > 10) {
-					homePage.backgroundImageIndex = 1;
+				if (homePage.backgroundImageIndex > homePage.numberOfImages - 1) {
+					homePage.backgroundImageIndex = 0;
 				}
 
 				homePage.animatedUpdate({
@@ -269,6 +256,20 @@ var HomePage = function (_JABView) {
 
 				homePage.startTimeoutForArrowFade();
 			}, 1200);
+		}
+
+		//
+		// Delegate
+		//
+
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+			if (view == this.enterArrow) {
+				this.parent.homePageDownArrowWasClicked(this);
+			}
 		}
 	}]);
 
