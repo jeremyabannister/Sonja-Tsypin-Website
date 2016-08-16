@@ -10,6 +10,7 @@ class JABVimeoView extends JABView {
 		this.loadedOnce = false
 		
 		this.coverImage = null // Should be a UIImage
+		this.playButtonImage = null // Should be a UIImage
 		this.labelText = null
 		this.unplayed = true
 		
@@ -314,9 +315,9 @@ class JABVimeoView extends JABView {
 	configurePlayButton () {
 		
 		var view = this.playButton
-		view.src = "./Resources/Images/Buttons/Play Button.png"
 		
-		if (this.coverImage != null) {
+		if (this.playButtonImage != null) {
+			view.src = this.playButtonImage.src
 			if (this.unplayed) {
 				view.opacity = 1
 			} else {
