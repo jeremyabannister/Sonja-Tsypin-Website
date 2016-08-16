@@ -111,7 +111,8 @@ class ReelPage extends JABView {
 		
 		view.blur = 0
 		
-		
+		view.coverImage = new UIImage("./Resources/Images/Reel Page/Reel Cover Photo.png")
+		view.labelText = "REEL"
 		
 	}
 	

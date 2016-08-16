@@ -9,6 +9,11 @@ class JABVimeoView extends JABView {
 		this.loadingGif = null
 		this.loadedOnce = false
 		
+		this.coverImage = null // Should be a UIImage
+		this.labelText = null
+		this.unplayed = true
+		
+		
 		// UI
 		this.loadingGifWrapper = new JABGifWrapper('LoadingGifWrapper')
 		this.iFrameWrapper = new JABView('IFrameWrapper')
@@ -16,8 +21,15 @@ class JABVimeoView extends JABView {
 		this.player = null
 		this.iframe = "<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>"
 		
+		this.coverImageView = new JABImageView('CoverImageView')
+		this.playButton = new JABImageView('PlayButton')
+		this.label = new UILabel('Label')
 		
 		// Parameters
+		this.parameters = {
+			sizeOfPlayButton: 80,
+			bufferBetweenPlayButtonAndLabel: 10,
+		}
 		
 	}
 	
@@ -82,8 +94,18 @@ class JABVimeoView extends JABView {
 		}
 	}
 	
-	test () {
-		console.log('here')
+	
+	
+	get coverImage () {
+		return this._coverImage
+	}
+	
+	set coverImage (newCoverImage) {
+		if (this.coverImage != newCoverImage) {
+			this._coverImage = newCoverImage
+			
+			this.updateSubviewOrder()
+		}
 	}
 	
 	
@@ -95,10 +117,17 @@ class JABVimeoView extends JABView {
 	// Add
 	addAllUI () {
 		
+		// These go behind the rest by default so that they are not blocking the vimeo player unless a cover image is specified
+		this.addCoverImageView()
+		this.addPlayButton()
+		this.addLabel()
+		
+		
 		this.addLoadingGifWrapper()
 		this.addIFrameWrapper()
 		
 		this.addIFrame()
+		
 	}
 	
 	
@@ -115,6 +144,22 @@ class JABVimeoView extends JABView {
 	
 	addIFrame () {
 		$(this.iFrameWrapper.selector).append(this.iframe)
+	}
+	
+	
+	
+	
+	
+	addCoverImageView () {
+		this.addSubview(this.coverImageView)
+	}
+	
+	addPlayButton () {
+		this.addSubview(this.playButton)
+	}
+	
+	addLabel () {
+		this.addSubview(this.label)
 	}
 	
 	
@@ -137,6 +182,16 @@ class JABVimeoView extends JABView {
 		
 		this.configureIframe()
 		this.positionIframe()
+		
+		
+		this.configureCoverImageView()
+		this.positionCoverImageView()
+		
+		this.configurePlayButton()
+		this.positionPlayButton()
+		
+		this.configureLabel()
+		this.positionLabel()
 		
 	}
 	
@@ -184,6 +239,7 @@ class JABVimeoView extends JABView {
 		} else {
 			view.opacity = 1
 		}
+		
 	}
 	
 	positionIFrameWrapper () {
@@ -213,6 +269,124 @@ class JABVimeoView extends JABView {
 	
 	
 	
+	
+	// Cover Image
+	configureCoverImageView () {
+		var view = this.coverImageView
+		
+		var insertBelow = !this.unplayed
+		if (this.coverImage != null) {
+			
+			view.src = this.coverImage.src
+			
+			if (this.unplayed) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
+			
+		} else {
+			view.opacity = 0
+			insertBelow = true
+		}
+		
+		
+		view.clickable = true
+		
+	}
+	
+	positionCoverImageView () {
+		var view = this.coverImageView
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = this.width
+		newFrame.size.height = this.height
+
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = (this.height - newFrame.size.height)/2
+							
+		view.frame = newFrame
+	}
+	
+	
+	
+	// Play Button
+	configurePlayButton () {
+		
+		var view = this.playButton
+		view.src = "./Resources/Images/Buttons/Play Button.png"
+		
+		if (this.coverImage != null) {
+			if (this.unplayed) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
+		} else {
+			view.opacity = 0
+		}
+		
+		view.clickable = true
+		view.cursor = 'pointer'
+	}
+	
+	positionPlayButton () {
+		var view = this.playButton
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = this.parameters.sizeOfPlayButton
+		newFrame.size.height = newFrame.size.width
+
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = (this.height - newFrame.size.height)/2
+							
+		view.frame = newFrame
+	}
+	
+	
+	// Label
+	configureLabel () {
+		
+		var view = this.label
+		
+		if (this.labelText != null) {
+			if (this.unplayed) {
+				view.opacity = 1
+			} else {
+				view.opacity = 0
+			}
+			
+			
+			view.text = this.labelText
+			view.fontFamily = 'siteFont'
+			view.fontSize = 12
+			view.textColor = 'white'
+			view.letterSpacing = 1.5
+		} else {
+			view.opacity = 0
+		}
+		
+		
+	}
+	
+	positionLabel () {
+		var view = this.label
+		var newFrame = new CGRect()
+		
+		if (view.text != null) {
+			var size = view.font.sizeOfString(view.text)
+			newFrame.size.width = size.width
+			newFrame.size.height = size.height
+
+			newFrame.origin.x = this.playButton.x + (this.playButton.width - newFrame.size.width)/2
+			newFrame.origin.y = this.playButton.bottom + this.parameters.bufferBetweenPlayButtonAndLabel
+		}
+							
+		view.frame = newFrame
+	}
+	
+	
+	
 	//
 	// Event Listeners
 	//
@@ -222,6 +396,7 @@ class JABVimeoView extends JABView {
 	// Actions
 	//
 	
+	// Vimeo Player
 	play () {
 		if (this.player != null) {
 			this.player.play()
@@ -235,10 +410,40 @@ class JABVimeoView extends JABView {
 	}
 	
 	
+	// Subviews
+	updateSubviewOrder () {
+		var bringToFront = this.unplayed
+		if (this.coverImage == null) {
+			bringToFront = false
+		}
+		
+		if (bringToFront) {
+			this.bringSubviewToFront(this.coverImageView)
+			this.bringSubviewToFront(this.playButton)
+			this.bringSubviewToFront(this.label)
+		} else {
+			this.pushSubviewToBack(this.coverImageView)
+			this.pushSubviewToBack(this.playButton)
+			this.pushSubviewToBack(this.label)
+		}
+	}
+	
+	
 	//
 	// Delegate
 	//
 	
-	
+	// JABView
+	viewWasClicked (view) {
+		if (view == this.coverImageView || view == this.playButton) {
+			this.unplayed = false
+			var vimeoView = this
+			this.animatedUpdate(null, function () {
+				vimeoView.updateSubviewOrder()
+				vimeoView.play()
+			})
+			
+		}
+	}
 }
 

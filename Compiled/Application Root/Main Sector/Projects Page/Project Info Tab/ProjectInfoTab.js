@@ -161,7 +161,8 @@ var ProjectInfoTab = function (_JABView) {
 		key: 'updateParameters',
 		value: function updateParameters() {
 
-			var titleFontSizes = { 'xxs': 14, 'xs': 14, 's': 16, 'm': 20, 'l': 20, 'xl': 20 };
+			console.log(this.height);
+			var titleFontSizes = { 'xxs': this.height / 8, 'xs': this.height / 8, 's': 16, 'm': 20, 'l': 20, 'xl': 20 };
 			this.parameters = {
 				sizeOfPlayButton: this.height * 0.5,
 				fontSizeForTitleLabel: titleFontSizes[sizeClass]
@@ -430,6 +431,8 @@ var ProjectInfoTab = function (_JABView) {
 			newFrame.size.width = 300;
 			if (this.playButton.x - this.titleLabel.x - 20 < newFrame.size.width) {
 				newFrame.size.width = this.playButton.x - this.titleLabel.x - 20;
+			} else if (this.playButton.x - this.titleLabel.x - newFrame.size.width > this.width / 4) {
+				newFrame.size.width = this.playButton.x - this.titleLabel.x - this.width / 4;
 			}
 			var size = view.font.sizeOfString(view.font.text, newFrame.size.width);
 
