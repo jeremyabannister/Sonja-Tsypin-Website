@@ -106,7 +106,6 @@ class MailForm extends JABView {
 		view.label.fontFamily = 'siteFont'
 		view.label.fontSize = this.parameters.fontSizeOfInputLabels
 		
-		
 	}
 	
 	positionFromInput () {

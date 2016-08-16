@@ -82,6 +82,10 @@ class JABView {
 		this.overflow = 'visible'
 		this.cursor = 'auto'
 		this.animation = 'none'
+		this.paddingLeft = 0
+		this.paddingRight = 0
+		this.paddingTop = 0
+		this.paddingBottom = 0
 		
 		
 		// Position
@@ -95,7 +99,6 @@ class JABView {
 		// Other
 		this.clickable = false
 		this.hoverable = false
-		
 		
 		
 		viewHierarchy.push(this)
@@ -168,6 +171,10 @@ class JABView {
 	
 	get scrollTop () {
 		return $(this.selector).scrollTop()
+	}
+	
+	set scrollTop (newScrollTop) {
+		$(this.selector).scrollTop(newScrollTop)
 	}
 	
 	
@@ -968,7 +975,8 @@ class JABView {
 			this._overflowX = newOverflowX
 			
 			$(this.selector).css({
-				'overflow-x': newOverflowX
+				'overflow-x': newOverflowX,
+				'-webkit-overflow-scrolling': 'touch',
 			})
 		}
 	}
@@ -983,7 +991,8 @@ class JABView {
 			this._overflowY = newOverflowY
 			
 			$(this.selector).css({
-				'overflow-y': newOverflowY
+				'overflow-y': newOverflowY,
+				'-webkit-overflow-scrolling': 'touch',
 			})
 		}
 	}
@@ -1002,6 +1011,7 @@ class JABView {
 
 			$(this.selector).css({
 				'overflow': newOverflow,
+				'-webkit-overflow-scrolling': 'touch',
 			})
 		}
 	}
@@ -1044,6 +1054,84 @@ class JABView {
 	}
 	
 	
+	
+	// Padding Left
+	get paddingLeft () {
+		return this._paddingLeft
+	}
+	
+	set paddingLeft (newPaddingLeft) {
+		if (this.paddingLeft != newPaddingLeft) {
+			this._paddingLeft = newPaddingLeft
+			
+			$(this.selector).css({
+				'padding-left': newPaddingLeft + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Right
+	get paddingRight () {
+		return this._paddingRight
+	}
+	
+	set paddingRight (newPaddingRight) {
+		if (this.paddingRight != newPaddingRight) {
+			this._paddingRight = newPaddingRight
+			
+			$(this.selector).css({
+				'padding-right': newPaddingRight + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Top
+	get paddingTop () {
+		return this._paddingTop
+	}
+	
+	set paddingTop (newPaddingTop) {
+		if (this.paddingTop != newPaddingTop) {
+			this._paddingTop = newPaddingTop
+			
+			$(this.selector).css({
+				'padding-top': newPaddingTop + 'px'
+			})
+		}
+	}
+	
+	
+	// Padding Bottom
+	get paddingBottom () {
+		return this._paddingBottom
+	}
+	
+	set paddingBottom (newPaddingBottom) {
+		if (this.paddingBottom != newPaddingBottom) {
+			this._paddingBottom = newPaddingBottom
+			
+			$(this.selector).css({
+				'padding-bottom': newPaddingBottom + 'px'
+			})
+		}
+	}
+	
+	
+	
+	//
+	// Scrolling
+	//
+	
+	scrollTo (newScrollTop, duration, easingFunction) {
+		$(this.selector).animate({
+			'scrollTop': newScrollTop
+		}, {
+			duration: duration + 'ms',
+			easingFunction: easingFunction,
+		})
+	}
 	
 	
 	//
@@ -1334,8 +1422,25 @@ class JABView {
 				$(this.selector).click(function() {
 					thisView.parent.viewWasClicked(thisView)
 				})
+				
+				$(this.selector).css({
+					'-webkit-touch-callout': 'none',
+					'-webkit-user-select': 'none',
+					'-khtml-user-select': 'none',
+					'moz-user-select': 'none',
+					'-ms-user-select': 'none',
+					'user-select': 'none',
+				})
 			} else {
 				$(this.selector).click(function() {})
+				$(this.selector).css({
+					'-webkit-touch-callout': 'text',
+					'-webkit-user-select': 'text',
+					'-khtml-user-select': 'text',
+					'moz-user-select': 'text',
+					'-ms-user-select': 'text',
+					'user-select': 'text',
+				})
 			}
 		}
 	}

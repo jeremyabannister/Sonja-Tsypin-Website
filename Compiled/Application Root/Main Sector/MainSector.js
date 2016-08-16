@@ -13,7 +13,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MainSector = function (_JABView) {
 	_inherits(MainSector, _JABView);
 
-	function MainSector(customId) {
+	function MainSector(customId, projectDataBundles) {
 		_classCallCheck(this, MainSector);
 
 		// State
@@ -25,22 +25,40 @@ var MainSector = function (_JABView) {
 			pageIndex: 0,
 			projectOpen: false,
 			closingProject: false,
-			projectDataBundle: null,
-			scrollable: false,
 
-			comingSoon: true
+			selectedProjectGroup: 0,
+			selectedProjectIndex: 0,
+
+			mailFormOpen: false,
+			closingMailForm: false,
+			mailFormOpacity: 0.5,
+
+			scrollable: false
 		};
+
+		_this.projectDataBundles = projectDataBundles;
+		_this.projectGroups = [[]];
+
+		for (var i = 0; i < _this.projectDataBundles.length; i++) {
+			if (!_this.projectDataBundles[i].hidden) {
+				_this.projectGroups[0].push(_this.projectDataBundles[i]);
+			} else {
+				_this.projectGroups.push([_this.projectDataBundles[i]]);
+			}
+		}
 
 		// Parameters
 		_this.parameters = {
+			reservedTopBuffer: 0,
 			heightOfHeader: 0
 		};
 
 		// UI
 		_this.aboutPage = new AboutPage('AboutPage');
-		_this.projectsPage = new ProjectsPage('ProjectsPage');
+		_this.projectsPage = new ProjectsPage('ProjectsPage', _this.projectGroups[0]);
 		_this.reelPage = new ReelPage('ReelPage');
-		_this.projectPage = new ProjectPage('ProjectPage');
+		_this.mailFormPage = new MailFormPage('MailFormPage');
+		_this.projectPage = new ProjectPage('ProjectPage', _this.projectGroups);
 
 		return _this;
 	}
@@ -73,9 +91,8 @@ var MainSector = function (_JABView) {
 			this.addAboutPage();
 			this.addProjectsPage();
 			this.addReelPage();
+			this.addMailFormPage();
 			this.addProjectPage();
-
-			// this.addComingSoonView()
 		}
 	}, {
 		key: 'addAboutPage',
@@ -93,14 +110,14 @@ var MainSector = function (_JABView) {
 			this.addSubview(this.reelPage);
 		}
 	}, {
+		key: 'addMailFormPage',
+		value: function addMailFormPage() {
+			this.addSubview(this.mailFormPage);
+		}
+	}, {
 		key: 'addProjectPage',
 		value: function addProjectPage() {
 			this.addSubview(this.projectPage);
-		}
-	}, {
-		key: 'addComingSoonView',
-		value: function addComingSoonView() {
-			this.addSubview(this.comingSoonView);
 		}
 
 		// Update
@@ -119,11 +136,11 @@ var MainSector = function (_JABView) {
 			this.configureReelPage();
 			this.positionReelPage();
 
+			this.configureMailFormPage();
+			this.positionMailFormPage();
+
 			this.configureProjectPage();
 			this.positionProjectPage();
-
-			// this.configureComingSoonView()
-			// this.positionComingSoonView()
 		}
 
 		// About Page
@@ -135,17 +152,22 @@ var MainSector = function (_JABView) {
 			var view = this.aboutPage;
 
 			view.backgroundColor = 'black';
-			view.overflow = 'auto';
-			view.reservedTopBuffer = this.parameters.heightOfHeader;
+			view.overflow = 'scroll';
+			view.reservedTopBuffer = this.parameters.reservedTopBuffer;
 
 			if (this.currentlyActivePage == view) {
 
-				if (!this.state.closingProject) {
+				if (!this.state.closingProject && !this.state.closingMailForm) {
 					// closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
 					this.bringPageToFront(view);
 				}
 				view.scrollable = this.state.scrollable;
-				setComingSoon(view.comingSoon);
+
+				if (this.state.projectOpen || this.state.mailFormOpen) {
+					view.blur = 20;
+				} else {
+					view.blur = 0;
+				}
 
 				if (this.state.currentlyActive) {
 					view.opacity = 1;
@@ -181,21 +203,23 @@ var MainSector = function (_JABView) {
 			var view = this.projectsPage;
 
 			view.backgroundColor = 'black';
-			view.overflow = 'auto';
-			view.parameters = { reservedTopBuffer: this.parameters.heightOfHeader };
+			view.overflowX = 'hidden';
+			view.overflowY = 'scroll';
+			view.parameters = {
+				reservedTopBuffer: this.parameters.reservedTopBuffer,
+				heightOfHeader: this.parameters.heightOfHeader
+			};
+			view.projectDataBundles = this.projectDataBundles;
 
 			if (this.currentlyActivePage == view) {
-				if (!this.state.closingProject) {
+				if (!this.state.closingProject && !this.state.closingMailForm) {
 					// closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
 					this.bringPageToFront(view);
 				}
 
 				view.state.scrollable = this.state.scrollable;
-				if (view.state.comingSoon) {
-					view.state.scrollable = false;
-				}
 
-				if (this.state.projectOpen) {
+				if (this.state.projectOpen || this.state.mailFormOpen) {
 					view.blur = 20;
 				} else {
 					view.blur = 0;
@@ -213,6 +237,10 @@ var MainSector = function (_JABView) {
 			}
 
 			view.updateAllUI();
+
+			$(view.selector).css({
+				'scroll-behavior': 'smooth'
+			});
 		}
 	}, {
 		key: 'positionProjectsPage',
@@ -237,11 +265,11 @@ var MainSector = function (_JABView) {
 			var view = this.reelPage;
 
 			view.backgroundColor = 'black';
-			view.overflow = 'auto';
-			view.reservedTopBuffer = this.parameters.heightOfHeader;
+			view.overflow = 'scroll';
+			view.reservedTopBuffer = this.parameters.reservedTopBuffer;
 
 			if (this.currentlyActivePage == view) {
-				if (!this.state.closingProject) {
+				if (!this.state.closingProject && !this.state.closingMailForm) {
 					// closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
 					this.bringPageToFront(view);
 				}
@@ -251,6 +279,12 @@ var MainSector = function (_JABView) {
 					view.scrollable = this.state.scrollable;
 				} else {
 					view.currentlyActive = false;
+				}
+
+				if (this.state.projectOpen || this.state.mailFormOpen) {
+					view.blur = 20;
+				} else {
+					view.blur = 0;
 				}
 
 				if (this.state.currentlyActive) {
@@ -279,6 +313,40 @@ var MainSector = function (_JABView) {
 			view.frame = newFrame;
 		}
 
+		// Mail Form Page
+
+	}, {
+		key: 'configureMailFormPage',
+		value: function configureMailFormPage() {
+
+			var view = this.mailFormPage;
+
+			view.backgroundColor = 'rgba(0, 0, 0, ' + this.state.mailFormOpacity + ')';
+
+			view.parameters = { reservedTopBuffer: this.parameters.reservedTopBuffer };
+			view.clickable = true;
+
+			if (this.state.mailFormOpen) {
+				view.opacity = 1;
+				view.state = { subdued: false };
+				this.bringPageToFront(view);
+			} else {
+				view.opacity = 0;
+				view.state = { subdued: true };
+			}
+
+			view.updateAllUI();
+		}
+	}, {
+		key: 'positionMailFormPage',
+		value: function positionMailFormPage() {
+
+			var view = this.mailFormPage;
+			var newFrame = this.bounds;
+
+			view.frame = newFrame;
+		}
+
 		// Project Page
 
 	}, {
@@ -288,8 +356,10 @@ var MainSector = function (_JABView) {
 			var view = this.projectPage;
 
 			view.clickable = true;
-			view.parameters.reservedTopBuffer = this.parameters.heightOfHeader;
-			view.overflow = 'auto';
+			view.parameters.reservedTopBuffer = this.parameters.reservedTopBuffer;
+			view.overflowX = 'hidden';
+			view.overflowY = 'scroll';
+
 			view.configureDuration = 200;
 			view.backgroundColor = 'rgba(0,0,0, 0.6)';
 
@@ -298,7 +368,9 @@ var MainSector = function (_JABView) {
 				view.opacity = 1;
 				view.configureDelay = 0;
 
-				view.state.projectDataBundle = this.state.projectDataBundle;
+				view.instantUpdate = true;
+				view.updateAllUI();
+				view.instantUpdate = false;
 			} else {
 				view.opacity = 0;
 				view.configureDelay = 200;
@@ -320,53 +392,11 @@ var MainSector = function (_JABView) {
 			view.frame = newFrame;
 		}
 
-		// Coming Soon View
-
-	}, {
-		key: 'configureComingSoonView',
-		value: function configureComingSoonView() {
-
-			this.comingSoonView.text = 'COMING SOON...';
-
-			this.comingSoonView.textColor = 'white';
-			this.comingSoonView.fontSize = 30;
-			this.comingSoonView.fontFamily = 'siteFont';
-			this.comingSoonView.fontWeight = 'bold';
-			this.comingSoonView.letterSpacing = 1.5;
-
-			if (this.comingSoon && this.state.currentlyActive) {
-				this.comingSoonView.opacity = 1;
-			} else {
-				this.comingSoonView.opacity = 0;
-			}
-		}
-	}, {
-		key: 'positionComingSoonView',
-		value: function positionComingSoonView() {
-
-			var size = this.comingSoonView.font.sizeOfString(this.comingSoonView.text);
-			var newFrame = new CGRect();
-
-			newFrame.size.width = size.width;
-			newFrame.size.height = size.height;
-
-			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
-			newFrame.origin.y = (this.height - newFrame.size.height) / 2;
-
-			if (!this.state.currentlyActive) {
-				newFrame.origin.y += 100;
-			}
-
-			if (!this.state.comingSoon) {
-				newFrame.origin.x = this.width;
-			}
-
-			this.comingSoonView.frame = newFrame;
-		}
-
 		//
 		// Actions
 		//
+
+		// Navigation
 
 	}, {
 		key: 'bringPageToFront',
@@ -386,17 +416,88 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'closeCurrentlyOpenProject',
 		value: function closeCurrentlyOpenProject() {
-			this.parent.mainSectorWantsToCloseProject(this);
+			this.parent.mainSectorWantsToRelinquishFullScreen(this);
 			this.state = {
 				projectOpen: false,
 				closingProject: true
 			};
-			this.projectPage.vimeoView.pause();
+			this.projectPage.pause();
 			var mainSector = this;
 			this.animatedUpdate(null, function () {
 				mainSector.state = { closingProject: false };
 				mainSector.animatedUpdate();
 			});
+		}
+	}, {
+		key: 'openMailFormPage',
+		value: function openMailFormPage(opacity) {
+
+			/*
+   if (opacity == null) {
+   	opacity = 0.6
+   }
+   
+   this.parent.mainSectorWantsToUseFullScreen(this)
+   this.state = {mailFormOpen: true, mailFormOpacity: opacity}
+   this.animatedUpdate(250)
+   */
+		}
+	}, {
+		key: 'closeMailFormPage',
+		value: function closeMailFormPage() {
+			this.parent.mainSectorWantsToRelinquishFullScreen(this);
+			this.state = {
+				mailFormOpen: false,
+				closingMailForm: true
+			};
+			var mainSector = this;
+			this.animatedUpdate(250, function () {
+				mainSector.state = { closingMailForm: false };
+				mainSector.animatedUpdate();
+			});
+		}
+
+		// Keys
+
+	}, {
+		key: 'leftArrowWasPressed',
+		value: function leftArrowWasPressed() {
+			if (!this.state.projectOpen) {
+				if (this.state.pageIndex == 1) {
+					this.projectsPage.leftArrowWasPressed();
+				}
+			} else {
+				this.projectPage.leftArrowWasPressed();
+			}
+		}
+	}, {
+		key: 'upArrowWasPressed',
+		value: function upArrowWasPressed() {
+			if (!this.state.projectOpen) {
+				if (this.state.pageIndex == 1) {
+					this.projectsPage.upArrowWasPressed();
+				}
+			}
+		}
+	}, {
+		key: 'rightArrowWasPressed',
+		value: function rightArrowWasPressed() {
+			if (!this.state.projectOpen) {
+				if (this.state.pageIndex == 1) {
+					this.projectsPage.rightArrowWasPressed();
+				}
+			} else {
+				this.projectPage.rightArrowWasPressed();
+			}
+		}
+	}, {
+		key: 'downArrowWasPressed',
+		value: function downArrowWasPressed() {
+			if (!this.state.projectOpen) {
+				if (this.state.pageIndex == 1) {
+					this.projectsPage.downArrowWasPressed();
+				}
+			}
 		}
 
 		//
@@ -409,20 +510,92 @@ var MainSector = function (_JABView) {
 		key: 'viewWasClicked',
 		value: function viewWasClicked(view) {
 			if (view == this.projectPage) {
-				this.closeCurrentlyOpenProject();
+				if (this.projectPage.state.handlingClick) {
+					this.projectPage.state = { handlingClick: false };
+				} else {
+					this.closeCurrentlyOpenProject();
+				}
+			} else if (view == this.mailFormPage) {
+				if (this.mailFormPage.state.handlingClick) {
+					this.mailFormPage.state = { handlingClick: false };
+				} else {
+					this.closeMailFormPage();
+				}
 			}
+		}
+
+		// About Page
+
+	}, {
+		key: 'aboutPageWantsToDisplayProject',
+		value: function aboutPageWantsToDisplayProject(aboutPage, projectIdentifier, startPlaying) {
+			for (var i = 0; i < this.projectGroups.length; i++) {
+				for (var j = 0; j < this.projectGroups[i].length; j++) {
+					if (this.projectGroups[i][j].id == projectIdentifier) {
+						if (projectIdentifier != 'angels') {
+							// Angels has no trailer right now so ignore it if clicked
+							this.state = {
+								projectOpen: true
+							};
+
+							this.projectPage.loadProjectIdentifier(projectIdentifier);
+							if (startPlaying) {
+								this.projectPage.play();
+							}
+							this.parent.mainSectorWantsToUseFullScreen(this);
+						}
+					}
+				}
+			}
+		}
+	}, {
+		key: 'aboutPageWantsToOpenMailForm',
+		value: function aboutPageWantsToOpenMailForm(aboutPage) {
+			this.openMailFormPage(0);
 		}
 
 		// Projects Page
 
 	}, {
 		key: 'projectsPageWantsToDisplayProject',
-		value: function projectsPageWantsToDisplayProject(projectsPage, project) {
-			this.state = {
-				projectOpen: true,
-				projectDataBundle: project
-			};
-			this.parent.mainSectorWantsToDisplayProject(this);
+		value: function projectsPageWantsToDisplayProject(projectsPage, projectIdentifier, startPlaying) {
+			for (var i = 0; i < this.projectGroups.length; i++) {
+				for (var j = 0; j < this.projectGroups[i].length; j++) {
+					if (this.projectGroups[i][j].id == projectIdentifier) {
+						this.state = {
+							projectOpen: true
+						};
+					}
+				}
+			}
+
+			this.projectPage.loadProjectIdentifier(projectIdentifier);
+			if (startPlaying) {
+				this.projectPage.play();
+			}
+			this.parent.mainSectorWantsToUseFullScreen(this);
+			this.animatedUpdate();
+		}
+	}, {
+		key: 'projectsPageWantsToOpenMailForm',
+		value: function projectsPageWantsToOpenMailForm(projectsPage) {
+			this.openMailFormPage(0.8);
+		}
+
+		// Reel Page
+
+	}, {
+		key: 'reelPageWantsToOpenMailForm',
+		value: function reelPageWantsToOpenMailForm(reelPage) {
+			this.openMailFormPage(0.5);
+		}
+
+		// Project Page
+
+	}, {
+		key: 'projectPageDidChangeProjectIndexTo',
+		value: function projectPageDidChangeProjectIndexTo(projectPage, projectIndex) {
+			this.state = { selectedProjectIndex: projectIndex };
 		}
 	}, {
 		key: 'websiteClosed',
@@ -442,12 +615,12 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'pages',
 		get: function get() {
-			return [this.reelPage, this.projectsPage, this.aboutPage, this.projectPage];
+			return [this.reelPage, this.projectsPage, this.aboutPage, this.mailFormPage, this.projectPage];
 		}
 	}, {
 		key: 'readyToClose',
 		get: function get() {
-			return this.currentlyActivePage.state.readyToClose && !this.state.projectOpen;
+			return this.currentlyActivePage.state.readyToClose && !this.state.projectOpen && !this.state.mailFormOpen;
 		}
 	}]);
 

@@ -10,50 +10,133 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var UILabel = function (_JABView) {
-	_inherits(UILabel, _JABView);
+var JABTextArea = function (_JABView) {
+	_inherits(JABTextArea, _JABView);
 
-	function UILabel(customId) {
-		_classCallCheck(this, UILabel);
+	function JABTextArea(customId) {
+		_classCallCheck(this, JABTextArea);
 
 		// State
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UILabel).call(this, customId));
+		// Configuration
 
-		_this.text = '';
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JABTextArea).call(this, customId));
+
 		_this.font = new UIFont();
-		_this.textColor = '#000000';
+		_this.textColor = 'black';
 		_this.textAlign = null;
 		_this.wordBreak = null;
-		_this.hyphenate = false;
+		_this.hyphenate = null;
+		_this.placeholder = '';
 
-		// UI
+		// Parameters
+
+		// UI*
+		_this.textArea = "<textarea></textarea>";
+
 		return _this;
 	}
 
-	_createClass(UILabel, [{
-		key: 'updateAllUI',
-		value: function updateAllUI() {
-			_get(Object.getPrototypeOf(UILabel.prototype), 'updateAllUI', this).call(this);
+	//
+	// Init
+	//
+
+	_createClass(JABTextArea, [{
+		key: 'init',
+		value: function init() {
+			_get(Object.getPrototypeOf(JABTextArea.prototype), 'init', this).call(this);
+			this.startEventListeners();
 		}
 
 		//
-		// Property Getters and Setters
+		// Getters and Setters
 		//
-
-		// Text
-
-	}, {
-		key: 'text',
-		get: function get() {
-			return this._text;
-		},
-		set: function set(newText) {
-			this._text = newText;
-			$(this.selector).html(newText);
-		}
 
 		// Font
+
+	}, {
+		key: 'addAllUI',
+
+
+		//
+		// UI
+		//
+
+		// Add
+		value: function addAllUI() {
+			$(this.selector).append(this.textArea);
+		}
+
+		// Update
+
+	}, {
+		key: 'updateAllUI',
+		value: function updateAllUI() {
+			_get(Object.getPrototypeOf(JABTextArea.prototype), 'updateAllUI', this).call(this);
+
+			this.configureTextArea();
+			this.positionTextArea();
+		}
+	}, {
+		key: 'configureTextArea',
+		value: function configureTextArea() {
+
+			var configureDuration = this.animationOptions.configureDuration || 0;
+			var configureEasingFunction = this.animationOptions.configureEasingFunction || 'ease-in-out';
+			var configureDelay = this.animationOptions.configureDelay || 0;
+
+			var positionDuration = this.animationOptions.positionDuration || 0;
+			var positionEasingFunction = this.animationOptions.positionEasingFunction || 'ease-in-out';
+			var positionDelay = this.animationOptions.positionDelay || 0;
+
+			$(this.selector + ' > textarea').css({
+				transition: 'opacity ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, background-color ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, border-radius ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, -webkit-backdrop-filter ' + configureDuration + 'ms ' + configureEasingFunction + ' ' + configureDelay + 'ms, transform ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, width ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms, height ' + positionDuration + 'ms ' + positionEasingFunction + ' ' + positionDelay + 'ms',
+
+				'background': 'none',
+				'border': 'none'
+			});
+		}
+	}, {
+		key: 'positionTextArea',
+		value: function positionTextArea() {
+
+			$(this.selector + ' > textarea').css({
+				'width': this.width + 'px',
+				'height': this.height + 'px'
+			});
+		}
+
+		//
+		// Event Listeners
+		//
+
+	}, {
+		key: 'startEventListeners',
+		value: function startEventListeners() {
+			var textarea = this;
+			$(this.selector + ' > textarea').keydown(function (event) {
+				textarea.keyWasReleased(event);
+			});
+		}
+
+		//
+		// Actions
+		//
+
+	}, {
+		key: 'keyWasReleased',
+		value: function keyWasReleased(event) {
+			var keyCode = event.keyCode || event.which;
+
+			if (keyCode == 9) {
+				event.preventDefault();
+				$(this.selector + ' > textarea').val($(this.selector + ' > textarea').val() + '        ');
+			}
+		}
+
+		//
+		// Delegate
+		//
 
 	}, {
 		key: 'font',
@@ -70,14 +153,14 @@ var UILabel = function (_JABView) {
 			// 	}
 			// }
 
-			$(this.selector).css({
+			$(this.selector + ' > textarea').css({
 				'fontSize': newFont.size,
 				'font-family': newFont.family,
 				'font-weight': newFont.weight,
 				'font-style': newFont.style,
 				'font-variant': newFont.variant,
 				'letter-spacing': newFont.letterSpacing,
-				'line-height': newFont.lineHeight + newFont.lineHeightUnit
+				'line-height': newFont.lineHeight
 			});
 		}
 
@@ -89,10 +172,13 @@ var UILabel = function (_JABView) {
 			return this._textColor;
 		},
 		set: function set(newTextColor) {
-			this._textColor = newTextColor;
-			$(this.selector).css({
-				'color': newTextColor
-			});
+			if (this.textColor != newTextColor) {
+				this._textColor = newTextColor;
+
+				$(this.selector + ' > textarea').css({
+					'color': newTextColor
+				});
+			}
 		}
 
 		// Text Align
@@ -123,7 +209,7 @@ var UILabel = function (_JABView) {
 			this._wordBreak = newWordBreak;
 
 			if (newWordBreak != null) {
-				$(this.selector).css({
+				$(this.selector + ' > textarea').css({
 					'word-break': newWordBreak
 				});
 			}
@@ -140,18 +226,35 @@ var UILabel = function (_JABView) {
 			this._hyphenate = newHyphenate;
 
 			if (newHyphenate) {
-				$(this.selector).css({
+				$(this.selector + ' > textarea').css({
 					'-webkit-hyphens': 'auto',
 					'-moz-hyphens': 'auto',
 					'-ms-hyphens': 'auto',
 					'hyphens': 'auto'
 				});
 			} else {
-				$(this.selector).css({
+				$(this.selector + ' > textarea').css({
 					'-webkit-hyphens': 'none',
 					'-moz-hyphens': 'none',
 					'-ms-hyphens': 'none',
 					'hyphens': 'none'
+				});
+			}
+		}
+
+		// Placeholder
+
+	}, {
+		key: 'placeholder',
+		get: function get() {
+			return this._placeholder;
+		},
+		set: function set(newPlaceholder) {
+			if (this.placeholder != newPlaceholder) {
+				this._placeholder = newPlaceholder;
+
+				$(this.selector + ' > textarea').attr({
+					'placeholder': newPlaceholder
 				});
 			}
 		}
@@ -243,28 +346,7 @@ var UILabel = function (_JABView) {
 			this.font.lineHeight = newLineHeight;
 			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
 		}
-
-		// Line Height Unit
-
-	}, {
-		key: 'lineHeightUnit',
-		get: function get() {
-			return this.lineHeightUnit;
-		},
-		set: function set(newLineHeightUnit) {
-			this.font.lineHeightUnit = newLineHeightUnit;
-			this.font = this.font; // Reassiging the font triggers set font which updates the DOM
-		}
-
-		//
-		// UI
-		//
-
-		//
-		// Actions
-		//
-
 	}]);
 
-	return UILabel;
+	return JABTextArea;
 }(JABView);

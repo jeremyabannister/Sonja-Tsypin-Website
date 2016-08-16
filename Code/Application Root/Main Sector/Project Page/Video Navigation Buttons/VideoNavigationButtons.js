@@ -5,8 +5,8 @@ class VideoNavigationButtons extends JABView {
 		
 		// State
 		this.state = {
-			firstGroup: false,
-			lastGroup: false,
+			prevEnabled: true,
+			nextEnabled: true,
 		}
 		
 		// Parameters
@@ -18,6 +18,7 @@ class VideoNavigationButtons extends JABView {
 			fontSizeForButtons: 13,
 			innerBufferForButtons: 5,
 			fadedTextColor: '#888888',
+			widthAddition: 0,
 		}
 		
 		// UI
@@ -119,14 +120,16 @@ class VideoNavigationButtons extends JABView {
 		view.text = 'PREV'
 		view.fontSize = this.parameters.fontSizeForButtons
 		
-		if (!this.state.firstGroup) {
+		if (this.state.prevEnabled) {
 			view.textColor = 'white'
 		} else {
 			view.textColor = this.parameters.fadedTextColor
 		}
 		
-		view.textAlign = 'center'
+		view.textAlign = 'right'
 		view.letterSpacing = 1.5
+		view.lineHeight = this.height
+		view.lineHeightUnit = 'px'
 		
 		
 		view.clickable = true
@@ -140,8 +143,8 @@ class VideoNavigationButtons extends JABView {
 		var newFrame = new CGRect()
 		var size = view.font.sizeOfString(view.text)
 							
-		newFrame.size.width = size.width
-		newFrame.size.height = size.height
+		newFrame.size.width = size.width + this.parameters.widthAddition/2
+		newFrame.size.height = this.height
 
 		newFrame.origin.x = this.divider.x - newFrame.size.width - this.parameters.innerBufferForButtons
 		newFrame.origin.y = (this.height - newFrame.size.height)/2
@@ -160,14 +163,16 @@ class VideoNavigationButtons extends JABView {
 		view.text = 'NEXT'
 		view.fontSize = this.parameters.fontSizeForButtons
 		
-		if (!this.state.lastGroup) {
+		if (this.state.nextEnabled) {
 			view.textColor = 'white'
 		} else {
 			view.textColor = this.parameters.fadedTextColor
 		}
 		
-		view.textAlign = 'center'
+		view.textAlign = 'left'
 		view.letterSpacing = 1.5
+		view.lineHeight = this.height
+		view.lineHeightUnit = 'px'
 		
 		view.clickable = true
 		view.cursor = 'pointer'
@@ -180,15 +185,15 @@ class VideoNavigationButtons extends JABView {
 		var newFrame = new CGRect()
 		var size = view.font.sizeOfString(view.text)
 							
-		newFrame.size.width = size.width
-		newFrame.size.height = size.height
+		newFrame.size.width = size.width + this.parameters.widthAddition/2
+		newFrame.size.height = this.height
 
 		newFrame.origin.x = this.divider.right + this.parameters.innerBufferForButtons
 		newFrame.origin.y = (this.height - newFrame.size.height)/2
 							
 		view.frame = newFrame
 		
-		this.requiredWidth = this.nextButton.right - this.prevButton.left
+		this.requiredWidth = this.nextButton.right - this.prevButton.left - this.parameters.widthAddition
 		this.requiredHeight = this.nextButton.height
 	}
 	

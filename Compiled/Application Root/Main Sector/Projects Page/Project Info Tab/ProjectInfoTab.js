@@ -13,7 +13,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ProjectInfoTab = function (_JABView) {
 	_inherits(ProjectInfoTab, _JABView);
 
-	function ProjectInfoTab(customId) {
+	function ProjectInfoTab(customId, projectDataBundle) {
 		_classCallCheck(this, ProjectInfoTab);
 
 		// State
@@ -21,7 +21,7 @@ var ProjectInfoTab = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProjectInfoTab).call(this, customId));
 
 		_this.state = {
-			projectDataBundle: null,
+			projectDataBundle: projectDataBundle,
 			leftHanded: false,
 			usedAtleastOnce: false
 		};
@@ -31,8 +31,10 @@ var ProjectInfoTab = function (_JABView) {
 			sizeOfPlayButton: 80,
 			sideBufferForPlayButton: 23,
 
+			fontSizeForTitleLabel: 20,
 			leftBufferForTitleLabel: 10,
 			topBufferForTitleLabel: 0,
+
 			bufferBetweenTitleLabelAndSubtitleLabel: 3,
 			bufferBetweenSubtitleLabelAndDescriptionLabel: 7
 
@@ -66,15 +68,14 @@ var ProjectInfoTab = function (_JABView) {
 		// Getters and Setters
 		//
 
-	}, {
-		key: 'addAllUI',
-
-
 		//
 		// UI
 		//
 
 		// Add
+
+	}, {
+		key: 'addAllUI',
 		value: function addAllUI() {
 
 			this.addBottomLine();
@@ -130,7 +131,7 @@ var ProjectInfoTab = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(ProjectInfoTab.prototype), 'updateAllUI', this).call(this);
 
-			this.parameters.sizeOfPlayButton = this.height * 0.5;
+			this.updateParameters();
 
 			this.configureBottomLine();
 			this.positionBottomLine();
@@ -152,6 +153,19 @@ var ProjectInfoTab = function (_JABView) {
 
 			this.configureDescriptionLabel();
 			this.positionDescriptionLabel();
+		}
+
+		// Parameters
+
+	}, {
+		key: 'updateParameters',
+		value: function updateParameters() {
+
+			var titleFontSizes = { 'xxs': this.height / 8, 'xs': this.height / 8, 's': 16, 'm': 20, 'l': 20, 'xl': 20 };
+			this.parameters = {
+				sizeOfPlayButton: this.height * 0.5,
+				fontSizeForTitleLabel: titleFontSizes[sizeClass]
+			};
 		}
 
 		// Bottom Line
@@ -229,7 +243,7 @@ var ProjectInfoTab = function (_JABView) {
 
 					view.text = this.state.projectDataBundle.noVideoMessage;
 					view.fontFamily = 'siteFont';
-					view.fontSize = 12;
+					view.fontSize = this.titleLabel.fontSize * (12.0 / 20.0);
 					view.textColor = 'white';
 					view.textAlign = 'center';
 				} else {
@@ -242,7 +256,13 @@ var ProjectInfoTab = function (_JABView) {
 		value: function positionNoVideoMessageLabel() {
 			var view = this.noVideoMessageLabel;
 			var newFrame = new CGRect();
-			var size = view.font.sizeOfString(view.text, 80);
+			var size;
+
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				size = view.font.sizeOfString(view.text, 60);
+			} else {
+				size = view.font.sizeOfString(view.text, 80);
+			}
 
 			newFrame.size.width = size.width;
 			newFrame.size.height = size.height;
@@ -308,7 +328,7 @@ var ProjectInfoTab = function (_JABView) {
 			if (dataBundle != null) {
 				view.text = this.state.projectDataBundle.title;
 				view.fontFamily = 'siteFont';
-				view.fontSize = this.titleFontSize;
+				view.fontSize = this.parameters.fontSizeForTitleLabel;
 				view.letterSpacing = 1.5;
 				view.textColor = 'white';
 			}
@@ -349,7 +369,7 @@ var ProjectInfoTab = function (_JABView) {
 			if (dataBundle != null) {
 				view.text = 'dir. ' + this.state.projectDataBundle.director + ' | ' + this.state.projectDataBundle.movieType + ' | ' + this.state.projectDataBundle.year;
 				view.fontFamily = 'siteFont';
-				view.fontSize = this.titleFontSize * (13.0 / 20.0);
+				view.fontSize = this.titleLabel.fontSize * (13.0 / 20.0);
 				view.letterSpacing = 1.5;
 				view.textColor = '#ffffff';
 			}
@@ -388,7 +408,7 @@ var ProjectInfoTab = function (_JABView) {
 				view.text = this.state.projectDataBundle.description;
 			}
 			view.fontFamily = 'siteFont';
-			view.fontSize = this.titleFontSize * (11.0 / 20.0);
+			view.fontSize = this.titleLabel.fontSize * (10.0 / 20.0);
 			view.hyphenate = true;
 			view.positionDuration = 0;
 
@@ -410,6 +430,8 @@ var ProjectInfoTab = function (_JABView) {
 			newFrame.size.width = 300;
 			if (this.playButton.x - this.titleLabel.x - 20 < newFrame.size.width) {
 				newFrame.size.width = this.playButton.x - this.titleLabel.x - 20;
+			} else if (this.playButton.x - this.titleLabel.x - newFrame.size.width > this.width / 4) {
+				newFrame.size.width = this.playButton.x - this.titleLabel.x - this.width / 4;
 			}
 			var size = view.font.sizeOfString(view.font.text, newFrame.size.width);
 
@@ -444,17 +466,6 @@ var ProjectInfoTab = function (_JABView) {
 		value: function viewWasClicked(view) {
 			if (view == this.playButton) {
 				this.parent.projectInfoTabPlayButtonWasClicked(this);
-			}
-		}
-	}, {
-		key: 'titleFontSize',
-		get: function get() {
-			if (sizeClass == 'xs') {
-				return 14;
-			} else if (sizeClass == 's') {
-				return 16;
-			} else {
-				return 20;
 			}
 		}
 	}]);

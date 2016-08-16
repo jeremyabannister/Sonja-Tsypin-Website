@@ -21,10 +21,12 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ApplicationRoot).call(this, customId));
 
 		_this.laboratoryEnabled = false;
-		_this.contentWidth = { 'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
+		_this.contentWidth = { 'xxs': 0, 'xs': 0, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
 		_this.state = {
 			headerBackdropHidden: false
 		};
+
+		_this.projectDataBundles = _this.assembleProjectDataBundles();
 
 		_this.websiteClosed = true;
 		_this.websiteClosedLocked = false;
@@ -39,7 +41,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		} else {
 
 			// UI
-			_this.mainSector = new MainSector('MainSector');
+			_this.mainSector = new MainSector('MainSector', _this.projectDataBundles);
 			_this.headerBackdrop = new JABView('HeaderBackdrop');
 			_this.homeSector = new HomeSector('HomeSector');
 			_this.header = new Header('Header');
@@ -140,12 +142,19 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'configureMainSector',
 		value: function configureMainSector() {
-			this.mainSector.backgroundColor = 'black';
-			this.mainSector.parameters.heightOfHeader = this.header.logo.bottom;
-			this.mainSector.state.currentlyActive = !this.websiteClosed;
-			this.mainSector.positionDuration = 0;
+			var view = this.mainSector;
 
-			this.mainSector.updateAllUI();
+			view.backgroundColor = 'black';
+			view.parameters = {
+				reservedTopBuffer: this.header.logo.bottom,
+				heightOfHeader: this.parameters.heightOfHeader
+			};
+			view.projectDataBundles = this.projectDataBundles;
+
+			view.state.currentlyActive = !this.websiteClosed;
+			view.positionDuration = 0;
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionMainSector',
@@ -197,7 +206,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 				this.homeSector.positionDuration = 800;
 			}
 
-			this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
+			this.homeSector.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
 			this.homeSector.currentlyActive = this.websiteClosed;
 			this.homeSector.updateAllUI();
 		}
@@ -361,6 +370,206 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			}
 		}
 
+		// Keys
+
+	}, {
+		key: 'leftArrowWasPressed',
+		value: function leftArrowWasPressed() {
+			if (!this.websiteClosed) {
+				this.mainSector.leftArrowWasPressed();
+			}
+		}
+	}, {
+		key: 'upArrowWasPressed',
+		value: function upArrowWasPressed() {
+			if (!this.websiteClosed) {
+				if (this.mainSector.state.pageIndex == 0 || this.mainSector.state.pageIndex == 2) {
+					this.closeWebsite();
+				} else {
+					this.mainSector.upArrowWasPressed();
+				}
+			}
+		}
+	}, {
+		key: 'rightArrowWasPressed',
+		value: function rightArrowWasPressed() {
+			if (!this.websiteClosed) {
+				this.mainSector.rightArrowWasPressed();
+			}
+		}
+	}, {
+		key: 'downArrowWasPressed',
+		value: function downArrowWasPressed() {
+			if (!this.websiteClosed) {
+				this.mainSector.downArrowWasPressed();
+			} else {
+				this.openWebsite();
+			}
+		}
+
+		// Project Data
+
+	}, {
+		key: 'assembleProjectDataBundles',
+		value: function assembleProjectDataBundles() {
+
+			var dataBundles = [];
+
+			// Powder Room
+			var dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'powderRoom';
+			dataBundle.title = 'POWDER ROOM';
+			dataBundle.director = 'SONJA TSYPIN';
+			dataBundle.movieType = 'SHORT';
+			dataBundle.year = '2016';
+			dataBundle.description = "<span style='color:white'>Starring Jessica Kay Park, John Patrick Maddock</span><br/>A wildly popular online personality who hasn't left her apartment in four years has her tiny world turned upside down when a stranger forces himself into her peculiar space.";
+
+			dataBundle.vimeoId = '167824606';
+			dataBundle.vimeoHeightToWidth = 1.0 / 2.35;
+
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/';
+			for (var i = 0; i < 4; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 2;
+
+			dataBundles.push(dataBundle);
+
+			// Birth Day
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'birthDay';
+			dataBundle.title = 'BIRTH DAY';
+			dataBundle.director = 'EVA EVANS';
+			dataBundle.movieType = 'SHORT';
+			dataBundle.year = '2016';
+			dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory.";
+
+			dataBundle.vimeoId = '172178428';
+			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
+
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/';
+			for (var i = 0; i < 2; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
+
+			dataBundles.push(dataBundle);
+
+			// Angels
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'angels';
+			dataBundle.title = 'ANGELS';
+			dataBundle.director = 'AUDREY BANKS';
+			dataBundle.movieType = 'FEATURE';
+			dataBundle.year = '2016';
+			dataBundle.description = "<span style='color:white'>Starring Moni Bell, Eva Evans, Gabriel Sommer, Joanna Janetakis</span><br/>A man who goes by 'Sir' is holding a mansion full of beautiful women prisoner when a new arrival threatens his power.";
+
+			dataBundle.noVideoMessage = 'TRAILER COMING SOON';
+			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
+
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/';
+			for (var i = 0; i < 5; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 3;
+
+			dataBundles.push(dataBundle);
+
+			// Theodore
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'theodore';
+			dataBundle.title = 'THEODORE';
+			dataBundle.director = 'ONDINE VI\u00d1AO';
+			dataBundle.movieType = 'SHORT';
+			dataBundle.year = '2015';
+			dataBundle.description = "<span style='color:white'>Starring Camillia Hartman, Dexter Zimet</span><br/>A romantic rural retreat takes a terrifying turn after a local offers some chilling advice.";
+
+			dataBundle.vimeoId = '139578681';
+			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
+
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/4/';
+			for (var i = 0; i < 1; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
+
+			dataBundles.push(dataBundle);
+
+			// Found Guilty
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'foundGuilty';
+			dataBundle.title = 'FOUND GUILTY';
+			dataBundle.director = 'SONJA TSYPIN';
+			dataBundle.movieType = 'SHORT';
+			dataBundle.year = '2014';
+			dataBundle.description = '<span style="color:white">Starring Tuva Hildebrand</span><br/>In a short film remake of the famous murder scene from Alfred Hitchcock\'s "Blackmail," a woman must come to terms with herself after commiting an unthinkable crime out of self-defense.';
+
+			dataBundle.vimeoId = '99426346';
+			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
+
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/5/';
+			for (var i = 0; i < 1; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
+
+			dataBundles.push(dataBundle);
+
+			// As Long As I Have You
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'asLongAsIHaveYou';
+			dataBundle.title = 'AS LONG AS I HAVE YOU';
+			dataBundle.director = 'ONDINE VI\u00d1AO';
+			dataBundle.movieType = 'MUSIC VIDEO';
+			dataBundle.year = '2016';
+			dataBundle.description = "<span style='color:white'>Starring Annalisa Plumb</span><br/>An experimental video to the track 'As Long As I Have You' by Elvis Presley.";
+
+			dataBundle.vimeoId = '152982438';
+			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
+
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/';
+			for (var i = 0; i < 1; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
+
+			dataBundles.push(dataBundle);
+
+			//
+			// Hidden
+			//
+
+			// Contact Esterina
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'contactEsterina';
+			dataBundle.title = 'CONTACT ESTERINA';
+			dataBundle.director = 'SONJA TSYPIN';
+			dataBundle.movieType = 'DOCUMENTARY';
+			dataBundle.year = '2014';
+			dataBundle.description = "<span style='color:white'>Starring Esterina Seto</span><br/>";
+			dataBundle.hidden = true;
+
+			dataBundle.vimeoId = '126022343';
+			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
+
+			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/';
+			for (var i = 0; i < 1; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
+
+			dataBundles.push(dataBundle);
+
+			return dataBundles;
+		}
+
 		//
 		// Delegate
 		//
@@ -373,6 +582,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			if (view == this.header) {
 				this.mainSector.closeCurrentlyOpenProject();
+				this.mainSector.closeMailFormPage();
 				this.mainSector.projectsPage.deselectProjects();
 			}
 		}
@@ -380,20 +590,15 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		// Main Sector
 
 	}, {
-		key: 'mainSectorWantsToDisplayProject',
-		value: function mainSectorWantsToDisplayProject(mainSector) {
-
-			this.state = {
-				headerBackdropHidden: true
-			};
-
+		key: 'mainSectorWantsToUseFullScreen',
+		value: function mainSectorWantsToUseFullScreen(mainSector) {
+			this.state = { headerBackdropHidden: true };
 			this.animatedUpdate();
 		}
 	}, {
-		key: 'mainSectorWantsToCloseProject',
-		value: function mainSectorWantsToCloseProject(mainSector) {
+		key: 'mainSectorWantsToRelinquishFullScreen',
+		value: function mainSectorWantsToRelinquishFullScreen(mainSector) {
 			this.state = { headerBackdropHidden: false };
-
 			this.animatedUpdate();
 		}
 
@@ -401,7 +606,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 	}, {
 		key: 'homeSectorEnterButtonWasClicked',
-		value: function homeSectorEnterButtonWasClicked() {
+		value: function homeSectorEnterButtonWasClicked(homeSector) {
 			this.openWebsite();
 		}
 
@@ -430,7 +635,11 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'contentWidth',
 		get: function get() {
-			return this._contentWidth[sizeClass];
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				return this.width;
+			} else {
+				return this._contentWidth[sizeClass];
+			}
 		},
 		set: function set(newContentWidth) {
 			this._contentWidth = newContentWidth;

@@ -6,7 +6,7 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// State
 		this.laboratoryEnabled = false
-		this.contentWidth = {'xs': 500, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
+		this.contentWidth = {'xxs': 0, 'xs': 0, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
 		this.state = {
 			headerBackdropHidden: false,
 		}
@@ -50,7 +50,11 @@ class ApplicationRoot extends JABApplicationRoot {
 	//
 	
 	get contentWidth () {
-		return this._contentWidth[sizeClass]
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			return this.width
+		} else {
+			return this._contentWidth[sizeClass]
+		}
 	}
 	
 	set contentWidth (newContentWidth) {
@@ -144,7 +148,10 @@ class ApplicationRoot extends JABApplicationRoot {
 		var view = this.mainSector
 		
 		view.backgroundColor = 'black'
-		view.parameters.heightOfHeader = this.header.logo.bottom
+		view.parameters = {
+			reservedTopBuffer: this.header.logo.bottom,
+			heightOfHeader: this.parameters.heightOfHeader,
+		}
 		view.projectDataBundles = this.projectDataBundles
 		
 		view.state.currentlyActive = !this.websiteClosed
@@ -201,7 +208,7 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.homeSector.positionDuration = 800
 		}
 		
-		this.homeSector.positioningEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+		this.homeSector.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
 		this.homeSector.currentlyActive = this.websiteClosed
 		this.homeSector.updateAllUI()
 	}
@@ -372,6 +379,36 @@ class ApplicationRoot extends JABApplicationRoot {
 	}
 	
 	
+	// Keys
+	leftArrowWasPressed () {
+		if (!this.websiteClosed) {
+			this.mainSector.leftArrowWasPressed()
+		}
+	}
+	
+	upArrowWasPressed () {
+		if (!this.websiteClosed) {
+			if (this.mainSector.state.pageIndex == 0 || this.mainSector.state.pageIndex == 2) {
+				this.closeWebsite()
+			} else {
+				this.mainSector.upArrowWasPressed()
+			}
+		}
+	}
+	
+	rightArrowWasPressed () {
+		if (!this.websiteClosed) {
+			this.mainSector.rightArrowWasPressed()
+		}
+	}
+	
+	downArrowWasPressed () {
+		if (!this.websiteClosed) {
+			this.mainSector.downArrowWasPressed()
+		} else {
+			this.openWebsite()
+		}
+	}
 	
 	
 	// Project Data
@@ -610,7 +647,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	
 	// Home Sector
-	homeSectorEnterButtonWasClicked () {
+	homeSectorEnterButtonWasClicked (homeSector) {
 		this.openWebsite()
 	}
 

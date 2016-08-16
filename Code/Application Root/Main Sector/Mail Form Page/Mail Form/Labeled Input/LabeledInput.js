@@ -99,6 +99,8 @@ class LabeledInput extends JABView {
 		view.textColor = 'white'
 		view.fontFamily = 'siteFont'
 		view.fontSize = 14
+		
+		view.paddingLeft = 7
 	}
 	
 	positionInput () {

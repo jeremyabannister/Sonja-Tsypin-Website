@@ -10,20 +10,27 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var HomeSector = function (_JABView) {
-	_inherits(HomeSector, _JABView);
+var LabeledInput = function (_JABView) {
+	_inherits(LabeledInput, _JABView);
 
-	function HomeSector(customId) {
-		_classCallCheck(this, HomeSector);
+	function LabeledInput(customId) {
+		_classCallCheck(this, LabeledInput);
 
 		// State
 
-		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HomeSector).call(this, customId));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(LabeledInput).call(this, customId));
 
-		_this.currentlyActive = true;
+		_this.requiredHeight = 50;
+
+		// Parameters
+		_this.parameters = {
+			heightOfInput: 30,
+			bufferBetweenLabelAndInput: 5
+		};
 
 		// UI
-		_this.homePage = new HomePage('HomePage');
+		_this.label = new UILabel('Label');
+		_this.input = new JABInput('Input');
 
 		return _this;
 	}
@@ -32,10 +39,10 @@ var HomeSector = function (_JABView) {
 	// Init
 	//
 
-	_createClass(HomeSector, [{
+	_createClass(LabeledInput, [{
 		key: 'init',
 		value: function init() {
-			_get(Object.getPrototypeOf(HomeSector.prototype), 'init', this).call(this);
+			_get(Object.getPrototypeOf(LabeledInput.prototype), 'init', this).call(this);
 		}
 
 		//
@@ -47,13 +54,18 @@ var HomeSector = function (_JABView) {
 	}, {
 		key: 'addAllUI',
 		value: function addAllUI() {
-
-			this.addHomePage();
+			this.addLabel();
+			this.addInput();
 		}
 	}, {
-		key: 'addHomePage',
-		value: function addHomePage() {
-			this.addSubview(this.homePage);
+		key: 'addLabel',
+		value: function addLabel() {
+			this.addSubview(this.label);
+		}
+	}, {
+		key: 'addInput',
+		value: function addInput() {
+			this.addSubview(this.input);
 		}
 
 		// Update
@@ -61,45 +73,71 @@ var HomeSector = function (_JABView) {
 	}, {
 		key: 'updateAllUI',
 		value: function updateAllUI() {
-			_get(Object.getPrototypeOf(HomeSector.prototype), 'updateAllUI', this).call(this);
+			_get(Object.getPrototypeOf(LabeledInput.prototype), 'updateAllUI', this).call(this);
 
-			this.configureHomePage();
-			this.positionHomePage();
+			this.configureLabel();
+			this.positionLabel();
+
+			this.configureInput();
+			this.positionInput();
 		}
 
-		// Home Page
+		// Label
 
 	}, {
-		key: 'configureHomePage',
-		value: function configureHomePage() {
-
-			this.homePage.overflow = 'hidden';
-			this.homePage.currentlyActive = this.currentlyActive;
-			this.homePage.updateAllUI();
+		key: 'configureLabel',
+		value: function configureLabel() {
+			var view = this.label;
 		}
 	}, {
-		key: 'positionHomePage',
-		value: function positionHomePage() {
+		key: 'positionLabel',
+		value: function positionLabel() {
+			var view = this.label;
+			var newFrame = new CGRect();
+			var size = view.font.sizeOfString(view.text);
 
-			var newFrame = this.bounds;
+			newFrame.size.width = size.width;
+			newFrame.size.height = size.height;
 
-			this.homePage.frame = newFrame;
+			newFrame.origin.x = 0;
+			newFrame.origin.y = 0;
+
+			view.frame = newFrame;
 		}
 
-		// Header
+		// Input
 
 	}, {
-		key: 'configureHeader',
-		value: function configureHeader() {
+		key: 'configureInput',
+		value: function configureInput() {
+			var view = this.input;
 
-			this.header.websiteClosed = this.websiteClosed;
-			this.header.selectedMenuIndex = $.inArray(this.state, this.possibleStates);
-			this.header.updateAllUI();
+			view.borderColor = 'white';
+			view.borderStyle = 'solid';
+			view.borderWidth = 1;
+			view.borderRadius = 6;
+
+			view.textColor = 'white';
+			view.fontFamily = 'siteFont';
+			view.fontSize = 14;
+
+			view.paddingLeft = 7;
 		}
 	}, {
-		key: 'positionHeader',
-		value: function positionHeader() {
-			this.header.frame = new CGRect(0, 0, this.width, this.heightOfHeader);
+		key: 'positionInput',
+		value: function positionInput() {
+			var view = this.input;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.width;
+			newFrame.size.height = this.parameters.heightOfInput;
+
+			newFrame.origin.x = 0;
+			newFrame.origin.y = this.label.bottom + this.parameters.bufferBetweenLabelAndInput;
+
+			view.frame = newFrame;
+
+			this.requiredHeight = this.input.bottom - this.label.top;
 		}
 
 		//
@@ -114,14 +152,7 @@ var HomeSector = function (_JABView) {
 		// Delegate
 		//
 
-		// Home Page
-
-	}, {
-		key: 'homePageDownArrowWasClicked',
-		value: function homePageDownArrowWasClicked(homePage) {
-			this.parent.homeSectorEnterButtonWasClicked(this);
-		}
 	}]);
 
-	return HomeSector;
+	return LabeledInput;
 }(JABView);

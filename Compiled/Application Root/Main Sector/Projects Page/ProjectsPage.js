@@ -13,7 +13,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ProjectsPage = function (_JABView) {
 	_inherits(ProjectsPage, _JABView);
 
-	function ProjectsPage(customId) {
+	function ProjectsPage(customId, projectDataBundles) {
 		_classCallCheck(this, ProjectsPage);
 
 		// State
@@ -21,19 +21,22 @@ var ProjectsPage = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProjectsPage).call(this, customId));
 
 		_this.state = {
-			projectDataBundles: _this.assembleProjectDataBundles(),
-			comingSoon: false,
-
 			scrollable: false,
 			readyToClose: true,
 
 			selectedProject: null,
-			selectedProjectIndex: null
+			selectedProjectIndex: null,
+
+			arrowKeysDroppedBelowBottom: false,
+			columnInWhichArrowKeysDroppedBelowBottom: 0
 		};
+
+		_this.projectDataBundles = projectDataBundles;
 
 		// Parameters
 		_this.parameters = {
 			reservedTopBuffer: 0,
+			heightOfHeader: 0,
 
 			numberOfColumns: 2,
 			topBufferForGrid: 58,
@@ -42,7 +45,7 @@ var ProjectsPage = function (_JABView) {
 			bottomBufferForGrid: 50,
 			heightOfProjectInfoTabsAsFractionOfProjectPaneHeight: 0.5, // Relative to height of project panes, set below
 
-			gridAnimationDuration: 250,
+			gridAnimationDuration: 300,
 			gridAnimationEasingFunction: 'ease-in-out',
 
 			truePositionsOfProjectPanes: []
@@ -52,16 +55,19 @@ var ProjectsPage = function (_JABView) {
 		_this.scrollFinishTimer;
 
 		// UI
-
 		_this.projectPanes = [];
-		for (var i = 0; i < _this.state.projectDataBundles.length; i++) {
-			_this.projectPanes.push(new ProjectImageView());
-			_this.parameters.truePositionsOfProjectPanes.push(new CGRect());
+		for (var i = 0; i < _this.projectDataBundles.length; i++) {
+			if (!_this.projectDataBundles[i].hidden) {
+				_this.projectPanes.push(new ProjectImageView(null, _this.projectDataBundles[i]));
+				_this.parameters.truePositionsOfProjectPanes.push(new CGRect());
+			}
 		}
 
 		_this.projectInfoTabs = [];
-		for (var i = 0; i < _this.state.projectDataBundles.length; i++) {
-			_this.projectInfoTabs.push(new ProjectInfoTab());
+		for (var i = 0; i < _this.projectDataBundles.length; i++) {
+			if (!_this.projectDataBundles[i].hidden) {
+				_this.projectInfoTabs.push(new ProjectInfoTab(null, _this.projectDataBundles[i]));
+			}
 		}
 
 		_this.footer = new Footer('Footer');
@@ -142,6 +148,8 @@ var ProjectsPage = function (_JABView) {
 		value: function updateAllUI() {
 			_get(Object.getPrototypeOf(ProjectsPage.prototype), 'updateAllUI', this).call(this);
 
+			this.updateParameters();
+
 			this.configureProjectPanes();
 			this.positionProjectPanes();
 
@@ -155,6 +163,20 @@ var ProjectsPage = function (_JABView) {
 			this.positionMarginClickDetectors();
 		}
 
+		// Parameters
+
+	}, {
+		key: 'updateParameters',
+		value: function updateParameters() {
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				this.parameters.numberOfColumns = 1;
+			} else if (sizeClass == 'xl') {
+				this.parameters.numberOfColumns = 3;
+			} else {
+				this.parameters.numberOfColumns = 2;
+			}
+		}
+
 		// Project Panes
 
 	}, {
@@ -164,7 +186,6 @@ var ProjectsPage = function (_JABView) {
 			for (var i = 0; i < this.projectPanes.length; i++) {
 				var view = this.projectPanes[i];
 
-				view.state.src = this.state.projectDataBundles[i].stills[this.state.projectDataBundles[i].mainStillIndex];
 				if (this.state.comingSoon) {
 					view.opacity = 0;
 				}
@@ -209,13 +230,19 @@ var ProjectsPage = function (_JABView) {
 					var verticalAdjustment = 0;
 					if (this.state.selectedProject != null) {
 						if (i >= this.state.selectedProjectIndex - this.state.selectedProjectIndex % this.parameters.numberOfColumns) {
-							if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
-								if (i % this.parameters.numberOfColumns == this.state.selectedProjectIndex % this.parameters.numberOfColumns + 1) {
+							if (sizeClass == 'xxs' || sizeClass == 'xs') {
+								if (i != this.state.selectedProjectIndex) {
 									verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows;
 								}
 							} else {
-								if (i % this.parameters.numberOfColumns == this.state.selectedProjectIndex % this.parameters.numberOfColumns - 1) {
-									verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows;
+								if (this.state.selectedProjectIndex % this.parameters.numberOfColumns != this.parameters.numberOfColumns - 1) {
+									if (i % this.parameters.numberOfColumns == this.state.selectedProjectIndex % this.parameters.numberOfColumns + 1) {
+										verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows;
+									}
+								} else {
+									if (i % this.parameters.numberOfColumns == this.state.selectedProjectIndex % this.parameters.numberOfColumns - 1) {
+										verticalAdjustment = newFrame.size.height * this.parameters.heightOfProjectInfoTabsAsFractionOfProjectPaneHeight + this.parameters.betweenBufferForGridRows;
+									}
 								}
 							}
 						}
@@ -250,7 +277,6 @@ var ProjectsPage = function (_JABView) {
 					this.pushSubviewToBack(view);
 				}
 
-				view.state.projectDataBundle = this.state.projectDataBundles[i];
 				view.configureDuration = this.parameters.gridAnimationDuration;
 
 				if (this.state.selectedProject == correspondingProjectPane) {
@@ -285,6 +311,11 @@ var ProjectsPage = function (_JABView) {
 
 				newFrame.origin.y = correspondingTruePosition.y;
 
+				if (sizeClass == 'xxs' || sizeClass == 'xs') {
+					newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+					newFrame.origin.y = correspondingTruePosition.bottom + this.parameters.betweenBufferForGridRows;
+				}
+
 				view.frame = newFrame;
 			}
 		}
@@ -318,6 +349,12 @@ var ProjectsPage = function (_JABView) {
 						}
 					}
 					newFrame.origin.y = lowestBottom + this.parameters.bottomBufferForGrid;
+				}
+
+				if (sizeClass == 'xxs' || sizeClass == 'xs') {
+					if (this.state.selectedProjectIndex == this.projectPanes.length - 1) {
+						newFrame.origin.y = this.projectInfoTabs[this.state.selectedProjectIndex].bottom + this.parameters.bottomBufferForGrid;
+					}
 				}
 
 				if (newFrame.origin.y + newFrame.size.height < this.height) {
@@ -398,7 +435,7 @@ var ProjectsPage = function (_JABView) {
 				clearTimeout(projectsPage.scrollFinishTimer);
 				if (projectsPage.scrollTop <= 0) {
 					projectsPage.scrollFinishTimer = setTimeout(function () {
-						projectsPage.state.readyToClose = true;
+						// projectsPage.state.readyToClose = true // Uncomment this line make website closable from projects page
 					}, 50);
 				} else {
 					projectsPage.state.readyToClose = false;
@@ -414,143 +451,48 @@ var ProjectsPage = function (_JABView) {
 		// Actions
 		//
 
-		// Project Data
-
-	}, {
-		key: 'assembleProjectDataBundles',
-		value: function assembleProjectDataBundles() {
-
-			var dataBundles = [];
-
-			// Powder Room
-			var dataBundle = new ProjectDataBundle();
-			dataBundle.id = 'powderRoom';
-			dataBundle.title = 'POWDER ROOM';
-			dataBundle.director = 'SONJA TSYPIN';
-			dataBundle.movieType = 'SHORT';
-			dataBundle.year = '2016';
-			dataBundle.description = "<span style='color:white'>Starring Jessica Kay Park, John Patrick Maddock</span><br/>A wildly popular online personality who hasn't left her apartment in four years has her tiny world turned upside down when a stranger forces himself into her peculiar space.";
-
-			dataBundle.vimeoId = '167824606';
-			dataBundle.vimeoHeightToWidth = 1.0 / 2.35;
-
-			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/';
-			for (var i = 0; i < 4; i++) {
-				var index = i + 1;
-				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
-			}
-			dataBundle.mainStillIndex = 2;
-
-			dataBundles.push(dataBundle);
-
-			// Birth Day
-			dataBundle = new ProjectDataBundle();
-			dataBundle.id = 'birthday';
-			dataBundle.title = 'BIRTH DAY';
-			dataBundle.director = 'EVA EVANS';
-			dataBundle.movieType = 'SHORT';
-			dataBundle.year = '2016';
-			dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory.";
-
-			dataBundle.vimeoId = '172178428';
-			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
-
-			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/';
-			for (var i = 0; i < 2; i++) {
-				var index = i + 1;
-				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
-			}
-			dataBundle.mainStillIndex = 0;
-
-			dataBundles.push(dataBundle);
-
-			// Angels
-			dataBundle = new ProjectDataBundle();
-			dataBundle.id = 'angels';
-			dataBundle.title = 'ANGELS';
-			dataBundle.director = 'AUDREY BANKS';
-			dataBundle.movieType = 'FEATURE';
-			dataBundle.year = '2016';
-			dataBundle.description = "<span style='color:white'>Starring Moni Bell, Eva Evans, Gabriel Sommer, Joanna Janetakis</span><br/>A man who goes by 'Sir' is holding a mansion full of beautiful women prisoner when a new arrival threatens his power.";
-			dataBundle.noVideoMessage = 'TRAILER COMING SOON';
-
-			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/';
-			for (var i = 0; i < 5; i++) {
-				var index = i + 1;
-				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
-			}
-			dataBundle.mainStillIndex = 3;
-
-			dataBundles.push(dataBundle);
-
-			// Theodore
-			dataBundle = new ProjectDataBundle();
-			dataBundle.id = 'theodore';
-			dataBundle.title = 'THEODORE';
-			dataBundle.director = 'ONDINE VI\u00d1AO';
-			dataBundle.movieType = 'SHORT';
-			dataBundle.year = '2015';
-			dataBundle.description = "<span style='color:white'>Starring Camillia Hartman, Dexter Zimet</span><br/>A romantic rural retreat takes a terrifying turn after a local offers some chilling advice.";
-
-			dataBundle.vimeoId = '139578681';
-			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
-
-			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/4/';
-			for (var i = 0; i < 1; i++) {
-				var index = i + 1;
-				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
-			}
-			dataBundle.mainStillIndex = 0;
-
-			dataBundles.push(dataBundle);
-
-			// Found Guilty
-			dataBundle = new ProjectDataBundle();
-			dataBundle.id = 'foundGuilty';
-			dataBundle.title = 'FOUND GUILTY';
-			dataBundle.director = 'SONJA TSYPIN';
-			dataBundle.movieType = 'SHORT';
-			dataBundle.year = '2014';
-			dataBundle.description = '<span style="color:white">Starring Tuva Hildebrand</span><br/>In a short film remake of the famous murder scene from Alfred Hitchcock\'s "Blackmail," a woman must come to terms with herself after commiting an unthinkable crime out of self-defense.';
-
-			dataBundle.vimeoId = '99426346';
-			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
-
-			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/5/';
-			for (var i = 0; i < 1; i++) {
-				var index = i + 1;
-				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
-			}
-			dataBundle.mainStillIndex = 0;
-
-			dataBundles.push(dataBundle);
-
-			// As Long As I Have You
-			dataBundle = new ProjectDataBundle();
-			dataBundle.id = 'asLongAsIHaveYou';
-			dataBundle.title = 'AS LONG AS I HAVE YOU';
-			dataBundle.director = 'ONDINE VI\u00d1AO';
-			dataBundle.movieType = 'MUSIC VIDEO';
-			dataBundle.year = '2016';
-			dataBundle.description = "<span style='color:white'>Starring Annalisa Plumb</span><br/>An experimental video to the track 'As Long As I Have You' by Elvis Presley.";
-
-			dataBundle.vimeoId = '152982438';
-			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
-
-			var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/';
-			for (var i = 0; i < 1; i++) {
-				var index = i + 1;
-				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
-			}
-			dataBundle.mainStillIndex = 0;
-
-			dataBundles.push(dataBundle);
-
-			return dataBundles;
-		}
-
 		// Selection
 
+	}, {
+		key: 'selectProject',
+		value: function selectProject(view, animated) {
+
+			var index = null;
+			if (view != null) {
+				index = this.projectPanes.indexOf(view);
+			}
+			if (animated == null) {
+				animated = false;
+			}
+			this.state = {
+				selectedProject: view,
+				selectedProjectIndex: index
+			};
+
+			if (view != null) {
+				this.state = { arrowKeysDroppedBelowBottom: false };
+			}
+
+			var selectedInfoTab;
+			var newScrollTop;
+			if (view != null) {
+				var trueViewFrame = this.parameters.truePositionsOfProjectPanes[this.state.selectedProjectIndex];
+				selectedInfoTab = this.projectInfoTabs[this.state.selectedProjectIndex];
+				newScrollTop = view.top - (this.parameters.heightOfHeader + (this.height - this.parameters.heightOfHeader - view.height) / 2);
+
+				if (sizeClass == 'xxs' || sizeClass == 'xs') {
+					newScrollTop = trueViewFrame.top - (this.parameters.heightOfHeader + (this.height - this.parameters.heightOfHeader - (trueViewFrame.height + selectedInfoTab.height + this.parameters.betweenBufferForGridRows)) / 2);
+				}
+			}
+
+			if (animated) {
+				this.animatedUpdate();
+				this.scrollTo(newScrollTop, this.projectPanes[0].positionDuration, 'swing');
+			} else {
+				this.scrollTo(view.top, 0, 'swing');
+				this.updateAllUI();
+			}
+		}
 	}, {
 		key: 'deselectProjects',
 		value: function deselectProjects() {
@@ -560,6 +502,93 @@ var ProjectsPage = function (_JABView) {
 			};
 
 			this.animatedUpdate();
+		}
+
+		// Keys
+
+	}, {
+		key: 'leftArrowWasPressed',
+		value: function leftArrowWasPressed() {
+			if (this.state.selectedProject == null) {
+				if (this.projectPanes.length > 0) {
+					if (this.state.arrowKeysDroppedBelowBottom) {
+						this.selectProject(this.projectPanes[this.projectPanes.length - 1], true);
+					} else {
+						this.selectProject(this.projectPanes[0], true);
+					}
+				}
+			} else {
+				var destinationIndex = this.state.selectedProjectIndex - 1;
+				if (destinationIndex >= 0) {
+					if (destinationIndex < this.projectPanes.length) {
+						this.selectProject(this.projectPanes[destinationIndex], true);
+					}
+				} else {
+					this.selectProject(null, true);
+				}
+			}
+		}
+	}, {
+		key: 'upArrowWasPressed',
+		value: function upArrowWasPressed() {
+			if (this.state.selectedProject == null) {
+				if (this.projectPanes.length > 0) {
+					if (this.state.arrowKeysDroppedBelowBottom) {
+						this.selectProject(this.projectPanes[this.projectPanes.length - this.parameters.numberOfColumns + this.state.columnInWhichArrowKeysDroppedBelowBottom], true);
+					} else {
+						this.selectProject(this.projectPanes[0], true);
+					}
+				}
+			} else {
+				var destinationIndex = this.state.selectedProjectIndex - this.parameters.numberOfColumns;
+				if (destinationIndex >= 0) {
+					if (destinationIndex < this.projectPanes.length) {
+						this.selectProject(this.projectPanes[destinationIndex], true);
+					}
+				} else {
+					this.selectProject(null, true);
+				}
+			}
+		}
+	}, {
+		key: 'rightArrowWasPressed',
+		value: function rightArrowWasPressed() {
+			if (this.state.selectedProject == null) {
+				if (this.projectPanes.length > 0) {
+					this.selectProject(this.projectPanes[0], true);
+				}
+			} else {
+				var destinationIndex = this.state.selectedProjectIndex + 1;
+				if (destinationIndex < this.projectPanes.length) {
+					if (destinationIndex >= 0) {
+						this.selectProject(this.projectPanes[destinationIndex], true);
+					}
+				} else {
+					this.selectProject(null, true);
+					this.state = { arrowKeysDroppedBelowBottom: true, columnInWhichArrowKeysDroppedBelowBottom: this.parameters.numberOfColumns - 1 };
+				}
+			}
+		}
+	}, {
+		key: 'downArrowWasPressed',
+		value: function downArrowWasPressed() {
+			if (this.state.selectedProject == null) {
+				if (this.projectPanes.length > 0) {
+					if (!this.state.arrowKeysDroppedBelowBottom) {
+						this.selectProject(this.projectPanes[0], true);
+					}
+				}
+			} else {
+				var destinationIndex = this.state.selectedProjectIndex + this.parameters.numberOfColumns;
+				if (destinationIndex < this.projectPanes.length) {
+					if (destinationIndex >= 0) {
+						this.selectProject(this.projectPanes[destinationIndex], true);
+					}
+				} else {
+					this.selectProject(null, true);
+					this.state = { arrowKeysDroppedBelowBottom: true, columnInWhichArrowKeysDroppedBelowBottom: destinationIndex % this.parameters.numberOfColumns };
+				}
+			}
 		}
 
 		//
@@ -578,30 +607,14 @@ var ProjectsPage = function (_JABView) {
 				if (this.state.selectedProject != null) {
 					if (view != this.state.selectedProject) {
 						// If a project is currently open and now we need to open a different one
-						this.state = {
-							selectedProject: view,
-							selectedProjectIndex: this.projectPanes.indexOf(view)
-						};
-						// this.switchCurrentInfoTab()
-						// this.positionCurrentInfoTab()
-						this.animatedUpdate();
+						this.selectProject(view, true);
 					} else {
 						// If the currently open project has just been clicked on (close it)
-						this.state = {
-							selectedProject: null,
-							selectedProjectIndex: null
-						};
-						this.animatedUpdate();
+						this.selectProject(null, true);
 					}
 				} else {
 					// If no project is currently open and a project has just been selected
-					this.state = {
-						selectedProject: view,
-						selectedProjectIndex: this.projectPanes.indexOf(view)
-					};
-					// this.switchCurrentInfoTab()
-					// this.positionCurrentInfoTab()
-					this.animatedUpdate();
+					this.selectProject(view, true);
 				}
 			}
 		}
@@ -611,12 +624,20 @@ var ProjectsPage = function (_JABView) {
 	}, {
 		key: 'projectInfoTabPlayButtonWasClicked',
 		value: function projectInfoTabPlayButtonWasClicked(projectInfoTab) {
-			this.parent.projectsPageWantsToDisplayProject(this, this.state.projectDataBundles[this.state.selectedProjectIndex]);
+			this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id, true);
 		}
 	}, {
 		key: 'projectInfoTabInfoButtonWasClicked',
 		value: function projectInfoTabInfoButtonWasClicked(projectInfoTab) {
-			this.parent.projectsPageWantsToDisplayProject(this, this.state.projectDataBundles[this.state.selectedProjectIndex]);
+			this.parent.projectsPageWantsToDisplayProject(this, projectInfoTab.state.projectDataBundle.id, false);
+		}
+
+		// Footer
+
+	}, {
+		key: 'footerMailButtonWasClicked',
+		value: function footerMailButtonWasClicked(footer) {
+			this.parent.projectsPageWantsToOpenMailForm(this);
 		}
 	}]);
 

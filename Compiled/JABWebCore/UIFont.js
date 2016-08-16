@@ -18,52 +18,181 @@ var UIFont = function () {
 		this.style = null;
 		this.variant = null;
 		this.letterSpacing = null;
+
 		this.lineHeight = null;
+		this.lineHeightUnit = '';
 
 		this.reservedId = 'UIFontReservedIDForTextMeasurement';
+
+		// String Sizes
+		this.knownStringSizes = {};
 	}
 
 	//
-	// Actions
+	// Getters and Setters
 	//
+
+	// Size
+
 
 	_createClass(UIFont, [{
 		key: 'sizeOfString',
+
+
+		//
+		// Actions
+		//
+
 		value: function sizeOfString(string, widthConstraint) {
 
-			$('body').append("<div id='" + this.reservedId + "'>" + string + "</div>");
+			if (this.knownStringSizes[string] == null) {
+				$('body').append("<div id='" + this.reservedId + "'>" + string + "</div>");
 
-			var cssOptions = {
-				position: 'absolute',
+				var cssOptions = {
+					position: 'absolute',
 
-				left: '-1000px',
-				top: '-1000px',
+					left: '-1000px',
+					top: '-1000px',
 
-				height: 'auto'
-			};
+					height: 'auto'
+				};
 
-			if (widthConstraint == 0 || widthConstraint == null) {
-				cssOptions.whiteSpace = 'nowrap';
-				cssOptions.width = 'auto';
-			} else {
-				cssOptions.width = widthConstraint + 'px';
-			}
-
-			for (var i = 0; i < this.stateSelectors.length; i++) {
-				var property = this[this.stateSelectors[i]];
-				if (property != null) {
-					cssOptions[this.correspondingCSSSelectors[i]] = property;
+				if (widthConstraint == 0 || widthConstraint == null) {
+					cssOptions.whiteSpace = 'nowrap';
+					cssOptions.width = 'auto';
+				} else {
+					cssOptions.width = widthConstraint + 'px';
 				}
+
+				for (var i = 0; i < this.stateSelectors.length; i++) {
+					var property = this[this.stateSelectors[i]];
+					if (property != null) {
+						cssOptions[this.correspondingCSSSelectors[i]] = property;
+					}
+				}
+
+				$('#' + this.reservedId).css(cssOptions);
+
+				var testDiv = document.getElementById(this.reservedId);
+				var size = new CGSize(testDiv.clientWidth + 1, testDiv.clientHeight); // Add 1 because for some reason the output is off by 1
+
+				$('#' + this.reservedId).remove();
+
+				this.knownStringSizes[string] = size;
+
+				return size;
+			} else {
+				return this.knownStringSizes[string];
 			}
+		}
+	}, {
+		key: 'size',
+		get: function get() {
+			return this._size;
+		},
+		set: function set(newSize) {
+			if (this.size != newSize) {
+				this._size = newSize;
+				this.knownStringSizes = {};
+			}
+		}
 
-			$('#' + this.reservedId).css(cssOptions);
+		// Family
 
-			var testDiv = document.getElementById(this.reservedId);
-			var size = new CGSize(testDiv.clientWidth + 1, testDiv.clientHeight); // Add 1 because for some reason the output is off by 1
+	}, {
+		key: 'family',
+		get: function get() {
+			return this._family;
+		},
+		set: function set(newFamily) {
+			if (this.family != newFamily) {
+				this._family = newFamily;
+				this.knownStringSizes = {};
+			}
+		}
 
-			$('#' + this.reservedId).remove();
+		// Weight
 
-			return size;
+	}, {
+		key: 'weight',
+		get: function get() {
+			return this._weight;
+		},
+		set: function set(newWeight) {
+			if (this.weight != newWeight) {
+				this._weight = newWeight;
+				this.knownStringSizes = {};
+			}
+		}
+
+		// Style
+
+	}, {
+		key: 'style',
+		get: function get() {
+			return this._style;
+		},
+		set: function set(newStyle) {
+			if (this.style != newStyle) {
+				this._style = newStyle;
+				this.knownStringSizes = {};
+			}
+		}
+
+		// Variant
+
+	}, {
+		key: 'variant',
+		get: function get() {
+			return this._variant;
+		},
+		set: function set(newVariant) {
+			if (this.variant != newVariant) {
+				this._variant = newVariant;
+				this.knownStringSizes = {};
+			}
+		}
+
+		// Letter Spacing
+
+	}, {
+		key: 'letterSpacing',
+		get: function get() {
+			return this._letterSpacing;
+		},
+		set: function set(newLetterSpacing) {
+			if (this.letterSpacing != newLetterSpacing) {
+				this._letterSpacing = newLetterSpacing;
+				this.knownStringSizes = {};
+			}
+		}
+
+		// Line Height
+
+	}, {
+		key: 'lineHeight',
+		get: function get() {
+			return this._lineHeight;
+		},
+		set: function set(newLineHeight) {
+			if (this.lineHeight != newLineHeight) {
+				this._lineHeight = newLineHeight;
+				this.knownStringSizes = {};
+			}
+		}
+
+		// Line Height Unit
+
+	}, {
+		key: 'lineHeightUnit',
+		get: function get() {
+			return this._lineHeightUnit;
+		},
+		set: function set(newLineHeightUnit) {
+			if (this.lineHeightUnit != newLineHeightUnit) {
+				this._lineHeightUnit = newLineHeightUnit;
+				this.knownStringSizes = {};
+			}
 		}
 	}]);
 

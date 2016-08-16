@@ -70,14 +70,23 @@ var JABView = function () {
 		// Configuration
 		this.opacity = 1;
 		this.backgroundColor = 'transparent';
-		this.borderRadius = 0;
+		this.borderStyle = null;
+		this.borderWidth = null;
+		this.borderColor = null;
+		this.borderRadius = null;
 		this.blur = 0;
 
 		this.zIndex = 0;
 		this.position = 'absolute';
+		this.overflowX = 'visible';
+		this.overflowY = 'visible';
 		this.overflow = 'visible';
 		this.cursor = 'auto';
 		this.animation = 'none';
+		this.paddingLeft = 0;
+		this.paddingRight = 0;
+		this.paddingTop = 0;
+		this.paddingBottom = 0;
 
 		// Position
 		this.frame = new CGRect();
@@ -88,6 +97,7 @@ var JABView = function () {
 
 		// Other
 		this.clickable = false;
+		this.hoverable = false;
 
 		viewHierarchy.push(this);
 	}
@@ -500,6 +510,29 @@ var JABView = function () {
 		// Opacity
 
 	}, {
+		key: 'scrollTo',
+
+
+		//
+		// Scrolling
+		//
+
+		value: function scrollTo(newScrollTop, duration, easingFunction) {
+			$(this.selector).animate({
+				'scrollTop': newScrollTop
+			}, {
+				duration: duration + 'ms',
+				easingFunction: easingFunction
+			});
+		}
+
+		//
+		//
+		// Position
+		//
+		//
+
+	}, {
 		key: 'red',
 
 
@@ -736,6 +769,9 @@ var JABView = function () {
 		key: 'scrollTop',
 		get: function get() {
 			return $(this.selector).scrollTop();
+		},
+		set: function set(newScrollTop) {
+			$(this.selector).scrollTop(newScrollTop);
 		}
 	}, {
 		key: 'animationOptions',
@@ -992,6 +1028,57 @@ var JABView = function () {
 			}
 		}
 
+		// Border Style
+
+	}, {
+		key: 'borderStyle',
+		get: function get() {
+			return this._borderStyle;
+		},
+		set: function set(newBorderStyle) {
+			if (this.borderStyle != newBorderStyle) {
+				this._borderStyle = newBorderStyle;
+
+				$(this.selector).css({
+					'border-style': newBorderStyle
+				});
+			}
+		}
+
+		// Border Width
+
+	}, {
+		key: 'borderWidth',
+		get: function get() {
+			return this._borderWidth;
+		},
+		set: function set(newBorderWidth) {
+			if (this.borderWidth != newBorderWidth) {
+				this._borderWidth = newBorderWidth;
+
+				$(this.selector).css({
+					'border-width': newBorderWidth + 'px'
+				});
+			}
+		}
+
+		// Border Color
+
+	}, {
+		key: 'borderColor',
+		get: function get() {
+			return this._borderColor;
+		},
+		set: function set(newBorderColor) {
+			if (this.borderColor != newBorderColor) {
+				this._borderColor = newBorderColor;
+
+				$(this.selector).css({
+					'border-color': newBorderColor
+				});
+			}
+		}
+
 		// Border Radius
 
 	}, {
@@ -1089,6 +1176,36 @@ var JABView = function () {
 		// Overflow
 
 	}, {
+		key: 'overflowX',
+		get: function get() {
+			return this._overflowX;
+		},
+		set: function set(newOverflowX) {
+			if (this.overflowX != newOverflowX) {
+				this._overflowX = newOverflowX;
+
+				$(this.selector).css({
+					'overflow-x': newOverflowX,
+					'-webkit-overflow-scrolling': 'touch'
+				});
+			}
+		}
+	}, {
+		key: 'overflowY',
+		get: function get() {
+			return this._overflowY;
+		},
+		set: function set(newOverflowY) {
+			if (this.overflowY != newOverflowY) {
+				this._overflowY = newOverflowY;
+
+				$(this.selector).css({
+					'overflow-y': newOverflowY,
+					'-webkit-overflow-scrolling': 'touch'
+				});
+			}
+		}
+	}, {
 		key: 'overflow',
 		get: function get() {
 			return this._overflow;
@@ -1099,7 +1216,8 @@ var JABView = function () {
 				this._overflow = newOverflow;
 
 				$(this.selector).css({
-					'overflow': newOverflow
+					'overflow': newOverflow,
+					'-webkit-overflow-scrolling': 'touch'
 				});
 			}
 		}
@@ -1143,12 +1261,73 @@ var JABView = function () {
 			}
 		}
 
-		//
-		//
-		// Position
-		//
-		//
+		// Padding Left
 
+	}, {
+		key: 'paddingLeft',
+		get: function get() {
+			return this._paddingLeft;
+		},
+		set: function set(newPaddingLeft) {
+			if (this.paddingLeft != newPaddingLeft) {
+				this._paddingLeft = newPaddingLeft;
+
+				$(this.selector).css({
+					'padding-left': newPaddingLeft + 'px'
+				});
+			}
+		}
+
+		// Padding Right
+
+	}, {
+		key: 'paddingRight',
+		get: function get() {
+			return this._paddingRight;
+		},
+		set: function set(newPaddingRight) {
+			if (this.paddingRight != newPaddingRight) {
+				this._paddingRight = newPaddingRight;
+
+				$(this.selector).css({
+					'padding-right': newPaddingRight + 'px'
+				});
+			}
+		}
+
+		// Padding Top
+
+	}, {
+		key: 'paddingTop',
+		get: function get() {
+			return this._paddingTop;
+		},
+		set: function set(newPaddingTop) {
+			if (this.paddingTop != newPaddingTop) {
+				this._paddingTop = newPaddingTop;
+
+				$(this.selector).css({
+					'padding-top': newPaddingTop + 'px'
+				});
+			}
+		}
+
+		// Padding Bottom
+
+	}, {
+		key: 'paddingBottom',
+		get: function get() {
+			return this._paddingBottom;
+		},
+		set: function set(newPaddingBottom) {
+			if (this.paddingBottom != newPaddingBottom) {
+				this._paddingBottom = newPaddingBottom;
+
+				$(this.selector).css({
+					'padding-bottom': newPaddingBottom + 'px'
+				});
+			}
+		}
 	}, {
 		key: 'frame',
 		get: function get() {
@@ -1158,8 +1337,6 @@ var JABView = function () {
 			return new CGRect();
 		},
 		set: function set(newFrame) {
-
-			this.debugLog('setting frame');
 
 			var scaled = newFrame.size.width != this.width || newFrame.size.height != this.height;
 			var moved = newFrame.origin.x != this.x || newFrame.origin.y != this.y;
@@ -1375,8 +1552,50 @@ var JABView = function () {
 					$(this.selector).click(function () {
 						thisView.parent.viewWasClicked(thisView);
 					});
+
+					$(this.selector).css({
+						'-webkit-touch-callout': 'none',
+						'-webkit-user-select': 'none',
+						'-khtml-user-select': 'none',
+						'moz-user-select': 'none',
+						'-ms-user-select': 'none',
+						'user-select': 'none'
+					});
 				} else {
 					$(this.selector).click(function () {});
+					$(this.selector).css({
+						'-webkit-touch-callout': 'text',
+						'-webkit-user-select': 'text',
+						'-khtml-user-select': 'text',
+						'moz-user-select': 'text',
+						'-ms-user-select': 'text',
+						'user-select': 'text'
+					});
+				}
+			}
+		}
+	}, {
+		key: 'hoverable',
+		get: function get() {
+			return this._hoverable;
+		},
+		set: function set(newHoverable) {
+
+			var changed = this.hoverable != newHoverable;
+
+			if (changed) {
+				this._hoverable = newHoverable;
+
+				var thisView = this;
+				$(this.selector).off();
+				if (this.hoverable) {
+					$(this.selector).hover(function () {
+						thisView.parent.viewWasHovered(thisView);
+					}, function () {
+						thisView.parent.viewWasUnhovered(thisView);
+					});
+				} else {
+					$(this.selector).hover(function () {}, function () {});
 				}
 			}
 		}

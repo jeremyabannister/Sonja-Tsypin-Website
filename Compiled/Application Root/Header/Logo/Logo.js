@@ -81,7 +81,7 @@ var Logo = function (_JABView) {
 			this.sonjaTsypinLabel.fontFamily = 'siteFont';
 			this.sonjaTsypinLabel.textColor = 'white';
 
-			var fontSizes = { 'xs': 21, 's': 38, 'm': 28, 'l': 28, 'xl': 28 };
+			var fontSizes = { 'xxs': 28, 'xs': 28, 's': 32, 'm': 28, 'l': 28, 'xl': 28 };
 			this.sonjaTsypinLabel.fontSize = fontSizes[sizeClass];
 			this.sonjaTsypinLabel.fontWeight = 'normal';
 			this.sonjaTsypinLabel.letterSpacing = 3.5;
@@ -106,10 +106,10 @@ var Logo = function (_JABView) {
 			this.cinematographerLabel.text = "CINEMATOGRAPHER";
 			this.cinematographerLabel.textColor = 'white';
 
-			var fontSizes = { 'xs': 9, 's': 19, 'm': 12, 'l': 12, 'xl': 12 };
+			var fontSizes = { 'xxs': 13, 'xs': 13, 's': 15, 'm': 12, 'l': 12, 'xl': 12 };
 			this.cinematographerLabel.fontSize = fontSizes[sizeClass];
 
-			var letterSpacings = { 'xs': 7, 's': 8.4, 'm': 8.4, 'l': 8.4, 'xl': 8.4 };
+			var letterSpacings = { 'xxs': 7.7, 'xs': 7.7, 's': 8.4, 'm': 8.4, 'l': 8.4, 'xl': 8.4 };
 			this.cinematographerLabel.letterSpacing = letterSpacings[sizeClass];
 			this.cinematographerLabel.fontWeight = 'normal';
 
