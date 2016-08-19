@@ -42,7 +42,10 @@ $(window).resize(function() {
 
 $(document).keydown(function(event) {
   var keyCode = event.keyCode || event.which
-  if (keyCode == 37) {
+  if (keyCode == 32) {
+    event.preventDefault()
+    applicationRoot.spaceBarWasPressed()
+  } else if (keyCode == 37) {
     event.preventDefault()
     applicationRoot.leftArrowWasPressed()
   } else if (keyCode == 38) {

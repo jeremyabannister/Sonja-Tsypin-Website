@@ -110,6 +110,12 @@ class JABVimeoView extends JABView {
 	}
 	
 	
+	
+	get paused () {
+		return this.player.getPaused()
+	}
+	
+	
 	//
 	// UI
 	//
@@ -400,7 +406,17 @@ class JABVimeoView extends JABView {
 	// Vimeo Player
 	play () {
 		if (this.player != null) {
-			this.player.play()
+			
+			if (this.coverImage != null) {
+				this.unplayed = false
+				var vimeoView = this
+				this.animatedUpdate(null, function () {
+					vimeoView.updateSubviewOrder()
+					vimeoView.player.play()
+				})
+			} else {
+				this.player.play()
+			}
 		}
 	}
 	
@@ -437,13 +453,7 @@ class JABVimeoView extends JABView {
 	// JABView
 	viewWasClicked (view) {
 		if (view == this.coverImageView || view == this.playButton) {
-			this.unplayed = false
-			var vimeoView = this
-			this.animatedUpdate(null, function () {
-				vimeoView.updateSubviewOrder()
-				vimeoView.play()
-			})
-			
+			this.play()
 		}
 	}
 }

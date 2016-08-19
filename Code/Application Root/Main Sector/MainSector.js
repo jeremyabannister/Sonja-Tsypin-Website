@@ -495,6 +495,26 @@ class MainSector extends JABView {
 	
 	
 	// Keys
+	spaceBarWasPressed () {
+		if (this.state.projectOpen) {
+			var mainSector = this
+			this.projectPage.paused.then(function(paused) {
+				if (paused) {
+					mainSector.projectPage.play()
+				} else {
+					mainSector.projectPage.pause()
+				}
+			})
+		} else {
+			if (this.state.pageIndex == 0) {
+				this.reelPage.spaceBarWasPressed()
+			} else if (this.state.pageIndex == 1) {
+				this.projectsPage.spaceBarWasPressed()
+			}
+		}
+	}
+	
+	
 	leftArrowWasPressed () {
 		if (!this.state.projectOpen) {
 			if (this.state.pageIndex == 1) {

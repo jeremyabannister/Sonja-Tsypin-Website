@@ -1,10 +1,10 @@
 class Menu extends JABView {
 
-	constructor (customId, buttonInfo) {
+	constructor (customId, items) {
 		super(customId)
 
 		// State
-		this.buttonInfo = buttonInfo
+		this.items = items
 		this.showUnderline = true
 		this.underlinePositionDuration = 0
 		this.selectedIndex = -1
@@ -26,7 +26,7 @@ class Menu extends JABView {
 		
 		// UI
 		this.buttons = []
-		for (var i = 0; i < this.buttonInfo.length; i++) {
+		for (var i = 0; i < this.items.length; i++) {
 			this.buttons.push(new UILabel())
 		}
 		this.underline = new JABView('Underline')
@@ -109,11 +109,11 @@ class Menu extends JABView {
 
 	configureButtons () {
 
-		for (var i = 0; i < this.buttonInfo.length; i++) {
+		for (var i = 0; i < this.buttons.length; i++) {
 			
 			this.buttons[i].clickable = true
 
-			this.buttons[i].text = this.buttonInfo[i][0]
+			this.buttons[i].text = this.items[i].displayTitle
 			
 			this.buttons[i].textColor = this.textColor
 			this.buttons[i].fontSize = this.fontSize
@@ -227,8 +227,8 @@ class Menu extends JABView {
 		
 		for (var i = 0; i < this.buttons.length; i++) {
 			if (this.buttons[i] == view) {
-				if (this.buttonInfo.length > i) {
-					this.parent.menuButtonWasPressed(i)
+				if (this.items.length > i) {
+					this.parent.menuItemWasSelected(this.items[i])
 				}
 			}
 		}

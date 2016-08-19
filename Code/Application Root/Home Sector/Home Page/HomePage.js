@@ -12,7 +12,7 @@ class HomePage extends JABView {
 		this.currentlyActive = true
 		
 		
-		this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [300, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]]
+		this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [270, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]]
 		
 		
 		// UI

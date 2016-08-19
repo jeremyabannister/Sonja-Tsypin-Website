@@ -208,6 +208,20 @@ class ReelPage extends JABView {
 		}
 	}
 	
+	
+	// Keys
+	spaceBarWasPressed () {
+		console.log('pressed')
+		var reelPage = this
+		this.vimeoView.paused.then(function(paused) {
+			if (paused) {
+				reelPage.playReel()
+			} else {
+				reelPage.pauseReel()
+			}
+		})
+	}
+	
 	//
 	// Delegate
 	//

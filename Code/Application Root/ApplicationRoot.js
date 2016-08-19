@@ -298,6 +298,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		if (this.websiteClosed) {
 			if (!this.websiteClosedLocked) {
 				this.websiteClosed = false
+				websiteIsResizing = false
 				
 				this.setWebsiteClosedLockedForTimeout(duration)
 				
@@ -327,6 +328,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		if (!this.websiteClosed) {
 			if (!this.websiteClosedLocked) {
 				this.websiteClosed = true
+				websiteIsResizing = false
 				
 				this.setWebsiteClosedLockedForTimeout(duration)
 				
@@ -380,6 +382,13 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	
 	// Keys
+	spaceBarWasPressed () {
+		if (!this.websiteClosed) {
+			this.mainSector.spaceBarWasPressed()
+		}
+	}
+	
+	
 	leftArrowWasPressed () {
 		if (!this.websiteClosed) {
 			this.mainSector.leftArrowWasPressed()
