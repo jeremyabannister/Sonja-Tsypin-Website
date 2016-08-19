@@ -20,12 +20,31 @@ var Header = function (_JABView) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Header).call(this, customId));
 
+		_this.state = {
+			mobileMenuOpen: false
+		};
 		_this.selectedMenuIndex = -1;
 		_this.websiteClosed = true;
+		_this.menuItems = [new MenuItem('reel', 'REEL', 0), new MenuItem('projects', 'PROJECTS', 1), new MenuItem('about', 'ABOUT', 2)];
 
 		// UI
 		_this.logo = new Logo('Logo');
-		_this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS	', 'projects'], ['ABOUT', 'about']]);
+		_this.menu = new Menu('Menu', _this.menuItems);
+		_this.mobileMenu = new MobileMenu('MobileMenu', _this.menuItems);
+		_this.mobileMenuButton = new MobileMenuButton('MobileMenuButton');
+
+		// Parameters
+		_this.parameters = {
+			sideBufferForMobileContent: 10,
+
+			mobileMenuAnimationSpeed: 300,
+
+			topBufferForMobileMenu: 0,
+			widthFractionOfMobileMenu: 1,
+
+			sizeOfMobileMenuButton: 50,
+			topBufferForMobileMenuButton: 10
+		};
 
 		return _this;
 	}
@@ -40,10 +59,6 @@ var Header = function (_JABView) {
 			_get(Object.getPrototypeOf(Header.prototype), 'init', this).call(this);
 
 			this.startEventListeners();
-
-			if (this.notReal == '1234') {
-				console.log('what????');
-			}
 		}
 
 		//
@@ -58,6 +73,8 @@ var Header = function (_JABView) {
 
 			this.addLogo();
 			this.addMenu();
+			this.addMobileMenu();
+			this.addMobileMenuButton();
 		}
 	}, {
 		key: 'addLogo',
@@ -68,6 +85,16 @@ var Header = function (_JABView) {
 		key: 'addMenu',
 		value: function addMenu() {
 			this.addSubview(this.menu);
+		}
+	}, {
+		key: 'addMobileMenu',
+		value: function addMobileMenu() {
+			this.addSubview(this.mobileMenu);
+		}
+	}, {
+		key: 'addMobileMenuButton',
+		value: function addMobileMenuButton() {
+			this.addSubview(this.mobileMenuButton);
 		}
 
 		// Update
@@ -82,6 +109,12 @@ var Header = function (_JABView) {
 
 			this.configureMenu();
 			this.positionMenu();
+
+			this.configureMobileMenu();
+			this.positionMobileMenu();
+
+			this.configureMobileMenuButton();
+			this.positionMobileMenuButton();
 		}
 
 		// Logo
@@ -90,15 +123,17 @@ var Header = function (_JABView) {
 		key: 'configureLogo',
 		value: function configureLogo() {
 
-			this.logo.positionDuration = 0;
-			if (this.websiteClosed) {
-				this.logo.faded = true;
-			} else {
-				this.logo.faded = false;
-			}
-			this.logo.cursor = 'pointer';
+			var view = this.logo;
 
-			this.logo.updateAllUI();
+			view.positionDuration = 0;
+			if (this.websiteClosed) {
+				view.faded = true;
+			} else {
+				view.faded = false;
+			}
+			view.cursor = 'pointer';
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionLogo',
@@ -127,18 +162,26 @@ var Header = function (_JABView) {
 		key: 'configureMenu',
 		value: function configureMenu() {
 
-			this.menu.showUnderline = !this.websiteClosed;
-			this.menu.selectedIndex = this.selectedMenuIndex;
+			var view = this.menu;
 
-			this.menu.textColor = 'white';
+			view.showUnderline = !this.websiteClosed;
+			view.selectedIndex = this.selectedMenuIndex;
+
+			view.textColor = 'white';
 
 			var fontSizes = { 'xxs': 12, 'xs': 12, 's': 16, 'm': 12, 'l': 12, 'xl': 12 };
-			this.menu.fontSize = fontSizes[sizeClass];
-			this.menu.letterSpacing = 1.5;
-			this.menu.fontWeight = 'bold';
-			this.menu.textAlign = 'right';
+			view.fontSize = fontSizes[sizeClass];
+			view.letterSpacing = 1.5;
+			view.fontWeight = 'bold';
+			view.textAlign = 'right';
 
-			this.menu.updateAllUI();
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionMenu',
@@ -165,6 +208,80 @@ var Header = function (_JABView) {
 			this.menu.frame = newFrame;
 		}
 
+		// Mobile Menu
+
+	}, {
+		key: 'configureMobileMenu',
+		value: function configureMobileMenu() {
+			var view = this.mobileMenu;
+
+			view.backgroundColor = 'black';
+			view.positionDuration = this.parameters.mobileMenuAnimationSpeed;
+
+			view.state = {
+				open: this.state.mobileMenuOpen
+			};
+
+			view.overflow = 'hidden';
+
+			view.updateAllUI();
+		}
+	}, {
+		key: 'positionMobileMenu',
+		value: function positionMobileMenu() {
+			var view = this.mobileMenu;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.width * this.parameters.widthFractionOfMobileMenu;
+
+			if (this.state.mobileMenuOpen) {
+				newFrame.size.height = view.requiredHeight;
+			} else {
+				newFrame.size.height = 0;
+			}
+
+			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+			newFrame.origin.y = this.parameters.topBufferForMobileMenu;
+
+			view.frame = newFrame;
+		}
+
+		// Mobile Menu Button
+
+	}, {
+		key: 'configureMobileMenuButton',
+		value: function configureMobileMenuButton() {
+
+			var view = this.mobileMenuButton;
+
+			view.clickable = true;
+			view.cursor = 'pointer';
+			view.parameters = { animationSpeed: this.parameters.mobileMenuAnimationSpeed };
+			view.state = { crossed: this.state.mobileMenuOpen };
+
+			if (sizeClass == 'xxs' || sizeClass == 'xs') {
+				view.opacity = 1;
+			} else {
+				view.opacity = 0;
+			}
+
+			view.updateAllUI();
+		}
+	}, {
+		key: 'positionMobileMenuButton',
+		value: function positionMobileMenuButton() {
+			var view = this.mobileMenuButton;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.logo.left;
+			newFrame.size.height = newFrame.size.width;
+
+			newFrame.origin.x = 0;
+			newFrame.origin.y = this.logo.y + (this.logo.height - newFrame.size.height) / 2;
+
+			view.frame = newFrame;
+		}
+
 		//
 		// Event Listeners
 		//
@@ -183,10 +300,27 @@ var Header = function (_JABView) {
 		// Delegate
 		//
 
+		// Menus
+
 	}, {
-		key: 'menuButtonWasPressed',
-		value: function menuButtonWasPressed(buttonIndex) {
-			this.parent.headerDidSelectPage(buttonIndex);
+		key: 'menuItemWasSelected',
+		value: function menuItemWasSelected(menuItem) {
+			this.state = { mobileMenuOpen: false };
+			var header = this;
+			this.animatedUpdate(null, function () {
+				header.parent.headerDidSelectPage(menuItem.index);
+			});
+		}
+
+		// JABView
+
+	}, {
+		key: 'viewWasClicked',
+		value: function viewWasClicked(view) {
+			if (view == this.mobileMenuButton) {
+				this.state = { mobileMenuOpen: !this.state.mobileMenuOpen };
+				this.animatedUpdate();
+			}
 		}
 	}]);
 

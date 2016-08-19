@@ -289,6 +289,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			if (this.websiteClosed) {
 				if (!this.websiteClosedLocked) {
 					this.websiteClosed = false;
+					websiteIsResizing = false;
 
 					this.setWebsiteClosedLockedForTimeout(duration);
 
@@ -318,6 +319,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			if (!this.websiteClosed) {
 				if (!this.websiteClosedLocked) {
 					this.websiteClosed = true;
+					websiteIsResizing = false;
 
 					this.setWebsiteClosedLockedForTimeout(duration);
 
@@ -372,6 +374,13 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 		// Keys
 
+	}, {
+		key: 'spaceBarWasPressed',
+		value: function spaceBarWasPressed() {
+			if (!this.websiteClosed) {
+				this.mainSector.spaceBarWasPressed();
+			}
+		}
 	}, {
 		key: 'leftArrowWasPressed',
 		value: function leftArrowWasPressed() {

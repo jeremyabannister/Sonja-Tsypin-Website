@@ -19,6 +19,7 @@ $(window).load(function () {
 
   applicationRoot = new ApplicationRoot('ApplicationRoot');
   applicationRoot.addAllUI();
+  configureApplicationRoot();
   positionApplicationRoot();
 
   /*
@@ -41,7 +42,10 @@ $(window).resize(function () {
 
 $(document).keydown(function (event) {
   var keyCode = event.keyCode || event.which;
-  if (keyCode == 37) {
+  if (keyCode == 32) {
+    event.preventDefault();
+    applicationRoot.spaceBarWasPressed();
+  } else if (keyCode == 37) {
     event.preventDefault();
     applicationRoot.leftArrowWasPressed();
   } else if (keyCode == 38) {
@@ -55,6 +59,10 @@ $(document).keydown(function (event) {
     applicationRoot.downArrowWasPressed();
   }
 });
+
+function configureApplicationRoot() {
+  applicationRoot.overflow = 'hidden';
+}
 
 function positionApplicationRoot() {
   applicationRoot.frame = new CGRect(0, 0, $('body').width(), $('body').height());

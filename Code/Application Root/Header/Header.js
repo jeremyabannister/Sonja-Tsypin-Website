@@ -20,15 +20,15 @@ class Header extends JABView {
 		
 		// Parameters
 		this.parameters = {
-			sideBufferForMobileContent: 18,
+			sideBufferForMobileContent: 10,
 			
 			mobileMenuAnimationSpeed: 300,
 			
 			topBufferForMobileMenu: 0,
 			widthFractionOfMobileMenu: 1,
 			
-			sizeOfMobileMenuButton: 60,
-			topBufferForMobileMenuButton: 14,
+			sizeOfMobileMenuButton: 50,
+			topBufferForMobileMenuButton: 10,
 		}
 		
 	}
@@ -263,11 +263,11 @@ class Header extends JABView {
 	positionMobileMenuButton () {
 		var view = this.mobileMenuButton
 		var newFrame = new CGRect()
-							
-		newFrame.size.width = this.parameters.sizeOfMobileMenuButton
+		
+		newFrame.size.width = this.logo.left
 		newFrame.size.height = newFrame.size.width
 
-		newFrame.origin.x = this.parameters.sideBufferForMobileContent
+		newFrame.origin.x = 0
 		newFrame.origin.y = this.logo.y + (this.logo.height - newFrame.size.height)/2
 							
 		view.frame = newFrame

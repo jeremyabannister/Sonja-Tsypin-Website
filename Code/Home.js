@@ -19,6 +19,7 @@ $(window).load(function() {
 
    applicationRoot = new ApplicationRoot('ApplicationRoot')
    applicationRoot.addAllUI()
+   configureApplicationRoot()
    positionApplicationRoot()
    
    /*
@@ -60,6 +61,11 @@ $(document).keydown(function(event) {
   }
   
 })
+
+
+function configureApplicationRoot () {
+  applicationRoot.overflow = 'hidden'
+}
 
 function positionApplicationRoot () {
   applicationRoot.frame = new CGRect(0, 0, $('body').width(), $('body').height())

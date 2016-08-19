@@ -212,6 +212,22 @@ var ReelPage = function (_JABView) {
 			}
 		}
 
+		// Keys
+
+	}, {
+		key: 'spaceBarWasPressed',
+		value: function spaceBarWasPressed() {
+			console.log('pressed');
+			var reelPage = this;
+			this.vimeoView.paused.then(function (paused) {
+				if (paused) {
+					reelPage.playReel();
+				} else {
+					reelPage.pauseReel();
+				}
+			});
+		}
+
 		//
 		// Delegate
 		//

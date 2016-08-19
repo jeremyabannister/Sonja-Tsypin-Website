@@ -391,6 +391,7 @@ var ProjectPage = function (_JABView) {
 	}, {
 		key: 'goToPreviousProject',
 		value: function goToPreviousProject() {
+			this.pause();
 			if (this.state.projectIndex != 0) {
 				this.state.projectIndex -= 1;
 				if (this.state.projectIndex == 2) {
@@ -406,6 +407,7 @@ var ProjectPage = function (_JABView) {
 	}, {
 		key: 'goToNextProject',
 		value: function goToNextProject() {
+			this.pause();
 			if (this.state.projectIndex != this.projectGroups[this.state.projectGroupIndex].length - 1) {
 				this.state.projectIndex += 1;
 				if (this.state.projectIndex == 2) {
@@ -503,6 +505,11 @@ var ProjectPage = function (_JABView) {
 		key: 'currentTitleLabel',
 		get: function get() {
 			return this.titleLabels[this.state.projectGroupIndex][this.state.projectIndex];
+		}
+	}, {
+		key: 'paused',
+		get: function get() {
+			return this.currentVimeoView.paused;
 		}
 	}]);
 

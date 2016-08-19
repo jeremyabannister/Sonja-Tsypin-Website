@@ -345,7 +345,17 @@ var JABVimeoView = function (_JABView) {
 		key: 'play',
 		value: function play() {
 			if (this.player != null) {
-				this.player.play();
+
+				if (this.coverImage != null) {
+					this.unplayed = false;
+					var vimeoView = this;
+					this.animatedUpdate(null, function () {
+						vimeoView.updateSubviewOrder();
+						vimeoView.player.play();
+					});
+				} else {
+					this.player.play();
+				}
 			}
 		}
 	}, {
@@ -387,12 +397,7 @@ var JABVimeoView = function (_JABView) {
 		key: 'viewWasClicked',
 		value: function viewWasClicked(view) {
 			if (view == this.coverImageView || view == this.playButton) {
-				this.unplayed = false;
-				var vimeoView = this;
-				this.animatedUpdate(null, function () {
-					vimeoView.updateSubviewOrder();
-					vimeoView.play();
-				});
+				this.play();
 			}
 		}
 	}, {
@@ -453,6 +458,11 @@ var JABVimeoView = function (_JABView) {
 
 				this.updateSubviewOrder();
 			}
+		}
+	}, {
+		key: 'paused',
+		get: function get() {
+			return this.player.getPaused();
 		}
 	}]);
 

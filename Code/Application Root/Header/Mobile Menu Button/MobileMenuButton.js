@@ -12,9 +12,10 @@ class MobileMenuButton extends JABView {
 		this.parameters = {
 			animationSpeed: 0,
 			
-			sideBufferForLines: 10,
+			minimumSideBuffer: 10,
+			maxWidthOfLines: 30,
 			heightOfLines: 2,
-			betweenBufferForLines: 10,
+			betweenBufferForLines: 7,
 		}
 		
 		// UI
@@ -76,6 +77,7 @@ class MobileMenuButton extends JABView {
 		
 		this.configureBottomLine()
 		this.positionBottomLine()
+		
 	}
 	
 	
@@ -101,7 +103,11 @@ class MobileMenuButton extends JABView {
 		var view = this.topLine
 		var newFrame = new CGRect()
 							
-		newFrame.size.width = this.width - (2 * this.parameters.sideBufferForLines)
+		newFrame.size.width = this.width - (2 * this.parameters.minimumSideBuffer)
+		if (newFrame.size.width > this.parameters.maxWidthOfLines) {
+			newFrame.size.width = this.parameters.maxWidthOfLines
+		}
+		
 		newFrame.size.height = this.parameters.heightOfLines
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
@@ -143,7 +149,11 @@ class MobileMenuButton extends JABView {
 		var view = this.middleLine
 		var newFrame = new CGRect()
 							
-		newFrame.size.width = this.width - (2 * this.parameters.sideBufferForLines)
+		newFrame.size.width = this.width - (2 * this.parameters.minimumSideBuffer)
+		if (newFrame.size.width > this.parameters.maxWidthOfLines) {
+			newFrame.size.width = this.parameters.maxWidthOfLines
+		}
+		
 		newFrame.size.height = this.parameters.heightOfLines
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
@@ -181,7 +191,11 @@ class MobileMenuButton extends JABView {
 		var view = this.bottomLine
 		var newFrame = new CGRect()
 							
-		newFrame.size.width = this.width - (2 * this.parameters.sideBufferForLines)
+		newFrame.size.width = this.width - (2 * this.parameters.minimumSideBuffer)
+		if (newFrame.size.width > this.parameters.maxWidthOfLines) {
+			newFrame.size.width = this.parameters.maxWidthOfLines
+		}
+		
 		newFrame.size.height = this.parameters.heightOfLines
 
 		newFrame.origin.x = (this.width - newFrame.size.width)/2

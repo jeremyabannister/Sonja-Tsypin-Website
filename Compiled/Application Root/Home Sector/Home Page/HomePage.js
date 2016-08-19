@@ -26,7 +26,7 @@ var HomePage = function (_JABView) {
 		_this.arrowFaded = true;
 		_this.currentlyActive = true;
 
-		_this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [300, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]];
+		_this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [270, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]];
 
 		// UI
 		_this.blackBackground = new JABView('BlackBackground');

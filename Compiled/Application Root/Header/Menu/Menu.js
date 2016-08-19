@@ -13,14 +13,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Menu = function (_JABView) {
 	_inherits(Menu, _JABView);
 
-	function Menu(customId, buttonInfo) {
+	function Menu(customId, items) {
 		_classCallCheck(this, Menu);
 
 		// State
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Menu).call(this, customId));
 
-		_this.buttonInfo = buttonInfo;
+		_this.items = items;
 		_this.showUnderline = true;
 		_this.underlinePositionDuration = 0;
 		_this.selectedIndex = -1;
@@ -40,7 +40,7 @@ var Menu = function (_JABView) {
 
 		// UI
 		_this.buttons = [];
-		for (var i = 0; i < _this.buttonInfo.length; i++) {
+		for (var i = 0; i < _this.items.length; i++) {
 			_this.buttons.push(new UILabel());
 		}
 		_this.underline = new JABView('Underline');
@@ -108,11 +108,11 @@ var Menu = function (_JABView) {
 		key: 'configureButtons',
 		value: function configureButtons() {
 
-			for (var i = 0; i < this.buttonInfo.length; i++) {
+			for (var i = 0; i < this.buttons.length; i++) {
 
 				this.buttons[i].clickable = true;
 
-				this.buttons[i].text = this.buttonInfo[i][0];
+				this.buttons[i].text = this.items[i].displayTitle;
 
 				this.buttons[i].textColor = this.textColor;
 				this.buttons[i].fontSize = this.fontSize;
@@ -223,8 +223,8 @@ var Menu = function (_JABView) {
 
 			for (var i = 0; i < this.buttons.length; i++) {
 				if (this.buttons[i] == view) {
-					if (this.buttonInfo.length > i) {
-						this.parent.menuButtonWasPressed(i);
+					if (this.items.length > i) {
+						this.parent.menuItemWasSelected(this.items[i]);
 					}
 				}
 			}
