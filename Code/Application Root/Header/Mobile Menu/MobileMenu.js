@@ -12,8 +12,8 @@ class MobileMenu extends JABView {
 		
 		// Parameters
 		this.parameters = {
-			topBufferForItemViews: 100,
-			heightOfItemViews: 90,
+			topBufferForItemViews: 10,
+			heightOfItemViews: 40,
 		}
 		
 		// UI
@@ -103,6 +103,11 @@ class MobileMenu extends JABView {
 			
 								
 			view.frame = newFrame
+			
+			
+			if (i == this.itemViews.length - 1) {
+				this.requiredHeight = view.bottom + this.parameters.topBufferForItemViews
+			}
 		}
 	}
 	

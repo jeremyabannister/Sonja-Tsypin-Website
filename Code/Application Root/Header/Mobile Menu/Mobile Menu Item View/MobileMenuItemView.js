@@ -8,7 +8,7 @@ class MobileMenuItemView extends JABView {
 		
 		// Parameters
 		this.parameters = {
-			sideBufferForContent: 40,
+			sideBufferForContent: 27,
 		}
 		
 		// UI
@@ -76,11 +76,14 @@ class MobileMenuItemView extends JABView {
 		
 		view.text = this.menuItem.displayTitle
 		view.fontFamily = 'siteFont'
-		view.fontSize = 25
+		view.fontSize = 16
 		view.textColor = 'white'
 		view.letterSpacing = 3
+		view.lineHeight = this.height
+		view.lineHeightUnit = 'px'
 		
 		view.updateAllUI()
+		
 	}
 	
 	positionLabel () {
@@ -91,10 +94,10 @@ class MobileMenuItemView extends JABView {
 			var size = view.font.sizeOfString(view.text)
 								
 			newFrame.size.width = size.width
-			newFrame.size.height = size.height
+			newFrame.size.height = this.height
 
-			newFrame.origin.x = this.parameters.sideBufferForContent
-			newFrame.origin.y = (this.height - newFrame.size.height)/2
+			newFrame.origin.x = this.width - newFrame.size.width - this.parameters.sideBufferForContent
+			newFrame.origin.y = 0
 		}
 							
 		view.frame = newFrame
@@ -107,7 +110,7 @@ class MobileMenuItemView extends JABView {
 		var view = this.underline
 		
 		view.backgroundColor = '#888888'
-		view.opacity = 0.7
+		view.opacity = 0
 	}
 	
 	positionUnderline () {

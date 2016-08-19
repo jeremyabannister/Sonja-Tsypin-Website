@@ -225,7 +225,7 @@ class Header extends JABView {
 		newFrame.size.width = this.width * this.parameters.widthFractionOfMobileMenu
 		
 		if (this.state.mobileMenuOpen) {
-			newFrame.size.height = applicationRoot.height
+			newFrame.size.height = view.requiredHeight
 		} else {
 			newFrame.size.height = 0
 		}
@@ -267,7 +267,7 @@ class Header extends JABView {
 		newFrame.size.width = this.parameters.sizeOfMobileMenuButton
 		newFrame.size.height = newFrame.size.width
 
-		newFrame.origin.x = this.width - newFrame.size.width - this.parameters.sideBufferForMobileContent
+		newFrame.origin.x = this.parameters.sideBufferForMobileContent
 		newFrame.origin.y = this.logo.y + (this.logo.height - newFrame.size.height)/2
 							
 		view.frame = newFrame
