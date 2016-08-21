@@ -106,9 +106,26 @@ class HomePage extends JABView {
 	// Background Image Views
 	configureBackgroundImageViews () {
 		for (var i = 0; i < this.backgroundImageViews.length; i++) {
-			var view = this.backgroundImageViews[i]
+			var view = this.backgroundImageViews[i];
 			
 			view.src = './Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg'
+			
+			/*
+			(function(i, view) {
+				var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/" + (i + 1) + ".jpg")
+				
+				imageRef.getDownloadURL().then(function(url) {
+				  // Get the download URL for 'images/stars.jpg'
+				  // This can be inserted into an <img> tag
+				  // This can also be downloaded directly
+				  view.src = url
+				}).catch(function(error) {
+				  // Handle any errors
+				  console.log('error', error)
+				});
+			})(i, view)
+			*/
+			
 			
 			if (this.backgroundImageIndex != this.numberOfImages - 1) {
 				if (i > this.backgroundImageIndex) {
@@ -252,6 +269,13 @@ class HomePage extends JABView {
 	//
 	// Delegate
 	//
+	
+	
+	// JABImageView
+	imageViewDidFinishLoadingImage (imageView) {
+		// console.log(imageView)
+	}
+	
 	
 	// JABView
 	viewWasClicked (view) {

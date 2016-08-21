@@ -364,6 +364,12 @@ class ProjectPage extends JABView {
 		view.positionDuration = 0
 		view.parameters.widthAddition = this.parameters.widthAdditionForNavigationButtons
 		
+		if (this.vimeoViews[this.state.projectGroupIndex].length == 1) {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
+		
 		view.updateAllUI()
 	}
 	

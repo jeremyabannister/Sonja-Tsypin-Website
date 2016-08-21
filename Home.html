@@ -10,8 +10,26 @@
 		
 		
 		<style id="css-animations"></style>
-
-
+		
+		
+		
+		
+		<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+		<script>
+		  // Initialize Firebase
+		  var config = {
+		    apiKey: "AIzaSyB5_0x69VVxsGG1SwvYea2GCoqqc0M8thY",
+		    authDomain: "sonjatsypin-b7a3e.firebaseapp.com",
+		    databaseURL: "https://sonjatsypin-b7a3e.firebaseio.com",
+		    storageBucket: "gs://sonjatsypin-b7a3e.appspot.com",
+		  };
+		  firebase.initializeApp(config);
+		  
+		  
+		  var storageRef = firebase.storage().ref()
+		</script>
+		
+		
 
 		<!-- jQuery -->
 		<script type='text/javascript' src='./Plugins/jQuery/jquery.min.js'></script>

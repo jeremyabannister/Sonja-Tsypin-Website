@@ -12,6 +12,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		}
 		
 		this.projectDataBundles = this.assembleProjectDataBundles()
+		this.images = {}
 		
 		this.websiteClosed = true
 		this.websiteClosedLocked = false
@@ -41,8 +42,8 @@ class ApplicationRoot extends JABApplicationRoot {
 	init () {
 		super.init()
 		
+		this.getCoreImages()
 	}
-
 	
 	
 	//
@@ -620,6 +621,46 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		return dataBundles
 	}
+	
+	
+	
+	getCoreImages () {
+		var coreImages = ["Resources/Images/Home Page/Featured Stills/1.jpg", "Resources/Images/Home Page/Featured Stills/2.jpg", "Resources/Images/Home Page/Featured Stills/3.jpg"]
+		
+		this.opacity = 0
+		this.counter = 0
+		this.images['Home Page'] = {}
+		this.images['Home Page']['Featured Stills'] = {}
+		
+		for (var i = 0; i < 10; i++) {
+			
+			var image = new Image();
+			
+			(function (i, image) {
+				var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/" + (i + 1) + ".jpg")
+				
+				imageRef.getDownloadURL().then(function(url) {
+				  // Get the download URL for 'images/stars.jpg'
+				  // This can be inserted into an <img> tag
+				  // This can also be downloaded directly
+				  image.src = url
+				  applicationRoot.counter += 1
+				  
+				  if (applicationRoot.counter == 10) {
+				  	console.log('got them all!')
+				  	applicationRoot.opacity = 1
+				  }
+				}).catch(function(error) {
+				  // Handle any errors
+				  console.log('error', error)
+				});
+			})(i, image)
+			
+			this.images['Home Page']['Featured Stills'][(i + 1) + '.jpg'] = image
+		}
+	}
+	
+	
 	
 	
 	//

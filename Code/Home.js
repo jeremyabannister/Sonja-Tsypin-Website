@@ -18,19 +18,12 @@ $(document).ready(function() {
 $(window).load(function() {
 
    applicationRoot = new ApplicationRoot('ApplicationRoot')
+   $('body').append(applicationRoot.view)
+   applicationRoot.init()
    applicationRoot.addAllUI()
    configureApplicationRoot()
    positionApplicationRoot()
    
-   /*
-   $(applicationRoot.selector).append("<div id='hello'></div>")
-   $('#hello').css({
-    'background-color': 'red',
-    'width': '400',
-    'height': '300',
-    'position': 'fixed'
-   })
-   */
 })
 
 $(window).resize(function() {
