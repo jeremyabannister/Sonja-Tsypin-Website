@@ -9,6 +9,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		this.contentWidth = {'xxs': 0, 'xs': 0, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450}
 		this.state = {
 			headerBackdropHidden: false,
+			initiallyLoading: true,
 		}
 		
 		this.projectDataBundles = this.assembleProjectDataBundles()
@@ -19,6 +20,9 @@ class ApplicationRoot extends JABApplicationRoot {
 
 		// Parameters
 		this.parameters = {
+			sizeOfInitialLoadingGifWrapper: 50,
+			
+			
 			heightOfHeader: 110,
 			
 			numberOfHomePageImages: 10,
@@ -29,6 +33,8 @@ class ApplicationRoot extends JABApplicationRoot {
 		} else {
 			
 			// UI
+			this.initialLoadingGifWrapper = new JABGifWrapper('InitialLoadingGifWrapper')
+			
 			this.mainSector = new MainSector('MainSector', this.projectDataBundles)
 			this.headerBackdrop = new JABView('HeaderBackdrop')
 			this.homeSector = new HomeSector('HomeSector')
@@ -77,6 +83,8 @@ class ApplicationRoot extends JABApplicationRoot {
 			this.addLaboratory()
 		} else {
 			
+			this.addInitialLoadingGifWrapper()
+			
 			this.addMainSector()
 			this.addHeaderBackdrop()
 			this.addHomeSector()
@@ -84,6 +92,12 @@ class ApplicationRoot extends JABApplicationRoot {
 		}
 		
 	}
+	
+	
+	addInitialLoadingGifWrapper () {
+		this.addSubview(this.initialLoadingGifWrapper)
+	}
+	
 	
 	
 	addMainSector () {
@@ -127,6 +141,11 @@ class ApplicationRoot extends JABApplicationRoot {
 			
 			
 			
+			this.configureInitialLoadingGifWrapper()
+			this.positionInitialLoadingGifWrapper()
+			
+			
+			
 			this.configureMainSector()
 			this.positionMainSector()
 			
@@ -142,7 +161,43 @@ class ApplicationRoot extends JABApplicationRoot {
 		}
 
 	}
+	
+	
+	
+	// Initial Loading Gif Wrapper
+	configureInitialLoadingGifWrapper () {
+		
+		var view = this.initialLoadingGifWrapper
+		
+		if (this.state.initiallyLoading) {
+			if (!(view.gif instanceof LoadingGif)) {
+				view.gif = new LoadingGif()
+			}
+			
+			if (!view.state.playing) {
+				view.play()
+			}
+		}
+		
+	}
+	
+	positionInitialLoadingGifWrapper () {
+		var view = this.initialLoadingGifWrapper
+		var newFrame = new CGRect()
+							
+		newFrame.size.width = this.parameters.sizeOfInitialLoadingGifWrapper
+		newFrame.size.height = newFrame.size.width
 
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = (this.height - newFrame.size.height)/2
+							
+		view.frame = newFrame
+	}
+	
+	
+	
+	
+	
 
 
 
@@ -160,6 +215,12 @@ class ApplicationRoot extends JABApplicationRoot {
 		view.state.currentlyActive = !this.websiteClosed
 		view.positionDuration = 0
 		
+		if (this.state.initiallyLoading) {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
+		
 		view.updateAllUI()
 	}
 
@@ -175,7 +236,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		var view = this.headerBackdrop
 		view.backgroundColor = 'black'
 		
-		if (this.state.headerBackdropHidden) {
+		if (this.state.headerBackdropHidden || this.state.initiallyLoading) {
 			view.opacity = 0
 		} else {
 			view.opacity = 1
@@ -203,17 +264,29 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	// Home Sector
 	configureHomeSector () {
-		this.homeSector.backgroundColor = 'black'
+		
+		var view = this.homeSector
+		
+		view.backgroundColor = 'black'
 		
 		if (websiteIsResizing) {
-			this.homeSector.positionDuration = 0
+			view.positionDuration = 0
 		} else {
-			this.homeSector.positionDuration = 800
+			view.positionDuration = 800
 		}
 		
-		this.homeSector.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
-		this.homeSector.currentlyActive = this.websiteClosed
-		this.homeSector.updateAllUI()
+		view.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)'
+		view.currentlyActive = this.websiteClosed
+		
+		
+		if (this.state.initiallyLoading) {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
+		
+		
+		view.updateAllUI()
 	}
 	
 	positionHomeSector () {
@@ -230,12 +303,20 @@ class ApplicationRoot extends JABApplicationRoot {
 	// Header
 	configureHeader () {
 		
-		this.header.websiteClosed = this.websiteClosed
-		this.header.selectedMenuIndex = this.mainSector.state.pageIndex
-		this.header.configureDuration = 0
-		this.header.clickable = true
+		var view = this.header
 		
-		this.header.updateAllUI()
+		view.websiteClosed = this.websiteClosed
+		view.selectedMenuIndex = this.mainSector.state.pageIndex
+		view.configureDuration = 0
+		view.clickable = true
+		
+		if (this.state.initiallyLoading) {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
+		
+		view.updateAllUI()
 		
 	}
 
@@ -462,7 +543,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '167824606'
 		dataBundle.vimeoHeightToWidth = (1.0/2.35)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -471,37 +552,6 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 
 		dataBundles.push(dataBundle)
-		
-		
-		
-		
-		
-		
-		
-		
-		// Birth Day
-		dataBundle = new ProjectDataBundle()
-		dataBundle.id = 'birthDay'
-		dataBundle.title = 'BIRTH DAY'
-		dataBundle.director = 'EVA EVANS'
-		dataBundle.movieType = 'SHORT'
-		dataBundle.year = '2016'
-		dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory."
-		
-		dataBundle.vimeoId = '172178428'
-		dataBundle.vimeoHeightToWidth = (9.0/16.0)
-		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
-		for (var i = 0; i < 2; i++) {
-			var index = i + 1
-			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
-		}
-		dataBundle.mainStillIndex = 0
-		
-
-		dataBundles.push(dataBundle)
-		
-		
 		
 		
 		
@@ -519,7 +569,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.noVideoMessage = 'TRAILER COMING SOON'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -531,11 +581,37 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 		
 		
+		
+		// Birth Day
+		dataBundle = new ProjectDataBundle()
+		dataBundle.id = 'birthDay'
+		dataBundle.title = 'BIRTH DAY'
+		dataBundle.director = 'EVA EVANS'
+		dataBundle.movieType = 'SHORT'
+		dataBundle.year = '2016'
+		dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory."
+		
+		dataBundle.vimeoId = '172178428'
+		dataBundle.vimeoHeightToWidth = (9.0/16.0)
+		
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/3/'
+		for (var i = 0; i < 2; i++) {
+			var index = i + 1
+			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
+		}
+		dataBundle.mainStillIndex = 0
+		
+
+		dataBundles.push(dataBundle)
+		
+		
+		
+		
 		// Theodore
 		dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'theodore'
 		dataBundle.title = 'THEODORE'
-		dataBundle.director = 'ONDINE VI\u00d1AO'
+		dataBundle.director = 'ONDINE VI' + upperCaseEnya + 'AO'
 		dataBundle.movieType = 'SHORT'
 		dataBundle.year = '2015'
 		dataBundle.description = "<span style='color:white'>Starring Camillia Hartman, Dexter Zimet</span><br/>A romantic rural retreat takes a terrifying turn after a local offers some chilling advice."
@@ -543,7 +619,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '139578681'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/4/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/4/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -568,7 +644,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '99426346'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/5/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/5/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -587,7 +663,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle = new ProjectDataBundle()
 		dataBundle.id = 'asLongAsIHaveYou'
 		dataBundle.title = 'AS LONG AS I HAVE YOU'
-		dataBundle.director = 'ONDINE VI\u00d1AO'
+		dataBundle.director = 'ONDINE VI' + upperCaseEnya + 'AO'
 		dataBundle.movieType = 'MUSIC VIDEO'
 		dataBundle.year = '2016'
 		dataBundle.description = "<span style='color:white'>Starring Annalisa Plumb</span><br/>An experimental video to the track 'As Long As I Have You' by Elvis Presley."
@@ -595,7 +671,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '152982438'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -627,7 +703,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '126022343'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -648,52 +724,43 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	getCoreImages () {
 		
-		var imageQueue = []
+		var numberOfHomePageImagesLoadedAtFirst = 2
 		
-		var homePageImageStem = './Resources/Images/Home Page/Featured Stills/'
+		var homePageImageStem = '/Resources/Images/Home Page/Featured Stills/'
+		var buttonImageStem = '/Resources/Images/Buttons/'
+		var projectsPageImageStem = '/Resources/Images/Projects Page/Project Data Bundles/'
 		
-		for (var i = 0; i < this.parameters.numberOfHomePageImages; i++) {
-			var imageObject = new Image()
-			imageObject.src = homePageImageStem  + (i + 1) + '.jpg'
+		var projectsPageIndexCombinations = [[1, 3], [2, 4], [3, 1], [4, 1], [5, 1], [6, 1]]
+		
+		// Home Page (first batch)
+		for (var i = 0; i < numberOfHomePageImagesLoadedAtFirst; i++) {
+			imageBank.addToQueue(homePageImageStem + (i + 1) + '.jpg')
+		}
+		imageBank.addToQueue(buttonImageStem + 'Enter Arrow.png')
+		
+		// Reel Page
+		imageBank.addToQueue('/Resources/Images/Reel Page/Reel Cover Photo.png')
+		imageBank.addToQueue(buttonImageStem + 'Play Button.png', this)
+		
+		// Footer
+		imageBank.addToQueue(buttonImageStem + 'Instagram Button.png')
+		imageBank.addToQueue(buttonImageStem + 'Art Button.png')
+		imageBank.addToQueue(buttonImageStem + 'Email Button.png', this)
+		
+		// Projects Page
+		for (var i = 0; i < projectsPageIndexCombinations.length; i++) {
+			imageBank.addToQueue(projectsPageImageStem + projectsPageIndexCombinations[i][0] + '/still' + projectsPageIndexCombinations[i][1] + '.jpg')
 		}
 		
 		
-		var coreImages = ["Resources/Images/Home Page/Featured Stills/1.jpg", "Resources/Images/Home Page/Featured Stills/2.jpg", "Resources/Images/Home Page/Featured Stills/3.jpg"]
 		
-		this.opacity = 0
-		this.counter = 0
-		this.images['Home Page'] = {}
-		this.images['Home Page']['Featured Stills'] = {}
-		
-		for (var i = 0; i < 10; i++) {
-			
-			var image = new Image();
-			
-			(function (i, image) {
-				var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/" + (i + 1) + ".jpg")
-				
-				console.log('starting getting')
-				imageRef.getDownloadURL().then(function(url) {
-				  // Get the download URL for 'images/stars.jpg'
-				  // This can be inserted into an <img> tag
-				  // This can also be downloaded directly
-				  console.log('finished getting')
-				  image.src = url
-				  applicationRoot.counter += 1
-				  
-				  if (applicationRoot.counter == 10) {
-				  	console.log('got them all!')
-				  	applicationRoot.opacity = 1
-				  }
-				}).catch(function(error) {
-				  // Handle any errors
-				  console.log('error', error)
-				});
-			})(i, image)
-			
-			this.images['Home Page']['Featured Stills'][(i + 1) + '.jpg'] = image
+		// Home Page (second batch)
+		for (var i = 0; i < this.parameters.numberOfHomePageImages - numberOfHomePageImagesLoadedAtFirst; i++) {
+			imageBank.addToQueue(homePageImageStem + (numberOfHomePageImagesLoadedAtFirst + i) + '.jpg', this)
 		}
+		
 	}
+	
 	
 	
 	
@@ -701,6 +768,19 @@ class ApplicationRoot extends JABApplicationRoot {
 	//
 	// Delegate
 	//
+	
+	
+	// Image Bank
+	imageDidFinishLoading (src) {
+		if (src == '/Resources/Images/Buttons/Play Button.png') {
+			this.state.initiallyLoading = false
+			this.updateAllUI()
+		} else if (src.lastIndexOf('/Resources/Images/Buttons/', 0) != -1) {
+			this.updateAllUI()
+		} else if (src.lastIndexOf('/Resources/Images/Home Page/Featured Stills/', 0) != -1) {
+			this.homeSector.updateAllUI()
+		}
+	}
 	
 	
 	// JABView

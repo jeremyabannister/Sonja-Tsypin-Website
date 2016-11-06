@@ -53,6 +53,9 @@ function isPropertySupported(property) {
 	return property in document.body.style;
 }
 
+// Image Bank
+var imageBank = new JABImageBank();
+
 // Animation
 var defaultAnimationDuration = 400;
 

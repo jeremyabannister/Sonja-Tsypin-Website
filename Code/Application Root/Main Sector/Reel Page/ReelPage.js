@@ -111,10 +111,11 @@ class ReelPage extends JABView {
 		
 		view.blur = 0
 		
-		view.coverImage = new UIImage("./Resources/Images/Reel Page/Reel Cover Photo.png")
-		view.playButtonImage = new UIImage("./Resources/Images/Buttons/Play Button.png")
+		view.coverImage = new UIImage("/Resources/Images/Reel Page/Reel Cover Photo.png")
+		view.playButtonImage = new UIImage("/Resources/Images/Buttons/Play Button.png")
 		view.labelText = "REEL"
 		
+		view.updateAllUI()
 	}
 	
 	positionVimeoView () {
@@ -136,8 +137,9 @@ class ReelPage extends JABView {
 	
 	// Footer
 	configureFooter () {
+		var view = this.footer
 		
-		
+		view.updateAllUI()
 	}
 	
 	positionFooter () {
@@ -211,7 +213,6 @@ class ReelPage extends JABView {
 	
 	// Keys
 	spaceBarWasPressed () {
-		console.log('pressed')
 		var reelPage = this
 		this.vimeoView.paused.then(function(paused) {
 			if (paused) {
@@ -226,6 +227,11 @@ class ReelPage extends JABView {
 	// Delegate
 	//
 	
+	// Image View
+	imageViewDidFinishLoadingImage (imageView) {
+		
+	}
+	
 	// JABVimeoView
 	vimeoViewDidFinishLoading (vimeoView) {
 		
@@ -235,5 +241,6 @@ class ReelPage extends JABView {
 	footerMailButtonWasClicked (footer) {
 		this.parent.reelPageWantsToOpenMailForm(this)
 	}
+	
 	
 }

@@ -35,7 +35,7 @@ var Footer = function (_JABView) {
 		_this.rightBufferForRightButton = _this.leftBufferForCopyrightLabel;
 		_this.betweenBufferForButtons = 10;
 
-		_this.buttonImages = ['./Resources/Images/Buttons/Instagram Button.png', './Resources/Images/Buttons/Art Button.png', './Resources/Images/Buttons/Email Button.png'];
+		_this.buttonImages = ['/Resources/Images/Buttons/Instagram Button.png', '/Resources/Images/Buttons/Art Button.png', '/Resources/Images/Buttons/Email Button.png'];
 
 		// UI
 		_this.copyrightLabel = new UILabel('CopyrightLabel');
@@ -107,7 +107,7 @@ var Footer = function (_JABView) {
 
 			var view = this.copyrightLabel;
 
-			view.text = 'SONJA TSYPIN \u00a9 2016';
+			view.text = 'SONJA TSYPIN ' + trademarkC + ' 2016';
 			view.textColor = 'white';
 			view.fontFamily = 'siteFont';
 			view.fontWeight = 'bold';
@@ -142,7 +142,10 @@ var Footer = function (_JABView) {
 				var view = this.buttons[i];
 
 				view.clickable = true;
-				view.src = this.buttonImages[i];
+				var imagePath = this.buttonImages[i];
+				if (imageBank.imageStatus[imagePath] == true) {
+					view.src = imagePath;
+				}
 				view.cursor = 'pointer';
 			}
 		}
@@ -182,6 +185,12 @@ var Footer = function (_JABView) {
 		//
 		// Delegate
 		//
+
+		// Image View
+
+	}, {
+		key: 'imageViewDidFinishLoadingImage',
+		value: function imageViewDidFinishLoadingImage(imageView) {}
 
 		// JABView
 

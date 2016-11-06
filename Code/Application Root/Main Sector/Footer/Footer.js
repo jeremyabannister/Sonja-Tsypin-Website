@@ -19,7 +19,7 @@ class Footer extends JABView {
 		this.rightBufferForRightButton = this.leftBufferForCopyrightLabel
 		this.betweenBufferForButtons = 10
 		
-		this.buttonImages = ['./Resources/Images/Buttons/Instagram Button.png', './Resources/Images/Buttons/Art Button.png', './Resources/Images/Buttons/Email Button.png']
+		this.buttonImages = ['/Resources/Images/Buttons/Instagram Button.png', '/Resources/Images/Buttons/Art Button.png', '/Resources/Images/Buttons/Email Button.png']
 		
 		// UI
 		this.copyrightLabel = new UILabel('CopyrightLabel')
@@ -91,7 +91,7 @@ class Footer extends JABView {
 		
 		var view = this.copyrightLabel
 		
-	    view.text = "SONJA TSYPIN \u00a9 2016"
+	    view.text = 'SONJA TSYPIN ' + trademarkC + ' 2016'
 	    view.textColor = 'white'
 		view.fontFamily = 'siteFont'
 		view.fontWeight = 'bold'
@@ -128,7 +128,10 @@ class Footer extends JABView {
 			var view = this.buttons[i]
 			
 			view.clickable = true
-			view.src = this.buttonImages[i]
+			var imagePath = this.buttonImages[i]
+			if (imageBank.imageStatus[imagePath] == true) {
+				view.src = imagePath
+			}
 			view.cursor = 'pointer'
 		}
 		
@@ -173,6 +176,11 @@ class Footer extends JABView {
 	// Delegate
 	//
 	
+	
+	// Image View
+	imageViewDidFinishLoadingImage (imageView) {
+		
+	}
 	
 	// JABView
 	viewWasClicked (view) {
