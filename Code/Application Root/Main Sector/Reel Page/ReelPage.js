@@ -98,7 +98,7 @@ class ReelPage extends JABView {
 	
 	configureVimeoView () {
 		
-		var vimeoId = '153864846'
+		var vimeoId = '179671795'
 		var view = this.vimeoView
 		
 		if (!(view.loadingGif instanceof LoadingGif)) {
@@ -111,8 +111,8 @@ class ReelPage extends JABView {
 		
 		view.blur = 0
 		
-		view.coverImage = new UIImage("./Resources/Images/Reel Page/Reel Cover Photo.png")
-		view.playButtonImage = new UIImage("./Resources/Images/Buttons/Play Button.png")
+		view.coverImage = new UIImage("/Resources/Images/Reel Page/Reel Cover Photo.png")
+		view.playButtonImage = new UIImage("/Resources/Images/Buttons/Play Button.png")
 		view.labelText = "REEL"
 		
 	}
@@ -206,6 +206,20 @@ class ReelPage extends JABView {
 		if (this.vimeoView != null) {
 			this.vimeoView.pause()
 		}
+	}
+	
+	
+	// Keys
+	spaceBarWasPressed () {
+		console.log('pressed')
+		var reelPage = this
+		this.vimeoView.paused.then(function(paused) {
+			if (paused) {
+				reelPage.playReel()
+			} else {
+				reelPage.pauseReel()
+			}
+		})
 	}
 	
 	//

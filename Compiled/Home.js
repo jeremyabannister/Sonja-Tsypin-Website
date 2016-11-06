@@ -18,18 +18,10 @@ $(document).ready(function () {
 $(window).load(function () {
 
   applicationRoot = new ApplicationRoot('ApplicationRoot');
-  applicationRoot.addAllUI();
+  $('body').append(applicationRoot.view);
+  applicationRoot.init();
+  configureApplicationRoot();
   positionApplicationRoot();
-
-  /*
-  $(applicationRoot.selector).append("<div id='hello'></div>")
-  $('#hello').css({
-   'background-color': 'red',
-   'width': '400',
-   'height': '300',
-   'position': 'fixed'
-  })
-  */
 });
 
 $(window).resize(function () {
@@ -41,20 +33,29 @@ $(window).resize(function () {
 
 $(document).keydown(function (event) {
   var keyCode = event.keyCode || event.which;
-  if (keyCode == 37) {
+  if (keyCode == 32) {
+    event.preventDefault();
+    applicationRoot.spaceBarWasPressed();
+  } else if (keyCode == 37) {
     event.preventDefault();
     applicationRoot.leftArrowWasPressed();
+    // applicationRoot.leftSwipeDetected()
   } else if (keyCode == 38) {
     event.preventDefault();
     applicationRoot.upArrowWasPressed();
   } else if (keyCode == 39) {
     event.preventDefault();
     applicationRoot.rightArrowWasPressed();
+    // applicationRoot.rightSwipeDetected()
   } else if (keyCode == 40) {
     event.preventDefault();
     applicationRoot.downArrowWasPressed();
   }
 });
+
+function configureApplicationRoot() {
+  applicationRoot.overflow = 'hidden';
+}
 
 function positionApplicationRoot() {
   applicationRoot.frame = new CGRect(0, 0, $('body').width(), $('body').height());
@@ -82,3 +83,52 @@ $(document).bind('mousewheel', function (evt) {
   var delta = evt.originalEvent.wheelDelta;
   applicationRoot.userDidScrollByAmount(delta);
 });
+
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchmove', handleTouchMove, false);
+
+var xDown = null;
+var yDown = null;
+
+function handleTouchStart(evt) {
+  xDown = evt.touches[0].clientX;
+  yDown = evt.touches[0].clientY;
+};
+
+function handleTouchMove(evt) {
+  if (!xDown || !yDown) {
+    return;
+  }
+
+  var xUp = evt.touches[0].clientX;
+  var yUp = evt.touches[0].clientY;
+
+  var xDiff = xDown - xUp;
+  var yDiff = yDown - yUp;
+
+  if (Math.abs(xDiff) > Math.abs(yDiff)) {
+    /*most significant*/
+    if (xDiff > 0) {
+      /* left swipe */
+      // evt.preventDefault()
+      applicationRoot.leftSwipeDetected();
+    } else {
+      /* right swipe */
+      // evt.preventDefault()
+      applicationRoot.rightSwipeDetected();
+    }
+  } else {
+    if (yDiff > 0) {
+      /* up swipe */
+      // evt.preventDefault()
+      applicationRoot.upSwipeDetected();
+    } else {
+      /* down swipe */
+      // evt.preventDefault()
+      applicationRoot.downSwipeDetected();
+    }
+  }
+  /* reset values */
+  xDown = null;
+  yDown = null;
+};

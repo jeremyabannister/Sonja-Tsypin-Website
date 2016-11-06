@@ -15,6 +15,13 @@ class JABImageView extends JABView {
 	
 	addAllUI () {
 		$(this.selector).append(this.imageView)
+		
+		var imageView = this
+		$(this.selector + ' > img').on('load', function() {
+			if (imageView.parent != null) {
+				imageView.parent.imageViewDidFinishLoadingImage(this)
+			}
+		})
 	}
 	
 	updateAllUI () {

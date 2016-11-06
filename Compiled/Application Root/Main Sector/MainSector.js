@@ -204,7 +204,13 @@ var MainSector = function (_JABView) {
 
 			view.backgroundColor = 'black';
 			view.overflowX = 'hidden';
-			view.overflowY = 'scroll';
+
+			if (this.state.projectOpen) {
+				view.overflowY = 'hidden';
+			} else {
+				view.overflowY = 'scroll';
+			}
+
 			view.parameters = {
 				reservedTopBuffer: this.parameters.reservedTopBuffer,
 				heightOfHeader: this.parameters.heightOfHeader
@@ -457,8 +463,45 @@ var MainSector = function (_JABView) {
 			});
 		}
 
+		// Swipe
+
+	}, {
+		key: 'leftSwipeDetected',
+		value: function leftSwipeDetected() {
+			if (this.state.projectOpen) {
+				this.projectPage.leftSwipeDetected();
+			}
+		}
+	}, {
+		key: 'rightSwipeDetected',
+		value: function rightSwipeDetected() {
+			if (this.state.projectOpen) {
+				this.projectPage.rightSwipeDetected();
+			}
+		}
+
 		// Keys
 
+	}, {
+		key: 'spaceBarWasPressed',
+		value: function spaceBarWasPressed() {
+			if (this.state.projectOpen) {
+				var mainSector = this;
+				this.projectPage.paused.then(function (paused) {
+					if (paused) {
+						mainSector.projectPage.play();
+					} else {
+						mainSector.projectPage.pause();
+					}
+				});
+			} else {
+				if (this.state.pageIndex == 0) {
+					this.reelPage.spaceBarWasPressed();
+				} else if (this.state.pageIndex == 1) {
+					this.projectsPage.spaceBarWasPressed();
+				}
+			}
+		}
 	}, {
 		key: 'leftArrowWasPressed',
 		value: function leftArrowWasPressed() {

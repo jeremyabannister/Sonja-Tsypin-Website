@@ -140,8 +140,10 @@ var VideoNavigationButtons = function (_JABView) {
 
 			if (this.state.prevEnabled) {
 				view.textColor = 'white';
+				view.cursor = 'pointer';
 			} else {
 				view.textColor = this.parameters.fadedTextColor;
+				view.cursor = 'default';
 			}
 
 			view.textAlign = 'right';
@@ -150,7 +152,6 @@ var VideoNavigationButtons = function (_JABView) {
 			view.lineHeightUnit = 'px';
 
 			view.clickable = true;
-			view.cursor = 'pointer';
 		}
 	}, {
 		key: 'positionPrevButton',
@@ -182,8 +183,10 @@ var VideoNavigationButtons = function (_JABView) {
 
 			if (this.state.nextEnabled) {
 				view.textColor = 'white';
+				view.cursor = 'pointer';
 			} else {
 				view.textColor = this.parameters.fadedTextColor;
+				view.cursor = 'default';
 			}
 
 			view.textAlign = 'left';
@@ -192,7 +195,6 @@ var VideoNavigationButtons = function (_JABView) {
 			view.lineHeightUnit = 'px';
 
 			view.clickable = true;
-			view.cursor = 'pointer';
 		}
 	}, {
 		key: 'positionNextButton',

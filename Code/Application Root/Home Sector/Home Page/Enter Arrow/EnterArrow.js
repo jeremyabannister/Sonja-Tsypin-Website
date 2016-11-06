@@ -182,7 +182,7 @@ class EnterArrow extends JABView {
 	
 	// Image View
 	configureImageView () {
-		this.imageView.src = './Resources/Images/Buttons/Enter Arrow.png'
+		this.imageView.src = '/Resources/Images/Buttons/Enter Arrow.png'
 		
 		
 		if (this.updatingForFade) {
@@ -282,7 +282,6 @@ class EnterArrow extends JABView {
 			}, this.bounceInitialTimeBuffer)
 		}
 		
-		
 		if (this.fadePaused) {
 			var pauseTime = this.fadedInPause
 			if (this.fadedOut) {
@@ -300,6 +299,7 @@ class EnterArrow extends JABView {
 				enterArrow.advanceTextOpacityPulse()
 			}, function() {})
 		}
+		
 	}
 	
 	

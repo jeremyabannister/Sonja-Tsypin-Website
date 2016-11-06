@@ -356,6 +356,12 @@ var ProjectPage = function (_JABView) {
 			view.positionDuration = 0;
 			view.parameters.widthAddition = this.parameters.widthAdditionForNavigationButtons;
 
+			if (this.vimeoViews[this.state.projectGroupIndex].length == 1) {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+
 			view.updateAllUI();
 		}
 	}, {
@@ -391,6 +397,7 @@ var ProjectPage = function (_JABView) {
 	}, {
 		key: 'goToPreviousProject',
 		value: function goToPreviousProject() {
+			this.pause();
 			if (this.state.projectIndex != 0) {
 				this.state.projectIndex -= 1;
 				if (this.state.projectIndex == 2) {
@@ -406,6 +413,7 @@ var ProjectPage = function (_JABView) {
 	}, {
 		key: 'goToNextProject',
 		value: function goToNextProject() {
+			this.pause();
 			if (this.state.projectIndex != this.projectGroups[this.state.projectGroupIndex].length - 1) {
 				this.state.projectIndex += 1;
 				if (this.state.projectIndex == 2) {
@@ -450,6 +458,19 @@ var ProjectPage = function (_JABView) {
 		key: 'pause',
 		value: function pause() {
 			this.currentVimeoView.pause();
+		}
+
+		// Swipe
+
+	}, {
+		key: 'leftSwipeDetected',
+		value: function leftSwipeDetected() {
+			this.goToNextProject();
+		}
+	}, {
+		key: 'rightSwipeDetected',
+		value: function rightSwipeDetected() {
+			this.goToPreviousProject();
 		}
 
 		// Keys
@@ -503,6 +524,11 @@ var ProjectPage = function (_JABView) {
 		key: 'currentTitleLabel',
 		get: function get() {
 			return this.titleLabels[this.state.projectGroupIndex][this.state.projectIndex];
+		}
+	}, {
+		key: 'paused',
+		get: function get() {
+			return this.currentVimeoView.paused;
 		}
 	}]);
 

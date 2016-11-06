@@ -12,8 +12,10 @@ class HomePage extends JABView {
 		this.currentlyActive = true
 		
 		
-		this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [300, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]]
+		this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [240, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]]
 		
+		this.imageTimer = null
+		this.arrowTimer = null
 		
 		// UI
 		this.blackBackground = new JABView('BlackBackground')
@@ -50,7 +52,6 @@ class HomePage extends JABView {
 		this.addBlackBackground()
 		this.addBackgroundImageViews()
 		this.addEnterArrow()
-		
 	}
 	
 	
@@ -106,9 +107,26 @@ class HomePage extends JABView {
 	// Background Image Views
 	configureBackgroundImageViews () {
 		for (var i = 0; i < this.backgroundImageViews.length; i++) {
-			var view = this.backgroundImageViews[i]
+			var view = this.backgroundImageViews[i];
 			
-			view.src = './Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg'
+			view.src = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg'
+			
+			/*
+			(function(i, view) {
+				var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/" + (i + 1) + ".jpg")
+				
+				imageRef.getDownloadURL().then(function(url) {
+				  // Get the download URL for 'images/stars.jpg'
+				  // This can be inserted into an <img> tag
+				  // This can also be downloaded directly
+				  view.src = url
+				}).catch(function(error) {
+				  // Handle any errors
+				  console.log('error', error)
+				});
+			})(i, view)
+			*/
+			
 			
 			if (this.backgroundImageIndex != this.numberOfImages - 1) {
 				if (i > this.backgroundImageIndex) {
@@ -212,8 +230,9 @@ class HomePage extends JABView {
 	startTimeoutForNextImage () {
 		
 		var homePage = this
-
-		setTimeout(function() {
+		
+		clearTimeout(this.imageTimer)
+		this.imageTimer = setTimeout(function() {
 
 			homePage.backgroundImageIndex += 1
 			if (homePage.backgroundImageIndex > homePage.numberOfImages - 1) {
@@ -234,9 +253,8 @@ class HomePage extends JABView {
 
 
 	startTimeoutForArrowFade () {
-
 		var homePage = this
-
+		
 		setTimeout(function () {
 
 			// homePage.enterArrow.animationDuration = 1000
@@ -252,6 +270,13 @@ class HomePage extends JABView {
 	//
 	// Delegate
 	//
+	
+	
+	// JABImageView
+	imageViewDidFinishLoadingImage (imageView) {
+		// console.log(imageView)
+	}
+	
 	
 	// JABView
 	viewWasClicked (view) {

@@ -91,6 +91,10 @@ class ProjectPage extends JABView {
 	}
 	
 	
+	get paused () {
+		return this.currentVimeoView.paused
+	}
+	
 	
 	//
 	// UI
@@ -360,6 +364,12 @@ class ProjectPage extends JABView {
 		view.positionDuration = 0
 		view.parameters.widthAddition = this.parameters.widthAdditionForNavigationButtons
 		
+		if (this.vimeoViews[this.state.projectGroupIndex].length == 1) {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
+		
 		view.updateAllUI()
 	}
 	
@@ -396,6 +406,7 @@ class ProjectPage extends JABView {
 	
 	// Navigation
 	goToPreviousProject () {
+		this.pause()
 		if (this.state.projectIndex != 0) {
 			this.state.projectIndex -= 1
 			if (this.state.projectIndex == 2) {
@@ -410,6 +421,7 @@ class ProjectPage extends JABView {
 	}
 	
 	goToNextProject () {
+		this.pause()
 		if (this.state.projectIndex != this.projectGroups[this.state.projectGroupIndex].length - 1) {
 			this.state.projectIndex += 1
 			if (this.state.projectIndex == 2) {
@@ -449,6 +461,16 @@ class ProjectPage extends JABView {
 		this.currentVimeoView.pause()
 	}
 	
+	
+	
+	// Swipe
+	leftSwipeDetected () {
+		this.goToNextProject()
+	}
+	
+	rightSwipeDetected () {
+		this.goToPreviousProject()
+	}
 	
 	
 	// Keys
