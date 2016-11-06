@@ -460,7 +460,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '167824606'
 		dataBundle.vimeoHeightToWidth = (1.0/2.35)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -489,7 +489,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '172178428'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/3/'
 		for (var i = 0; i < 2; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -517,7 +517,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.noVideoMessage = 'TRAILER COMING SOON'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -541,7 +541,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '139578681'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/4/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/4/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -566,7 +566,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '99426346'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/5/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/5/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -593,7 +593,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '152982438'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -625,7 +625,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '126022343'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
