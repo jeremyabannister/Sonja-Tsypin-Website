@@ -66,7 +66,6 @@ class ProjectsPage extends JABView {
 		this.marginClickDetectors = [new JABView('MarginClickDetectorLeft'), new JABView('MarginClickDetectorRight'), new JABView('MarginClickDetectorTop')]
 		
 		
-		
 	}
 	
 	
@@ -165,7 +164,7 @@ class ProjectsPage extends JABView {
 		if (sizeClass == 'xxs' || sizeClass == 'xs') {
 			this.parameters.numberOfColumns = 1
 		} else if (sizeClass == 'xl') {
-			this.parameters.numberOfColumns = 3
+			this.parameters.numberOfColumns = 2
 		} else {
 			this.parameters.numberOfColumns = 2
 		}
@@ -332,8 +331,9 @@ class ProjectsPage extends JABView {
 	
 	// Footer
 	configureFooter () {
+		var view = this.footer
 		
-		
+		view.updateAllUI()
 	}
 	
 	positionFooter () {

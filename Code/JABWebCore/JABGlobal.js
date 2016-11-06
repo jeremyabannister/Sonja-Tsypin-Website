@@ -53,6 +53,12 @@ function isPropertySupported(property)
 
 
 
+// Image Bank
+var imageBank = new JABImageBank()
+
+
+
+
 // Animation
 var defaultAnimationDuration = 400
 

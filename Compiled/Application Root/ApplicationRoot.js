@@ -23,7 +23,8 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		_this.laboratoryEnabled = false;
 		_this.contentWidth = { 'xxs': 0, 'xs': 0, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
 		_this.state = {
-			headerBackdropHidden: false
+			headerBackdropHidden: false,
+			initiallyLoading: true
 		};
 
 		_this.projectDataBundles = _this.assembleProjectDataBundles();
@@ -34,7 +35,11 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 		// Parameters
 		_this.parameters = {
-			heightOfHeader: 110
+			sizeOfInitialLoadingGifWrapper: 50,
+
+			heightOfHeader: 110,
+
+			numberOfHomePageImages: 10
 		};
 
 		if (_this.laboratoryEnabled) {
@@ -42,6 +47,8 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		} else {
 
 			// UI
+			_this.initialLoadingGifWrapper = new JABGifWrapper('InitialLoadingGifWrapper');
+
 			_this.mainSector = new MainSector('MainSector', _this.projectDataBundles);
 			_this.headerBackdrop = new JABView('HeaderBackdrop');
 			_this.homeSector = new HomeSector('HomeSector');
@@ -60,7 +67,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		value: function init() {
 			_get(Object.getPrototypeOf(ApplicationRoot.prototype), 'init', this).call(this);
 
-			// this.getCoreImages()
+			this.getCoreImages();
 		}
 
 		//
@@ -82,11 +89,18 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 				this.addLaboratory();
 			} else {
 
+				this.addInitialLoadingGifWrapper();
+
 				this.addMainSector();
 				this.addHeaderBackdrop();
 				this.addHomeSector();
 				this.addHeader();
 			}
+		}
+	}, {
+		key: 'addInitialLoadingGifWrapper',
+		value: function addInitialLoadingGifWrapper() {
+			this.addSubview(this.initialLoadingGifWrapper);
 		}
 	}, {
 		key: 'addMainSector',
@@ -126,6 +140,9 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 				this.positionLaboratory();
 			} else {
 
+				this.configureInitialLoadingGifWrapper();
+				this.positionInitialLoadingGifWrapper();
+
 				this.configureMainSector();
 				this.positionMainSector();
 
@@ -138,6 +155,39 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 				this.configureHeader();
 				this.positionHeader();
 			}
+		}
+
+		// Initial Loading Gif Wrapper
+
+	}, {
+		key: 'configureInitialLoadingGifWrapper',
+		value: function configureInitialLoadingGifWrapper() {
+
+			var view = this.initialLoadingGifWrapper;
+
+			if (this.state.initiallyLoading) {
+				if (!(view.gif instanceof LoadingGif)) {
+					view.gif = new LoadingGif();
+				}
+
+				if (!view.state.playing) {
+					view.play();
+				}
+			}
+		}
+	}, {
+		key: 'positionInitialLoadingGifWrapper',
+		value: function positionInitialLoadingGifWrapper() {
+			var view = this.initialLoadingGifWrapper;
+			var newFrame = new CGRect();
+
+			newFrame.size.width = this.parameters.sizeOfInitialLoadingGifWrapper;
+			newFrame.size.height = newFrame.size.width;
+
+			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
+			newFrame.origin.y = (this.height - newFrame.size.height) / 2;
+
+			view.frame = newFrame;
 		}
 
 		// Main Sector
@@ -157,6 +207,12 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			view.state.currentlyActive = !this.websiteClosed;
 			view.positionDuration = 0;
 
+			if (this.state.initiallyLoading) {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+
 			view.updateAllUI();
 		}
 	}, {
@@ -174,7 +230,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			var view = this.headerBackdrop;
 			view.backgroundColor = 'black';
 
-			if (this.state.headerBackdropHidden) {
+			if (this.state.headerBackdropHidden || this.state.initiallyLoading) {
 				view.opacity = 0;
 			} else {
 				view.opacity = 1;
@@ -201,17 +257,27 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'configureHomeSector',
 		value: function configureHomeSector() {
-			this.homeSector.backgroundColor = 'black';
+
+			var view = this.homeSector;
+
+			view.backgroundColor = 'black';
 
 			if (websiteIsResizing) {
-				this.homeSector.positionDuration = 0;
+				view.positionDuration = 0;
 			} else {
-				this.homeSector.positionDuration = 800;
+				view.positionDuration = 800;
 			}
 
-			this.homeSector.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
-			this.homeSector.currentlyActive = this.websiteClosed;
-			this.homeSector.updateAllUI();
+			view.positionEasingFunction = 'cubic-bezier(0.45, 0.06, 0.01, 0.95)';
+			view.currentlyActive = this.websiteClosed;
+
+			if (this.state.initiallyLoading) {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionHomeSector',
@@ -231,12 +297,20 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		key: 'configureHeader',
 		value: function configureHeader() {
 
-			this.header.websiteClosed = this.websiteClosed;
-			this.header.selectedMenuIndex = this.mainSector.state.pageIndex;
-			this.header.configureDuration = 0;
-			this.header.clickable = true;
+			var view = this.header;
 
-			this.header.updateAllUI();
+			view.websiteClosed = this.websiteClosed;
+			view.selectedMenuIndex = this.mainSector.state.pageIndex;
+			view.configureDuration = 0;
+			view.clickable = true;
+
+			if (this.state.initiallyLoading) {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionHeader',
@@ -471,27 +545,6 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			dataBundles.push(dataBundle);
 
-			// Birth Day
-			dataBundle = new ProjectDataBundle();
-			dataBundle.id = 'birthDay';
-			dataBundle.title = 'BIRTH DAY';
-			dataBundle.director = 'EVA EVANS';
-			dataBundle.movieType = 'SHORT';
-			dataBundle.year = '2016';
-			dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory.";
-
-			dataBundle.vimeoId = '172178428';
-			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
-
-			var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/3/';
-			for (var i = 0; i < 2; i++) {
-				var index = i + 1;
-				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
-			}
-			dataBundle.mainStillIndex = 0;
-
-			dataBundles.push(dataBundle);
-
 			// Angels
 			dataBundle = new ProjectDataBundle();
 			dataBundle.id = 'angels';
@@ -513,11 +566,32 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			dataBundles.push(dataBundle);
 
+			// Birth Day
+			dataBundle = new ProjectDataBundle();
+			dataBundle.id = 'birthDay';
+			dataBundle.title = 'BIRTH DAY';
+			dataBundle.director = 'EVA EVANS';
+			dataBundle.movieType = 'SHORT';
+			dataBundle.year = '2016';
+			dataBundle.description = "<span style='color:white'>Starring Tessa Gourin</span><br/>A young girl finds herself struggling to distinguish between reality and a haunting memory.";
+
+			dataBundle.vimeoId = '172178428';
+			dataBundle.vimeoHeightToWidth = 9.0 / 16.0;
+
+			var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/3/';
+			for (var i = 0; i < 2; i++) {
+				var index = i + 1;
+				dataBundle.stills.push(pathStem + 'still' + index + '.jpg');
+			}
+			dataBundle.mainStillIndex = 0;
+
+			dataBundles.push(dataBundle);
+
 			// Theodore
 			dataBundle = new ProjectDataBundle();
 			dataBundle.id = 'theodore';
 			dataBundle.title = 'THEODORE';
-			dataBundle.director = 'ONDINE VI\u00d1AO';
+			dataBundle.director = 'ONDINE VI' + upperCaseEnya + 'AO';
 			dataBundle.movieType = 'SHORT';
 			dataBundle.year = '2015';
 			dataBundle.description = "<span style='color:white'>Starring Camillia Hartman, Dexter Zimet</span><br/>A romantic rural retreat takes a terrifying turn after a local offers some chilling advice.";
@@ -559,7 +633,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			dataBundle = new ProjectDataBundle();
 			dataBundle.id = 'asLongAsIHaveYou';
 			dataBundle.title = 'AS LONG AS I HAVE YOU';
-			dataBundle.director = 'ONDINE VI\u00d1AO';
+			dataBundle.director = 'ONDINE VI' + upperCaseEnya + 'AO';
 			dataBundle.movieType = 'MUSIC VIDEO';
 			dataBundle.year = '2016';
 			dataBundle.description = "<span style='color:white'>Starring Annalisa Plumb</span><br/>An experimental video to the track 'As Long As I Have You' by Elvis Presley.";
@@ -607,44 +681,59 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'getCoreImages',
 		value: function getCoreImages() {
-			var coreImages = ["Resources/Images/Home Page/Featured Stills/1.jpg", "Resources/Images/Home Page/Featured Stills/2.jpg", "Resources/Images/Home Page/Featured Stills/3.jpg"];
 
-			this.opacity = 0;
-			this.counter = 0;
-			this.images['Home Page'] = {};
-			this.images['Home Page']['Featured Stills'] = {};
+			var numberOfHomePageImagesLoadedAtFirst = 2;
 
-			for (var i = 0; i < 10; i++) {
+			var homePageImageStem = '/Resources/Images/Home Page/Featured Stills/';
+			var buttonImageStem = '/Resources/Images/Buttons/';
+			var projectsPageImageStem = '/Resources/Images/Projects Page/Project Data Bundles/';
 
-				var image = new Image();
+			var projectsPageIndexCombinations = [[1, 3], [2, 4], [3, 1], [4, 1], [5, 1], [6, 1]];
 
-				(function (i, image) {
-					var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/" + (i + 1) + ".jpg");
+			// Home Page (first batch)
+			for (var i = 0; i < numberOfHomePageImagesLoadedAtFirst; i++) {
+				imageBank.addToQueue(homePageImageStem + (i + 1) + '.jpg');
+			}
+			imageBank.addToQueue(buttonImageStem + 'Enter Arrow.png');
 
-					imageRef.getDownloadURL().then(function (url) {
-						// Get the download URL for 'images/stars.jpg'
-						// This can be inserted into an <img> tag
-						// This can also be downloaded directly
-						image.src = url;
-						applicationRoot.counter += 1;
+			// Reel Page
+			imageBank.addToQueue('/Resources/Images/Reel Page/Reel Cover Photo.png');
+			imageBank.addToQueue(buttonImageStem + 'Play Button.png', this);
 
-						if (applicationRoot.counter == 10) {
-							console.log('got them all!');
-							applicationRoot.opacity = 1;
-						}
-					}).catch(function (error) {
-						// Handle any errors
-						console.log('error', error);
-					});
-				})(i, image);
+			// Footer
+			imageBank.addToQueue(buttonImageStem + 'Instagram Button.png');
+			imageBank.addToQueue(buttonImageStem + 'Art Button.png');
+			imageBank.addToQueue(buttonImageStem + 'Email Button.png', this);
 
-				this.images['Home Page']['Featured Stills'][i + 1 + '.jpg'] = image;
+			// Projects Page
+			for (var i = 0; i < projectsPageIndexCombinations.length; i++) {
+				imageBank.addToQueue(projectsPageImageStem + projectsPageIndexCombinations[i][0] + '/still' + projectsPageIndexCombinations[i][1] + '.jpg');
+			}
+
+			// Home Page (second batch)
+			for (var i = 0; i < this.parameters.numberOfHomePageImages - numberOfHomePageImagesLoadedAtFirst; i++) {
+				imageBank.addToQueue(homePageImageStem + (numberOfHomePageImagesLoadedAtFirst + i) + '.jpg', this);
 			}
 		}
 
 		//
 		// Delegate
 		//
+
+		// Image Bank
+
+	}, {
+		key: 'imageDidFinishLoading',
+		value: function imageDidFinishLoading(src) {
+			if (src == '/Resources/Images/Buttons/Play Button.png') {
+				this.state.initiallyLoading = false;
+				this.updateAllUI();
+			} else if (src.lastIndexOf('/Resources/Images/Buttons/', 0) != -1) {
+				this.updateAllUI();
+			} else if (src.lastIndexOf('/Resources/Images/Home Page/Featured Stills/', 0) != -1) {
+				this.homeSector.updateAllUI();
+			}
+		}
 
 		// JABView
 
@@ -671,6 +760,15 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		key: 'mainSectorWantsToRelinquishFullScreen',
 		value: function mainSectorWantsToRelinquishFullScreen(mainSector) {
 			this.state = { headerBackdropHidden: false };
+			this.animatedUpdate();
+		}
+	}, {
+		key: 'mainSectorWantsToOpenAboutPage',
+		value: function mainSectorWantsToOpenAboutPage(mainSector) {
+			this.mainSector.state = {
+				pageIndex: 2,
+				projectOpen: false
+			};
 			this.animatedUpdate();
 		}
 

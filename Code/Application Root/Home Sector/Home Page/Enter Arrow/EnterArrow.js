@@ -182,7 +182,11 @@ class EnterArrow extends JABView {
 	
 	// Image View
 	configureImageView () {
-		this.imageView.src = '/Resources/Images/Buttons/Enter Arrow.png'
+		var imagePath = '/Resources/Images/Buttons/Enter Arrow.png'
+		
+		if (imageBank.imageStatus[imagePath] == true) {
+			this.imageView.src = imagePath
+		}
 		
 		
 		if (this.updatingForFade) {
@@ -331,5 +335,11 @@ class EnterArrow extends JABView {
 	//
 	// Delegate
 	//
+	
+	
+	// Image View
+	imageViewDidFinishLoadingImage (imageView) {
+		
+	}
 	
 }

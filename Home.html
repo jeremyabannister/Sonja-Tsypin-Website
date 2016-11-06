@@ -30,6 +30,14 @@
 		  var storageRef = firebase.storage().ref()
 		</script>
 		
+		<script>
+		// This script defines the codes for special characters. This is necessary because Babel annoyingly converts these codes to the actual unicode character, which then displays improperly. This file (Home.html) is not run through Babel before being uploaded to the server, so it is safe to define these codes as variables here and then reference those variables in the javascript files which are converted by Babel
+		var lowerCaseEnya = "\u00f1";
+		var upperCaseEnya = "\u00d1";
+		var trademarkC = "\u00a9";
+		</script>
+		
+		
 		
 
 		<!-- jQuery -->
@@ -63,6 +71,7 @@
 
 		<script type='text/javascript' src='/Compiled/JABWebCore/JABButton.js'></script>
 		<script type='text/javascript' src='/Compiled/JABWebCore/JABApplicationRoot.js'></script>
+		<script type='text/javascript' src='/Compiled/JABWebCore/JABImageBank.js'></script>
 		
 		
 		<script type='text/javascript' src='/Compiled/JABWebCore/JABGlobal.js'></script>

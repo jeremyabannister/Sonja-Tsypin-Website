@@ -6,6 +6,7 @@ class HomePage extends JABView {
 
 		// State
 		this.numberOfImages = 10
+		this.numberOfImagesLoaded = 0
 		this.backgroundImageIndex = 0
 		
 		this.arrowFaded = true
@@ -20,7 +21,7 @@ class HomePage extends JABView {
 		// UI
 		this.blackBackground = new JABView('BlackBackground')
 		this.backgroundImageViews = []
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < this.numberOfImages; i++) {
 			this.backgroundImageViews.push(new JABImageView('BackgroundImageView' + i))
 		}
 		
@@ -38,6 +39,7 @@ class HomePage extends JABView {
 	
 	init () {
 		super.init()
+		this.checkLoadedImages()
 		this.startTimeoutForNextImage()
 	}
 
@@ -106,10 +108,21 @@ class HomePage extends JABView {
 	
 	// Background Image Views
 	configureBackgroundImageViews () {
+		
+		// First check if up to this point no images have been loaded. The idea is that prior to any images being loaded we do not want to start the timer. When we transition from having 0 images to having some number of images we want to start the image timer because it has not been previously started
+		var previousLoaded = this.numberOfImagesLoaded
+		this.checkLoadedImages()
+		if (previousLoaded == 0 && this.numberOfImagesLoaded > 0) {
+			this.startTimeoutForNextImage()
+		}
+		
 		for (var i = 0; i < this.backgroundImageViews.length; i++) {
 			var view = this.backgroundImageViews[i];
+			var imagePath = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg'
 			
-			view.src = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg'
+			if (imageBank.imageStatus[imagePath] == true) {
+				view.src = imagePath
+			}
 			
 			/*
 			(function(i, view) {
@@ -128,14 +141,14 @@ class HomePage extends JABView {
 			*/
 			
 			
-			if (this.backgroundImageIndex != this.numberOfImages - 1) {
+			if (this.backgroundImageIndex != this.numberOfImagesLoaded - 1) {
 				if (i > this.backgroundImageIndex) {
 					view.opacity = 0
 				} else {
 					view.opacity = 1
 				}
 			} else {
-				if (i == this.numberOfImages - 1 || i == 0) {
+				if (i == this.numberOfImagesLoaded - 1 || i == 0) {
 					view.opacity = 1
 				} else {
 					view.opacity = 0
@@ -182,21 +195,27 @@ class HomePage extends JABView {
 
 	// Enter Arrow
 	configureEnterArrow () {
+		
+		var view = this.enterArrow
 
-		this.enterArrow.cursor = 'pointer'
+		view.cursor = 'pointer'
 		
 		if (this.currentlyActive) {
-			this.enterArrow.opacity = 1
+			view.opacity = 1
 		} else {
-			this.enterArrow.opacity = 0
+			view.opacity = 0
 		}
 		
-		this.enterArrow.configureDuration = 300
-		this.enterArrow.clickable = true
+		view.configureDuration = 300
+		view.clickable = true
+		
+		view.updateAllUI()
 	}
 
 	positionEnterArrow () {
-
+		
+		var view = this.enterArrow
+		
 		var widthsOfEnterArrow = {'xxs': 45, 'xs': 60, 's': 60, 'm': 40, 'l': 40, 'xl': 40}
 		var widthOfEnterArrow = widthsOfEnterArrow[sizeClass]
 		var bottomBufferForEnterArrow = 10
@@ -209,7 +228,7 @@ class HomePage extends JABView {
 		newFrame.origin.x = (this.width - newFrame.size.width)/2
 		newFrame.origin.y = this.height - newFrame.size.height - bottomBufferForEnterArrow
 
-		this.enterArrow.frame = newFrame
+		view.frame = newFrame
 
 	}
 
@@ -223,30 +242,44 @@ class HomePage extends JABView {
 	//
 	// Actions
 	//
-
-
+	
+	
+	// Images
+	checkLoadedImages () {
+		var numberLoaded = 0
+		for (var i = 0; i < this.numberOfImages; i++) {
+			var imagePath = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg'
+			if (imageBank.imageStatus[imagePath] == true) {
+				numberLoaded++
+			}
+		}
+		this.numberOfImagesLoaded = numberLoaded
+	}
+	
 
 	// Timers
 	startTimeoutForNextImage () {
 		
-		var homePage = this
-		
-		clearTimeout(this.imageTimer)
-		this.imageTimer = setTimeout(function() {
+		if (this.numberOfImagesLoaded > 0) {
+			var homePage = this
+			
+			clearTimeout(this.imageTimer)
+			this.imageTimer = setTimeout(function() {
 
-			homePage.backgroundImageIndex += 1
-			if (homePage.backgroundImageIndex > homePage.numberOfImages - 1) {
-				homePage.backgroundImageIndex = 0
-			}
+				homePage.backgroundImageIndex += 1
+				if (homePage.backgroundImageIndex > homePage.numberOfImagesLoaded - 1) {
+					homePage.backgroundImageIndex = 0
+				}
 
-			homePage.animatedUpdate({
-				configureDuration: 1500,
-				positionDuration: 0
-			})
+				homePage.animatedUpdate({
+					configureDuration: 1500,
+					positionDuration: 0
+				})
 
-			homePage.startTimeoutForNextImage()
+				homePage.startTimeoutForNextImage()
 
-		}, 5000)
+			}, 5000)
+		}
 
 	}
 

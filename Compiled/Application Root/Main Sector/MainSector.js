@@ -152,7 +152,12 @@ var MainSector = function (_JABView) {
 			var view = this.aboutPage;
 
 			view.backgroundColor = 'black';
-			view.overflow = 'scroll';
+			if (!this.state.currentlyActive) {
+				view.overflow = 'hidden';
+			} else {
+				view.overflow = 'scroll';
+			}
+
 			view.reservedTopBuffer = this.parameters.reservedTopBuffer;
 
 			if (this.currentlyActivePage == view) {
@@ -205,7 +210,7 @@ var MainSector = function (_JABView) {
 			view.backgroundColor = 'black';
 			view.overflowX = 'hidden';
 
-			if (this.state.projectOpen) {
+			if (this.state.projectOpen || !this.state.currentlyActive) {
 				view.overflowY = 'hidden';
 			} else {
 				view.overflowY = 'scroll';
@@ -622,7 +627,8 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'projectsPageWantsToOpenMailForm',
 		value: function projectsPageWantsToOpenMailForm(projectsPage) {
-			this.openMailFormPage(0.8);
+			// this.openMailFormPage(0.8)
+			this.parent.mainSectorWantsToOpenAboutPage(this);
 		}
 
 		// Reel Page
@@ -630,7 +636,8 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'reelPageWantsToOpenMailForm',
 		value: function reelPageWantsToOpenMailForm(reelPage) {
-			this.openMailFormPage(0.5);
+			// this.openMailFormPage(0.5)
+			this.parent.mainSectorWantsToOpenAboutPage(this);
 		}
 
 		// Project Page

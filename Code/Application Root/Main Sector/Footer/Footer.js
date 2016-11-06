@@ -29,7 +29,6 @@ class Footer extends JABView {
 			this.buttons.push(new JABImageView())
 		}
 		
-		
 	}
 	
 	
@@ -92,7 +91,7 @@ class Footer extends JABView {
 		
 		var view = this.copyrightLabel
 		
-	    view.text = "SONJA TSYPIN <span style='color:ffff00'>\u00a9</span> 2016"
+	    view.text = 'SONJA TSYPIN ' + trademarkC + ' 2016'
 	    view.textColor = 'white'
 		view.fontFamily = 'siteFont'
 		view.fontWeight = 'bold'
@@ -129,7 +128,10 @@ class Footer extends JABView {
 			var view = this.buttons[i]
 			
 			view.clickable = true
-			view.src = this.buttonImages[i]
+			var imagePath = this.buttonImages[i]
+			if (imageBank.imageStatus[imagePath] == true) {
+				view.src = imagePath
+			}
 			view.cursor = 'pointer'
 		}
 		
@@ -174,6 +176,11 @@ class Footer extends JABView {
 	// Delegate
 	//
 	
+	
+	// Image View
+	imageViewDidFinishLoadingImage (imageView) {
+		
+	}
 	
 	// JABView
 	viewWasClicked (view) {

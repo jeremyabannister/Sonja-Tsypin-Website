@@ -28,6 +28,8 @@ var JABApplicationRoot = function (_JABView) {
 		// UI
 		_this.laboratory;
 
+		// Image Bank
+
 		return _this;
 	}
 

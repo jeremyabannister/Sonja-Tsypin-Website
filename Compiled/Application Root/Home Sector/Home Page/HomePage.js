@@ -21,6 +21,7 @@ var HomePage = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HomePage).call(this, customId));
 
 		_this.numberOfImages = 10;
+		_this.numberOfImagesLoaded = 0;
 		_this.backgroundImageIndex = 0;
 
 		_this.arrowFaded = true;
@@ -34,7 +35,7 @@ var HomePage = function (_JABView) {
 		// UI
 		_this.blackBackground = new JABView('BlackBackground');
 		_this.backgroundImageViews = [];
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < _this.numberOfImages; i++) {
 			_this.backgroundImageViews.push(new JABImageView('BackgroundImageView' + i));
 		}
 
@@ -51,6 +52,7 @@ var HomePage = function (_JABView) {
 		key: 'init',
 		value: function init() {
 			_get(Object.getPrototypeOf(HomePage.prototype), 'init', this).call(this);
+			this.checkLoadedImages();
 			this.startTimeoutForNextImage();
 		}
 
@@ -121,10 +123,21 @@ var HomePage = function (_JABView) {
 	}, {
 		key: 'configureBackgroundImageViews',
 		value: function configureBackgroundImageViews() {
+
+			// First check if up to this point no images have been loaded. The idea is that prior to any images being loaded we do not want to start the timer. When we transition from having 0 images to having some number of images we want to start the image timer because it has not been previously started
+			var previousLoaded = this.numberOfImagesLoaded;
+			this.checkLoadedImages();
+			if (previousLoaded == 0 && this.numberOfImagesLoaded > 0) {
+				this.startTimeoutForNextImage();
+			}
+
 			for (var i = 0; i < this.backgroundImageViews.length; i++) {
 				var view = this.backgroundImageViews[i];
+				var imagePath = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
 
-				view.src = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
+				if (imageBank.imageStatus[imagePath] == true) {
+					view.src = imagePath;
+				}
 
 				/*
     (function(i, view) {
@@ -142,14 +155,14 @@ var HomePage = function (_JABView) {
     })(i, view)
     */
 
-				if (this.backgroundImageIndex != this.numberOfImages - 1) {
+				if (this.backgroundImageIndex != this.numberOfImagesLoaded - 1) {
 					if (i > this.backgroundImageIndex) {
 						view.opacity = 0;
 					} else {
 						view.opacity = 1;
 					}
 				} else {
-					if (i == this.numberOfImages - 1 || i == 0) {
+					if (i == this.numberOfImagesLoaded - 1 || i == 0) {
 						view.opacity = 1;
 					} else {
 						view.opacity = 0;
@@ -200,20 +213,26 @@ var HomePage = function (_JABView) {
 		key: 'configureEnterArrow',
 		value: function configureEnterArrow() {
 
-			this.enterArrow.cursor = 'pointer';
+			var view = this.enterArrow;
+
+			view.cursor = 'pointer';
 
 			if (this.currentlyActive) {
-				this.enterArrow.opacity = 1;
+				view.opacity = 1;
 			} else {
-				this.enterArrow.opacity = 0;
+				view.opacity = 0;
 			}
 
-			this.enterArrow.configureDuration = 300;
-			this.enterArrow.clickable = true;
+			view.configureDuration = 300;
+			view.clickable = true;
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionEnterArrow',
 		value: function positionEnterArrow() {
+
+			var view = this.enterArrow;
 
 			var widthsOfEnterArrow = { 'xxs': 45, 'xs': 60, 's': 60, 'm': 40, 'l': 40, 'xl': 40 };
 			var widthOfEnterArrow = widthsOfEnterArrow[sizeClass];
@@ -227,7 +246,7 @@ var HomePage = function (_JABView) {
 			newFrame.origin.x = (this.width - newFrame.size.width) / 2;
 			newFrame.origin.y = this.height - newFrame.size.height - bottomBufferForEnterArrow;
 
-			this.enterArrow.frame = newFrame;
+			view.frame = newFrame;
 		}
 
 		//
@@ -238,29 +257,46 @@ var HomePage = function (_JABView) {
 		// Actions
 		//
 
+		// Images
+
+	}, {
+		key: 'checkLoadedImages',
+		value: function checkLoadedImages() {
+			var numberLoaded = 0;
+			for (var i = 0; i < this.numberOfImages; i++) {
+				var imagePath = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
+				if (imageBank.imageStatus[imagePath] == true) {
+					numberLoaded++;
+				}
+			}
+			this.numberOfImagesLoaded = numberLoaded;
+		}
+
 		// Timers
 
 	}, {
 		key: 'startTimeoutForNextImage',
 		value: function startTimeoutForNextImage() {
 
-			var homePage = this;
+			if (this.numberOfImagesLoaded > 0) {
+				var homePage = this;
 
-			clearTimeout(this.imageTimer);
-			this.imageTimer = setTimeout(function () {
+				clearTimeout(this.imageTimer);
+				this.imageTimer = setTimeout(function () {
 
-				homePage.backgroundImageIndex += 1;
-				if (homePage.backgroundImageIndex > homePage.numberOfImages - 1) {
-					homePage.backgroundImageIndex = 0;
-				}
+					homePage.backgroundImageIndex += 1;
+					if (homePage.backgroundImageIndex > homePage.numberOfImagesLoaded - 1) {
+						homePage.backgroundImageIndex = 0;
+					}
 
-				homePage.animatedUpdate({
-					configureDuration: 1500,
-					positionDuration: 0
-				});
+					homePage.animatedUpdate({
+						configureDuration: 1500,
+						positionDuration: 0
+					});
 
-				homePage.startTimeoutForNextImage();
-			}, 5000);
+					homePage.startTimeoutForNextImage();
+				}, 5000);
+			}
 		}
 	}, {
 		key: 'startTimeoutForArrowFade',

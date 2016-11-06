@@ -163,7 +163,12 @@ class MainSector extends JABView {
 		var view = this.aboutPage
 		
 		view.backgroundColor = 'black'
-		view.overflow = 'scroll'
+		if (!this.state.currentlyActive) {
+			view.overflow = 'hidden'
+		} else {
+			view.overflow = 'scroll'
+		}
+		
 		view.reservedTopBuffer = this.parameters.reservedTopBuffer
 		
 		if (this.currentlyActivePage == view) {
@@ -216,7 +221,7 @@ class MainSector extends JABView {
 		view.backgroundColor = 'black'
 		view.overflowX = 'hidden'
 		
-		if (this.state.projectOpen) {
+		if (this.state.projectOpen || !this.state.currentlyActive) {
 			view.overflowY = 'hidden'
 		} else {
 			view.overflowY = 'scroll'
@@ -644,13 +649,15 @@ class MainSector extends JABView {
 	}
 	
 	projectsPageWantsToOpenMailForm (projectsPage) {
-		this.openMailFormPage(0.8)
+		// this.openMailFormPage(0.8)
+		this.parent.mainSectorWantsToOpenAboutPage(this)
 	}
 	
 	
 	// Reel Page
 	reelPageWantsToOpenMailForm (reelPage) {
-		this.openMailFormPage(0.5)
+		// this.openMailFormPage(0.5)
+		this.parent.mainSectorWantsToOpenAboutPage(this)
 	}
 	
 	// Project Page
