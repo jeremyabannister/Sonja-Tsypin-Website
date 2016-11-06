@@ -713,6 +713,14 @@ class ApplicationRoot extends JABApplicationRoot {
 	}
 	
 	
+	mainSectorWantsToOpenAboutPage (mainSector) {
+		this.mainSector.state = {
+			pageIndex: 2,
+			projectOpen: false,
+		}
+		this.animatedUpdate()
+	}
+	
 	
 	
 	

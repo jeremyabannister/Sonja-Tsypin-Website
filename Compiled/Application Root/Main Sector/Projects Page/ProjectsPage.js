@@ -171,7 +171,7 @@ var ProjectsPage = function (_JABView) {
 			if (sizeClass == 'xxs' || sizeClass == 'xs') {
 				this.parameters.numberOfColumns = 1;
 			} else if (sizeClass == 'xl') {
-				this.parameters.numberOfColumns = 3;
+				this.parameters.numberOfColumns = 2;
 			} else {
 				this.parameters.numberOfColumns = 2;
 			}

@@ -622,7 +622,8 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'projectsPageWantsToOpenMailForm',
 		value: function projectsPageWantsToOpenMailForm(projectsPage) {
-			this.openMailFormPage(0.8);
+			// this.openMailFormPage(0.8)
+			this.parent.mainSectorWantsToOpenAboutPage(this);
 		}
 
 		// Reel Page
@@ -630,7 +631,8 @@ var MainSector = function (_JABView) {
 	}, {
 		key: 'reelPageWantsToOpenMailForm',
 		value: function reelPageWantsToOpenMailForm(reelPage) {
-			this.openMailFormPage(0.5);
+			// this.openMailFormPage(0.5);
+			this.parent.mainSectorWantsToOpenAboutPage(this);
 		}
 
 		// Project Page
