@@ -673,6 +673,15 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			this.state = { headerBackdropHidden: false };
 			this.animatedUpdate();
 		}
+	}, {
+		key: 'mainSectorWantsToOpenAboutPage',
+		value: function mainSectorWantsToOpenAboutPage(mainSector) {
+			this.mainSector.state = {
+				pageIndex: 2,
+				projectOpen: false
+			};
+			this.animatedUpdate();
+		}
 
 		// Home Sector
 

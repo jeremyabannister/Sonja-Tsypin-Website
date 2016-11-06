@@ -644,13 +644,15 @@ class MainSector extends JABView {
 	}
 	
 	projectsPageWantsToOpenMailForm (projectsPage) {
-		this.openMailFormPage(0.8)
+		// this.openMailFormPage(0.8)
+		this.parent.mainSectorWantsToOpenAboutPage(this)
 	}
 	
 	
 	// Reel Page
 	reelPageWantsToOpenMailForm (reelPage) {
-		this.openMailFormPage(0.5)
+		// this.openMailFormPage(0.5)
+		this.parent.mainSectorWantsToOpenAboutPage(this)
 	}
 	
 	// Project Page
