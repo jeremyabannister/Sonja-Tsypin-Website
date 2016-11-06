@@ -122,8 +122,10 @@ class VideoNavigationButtons extends JABView {
 		
 		if (this.state.prevEnabled) {
 			view.textColor = 'white'
+			view.cursor = 'pointer'
 		} else {
 			view.textColor = this.parameters.fadedTextColor
+			view.cursor = 'default'
 		}
 		
 		view.textAlign = 'right'
@@ -133,7 +135,6 @@ class VideoNavigationButtons extends JABView {
 		
 		
 		view.clickable = true
-		view.cursor = 'pointer'
 		
 	}
 	
@@ -165,8 +166,10 @@ class VideoNavigationButtons extends JABView {
 		
 		if (this.state.nextEnabled) {
 			view.textColor = 'white'
+			view.cursor = 'pointer'
 		} else {
 			view.textColor = this.parameters.fadedTextColor
+			view.cursor = 'default'
 		}
 		
 		view.textAlign = 'left'
@@ -175,7 +178,6 @@ class VideoNavigationButtons extends JABView {
 		view.lineHeightUnit = 'px'
 		
 		view.clickable = true
-		view.cursor = 'pointer'
 		
 	}
 	

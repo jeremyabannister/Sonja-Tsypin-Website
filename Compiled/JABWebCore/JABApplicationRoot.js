@@ -19,7 +19,6 @@ var JABApplicationRoot = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JABApplicationRoot).call(this, customId));
 
 		_this.updateViewString();
-		$('body').append(_this.view);
 		$(_this.selector).css({
 			'position': 'absolute'
 		});
@@ -28,6 +27,7 @@ var JABApplicationRoot = function (_JABView) {
 
 		// UI
 		_this.laboratory;
+
 		return _this;
 	}
 

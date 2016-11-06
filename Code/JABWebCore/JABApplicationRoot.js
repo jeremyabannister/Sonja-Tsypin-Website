@@ -5,7 +5,6 @@ class JABApplicationRoot extends JABView {
 		super(customId)
 		
 		this.updateViewString()
-		$('body').append(this.view)
 		$(this.selector).css({
 			'position':'absolute',
 		})
@@ -15,6 +14,8 @@ class JABApplicationRoot extends JABView {
 
 		// UI
 		this.laboratory
+		
+		
 	}
 
 

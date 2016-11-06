@@ -5,14 +5,32 @@ class Header extends JABView {
 
 
 		// State
+		this.state = {
+			mobileMenuOpen: false,
+		}
 		this.selectedMenuIndex = -1
 		this.websiteClosed = true
-
+		this.menuItems = [new MenuItem('reel', 'REEL', 0), new MenuItem('projects', 'PROJECTS', 1), new MenuItem('about', 'ABOUT', 2)]
 
 		// UI
 		this.logo = new Logo('Logo')
-		this.menu = new Menu('Menu', [['REEL', 'reel'], ['PROJECTS	', 'projects'], ['ABOUT', 'about']])
+		this.menu = new Menu('Menu', this.menuItems)
+		this.mobileMenu = new MobileMenu('MobileMenu', this.menuItems)
+		this.mobileMenuButton = new MobileMenuButton('MobileMenuButton')
 		
+		// Parameters
+		this.parameters = {
+			sideBufferForMobileContent: 20,
+			widthOfMobileMenuButtonLines: 30,
+			
+			mobileMenuAnimationSpeed: 300,
+			
+			topBufferForMobileMenu: 0,
+			widthFractionOfMobileMenu: 1,
+			
+			sizeOfMobileMenuButton: 50,
+			topBufferForMobileMenuButton: 10,
+		}
 		
 	}
 
@@ -25,10 +43,6 @@ class Header extends JABView {
 		super.init()
 		
 		this.startEventListeners()
-		
-		if (this.notReal == '1234') {
-			console.log('what????')
-		}
 	}
 
 	//
@@ -40,6 +54,8 @@ class Header extends JABView {
 		
 		this.addLogo()
 		this.addMenu()
+		this.addMobileMenu()
+		this.addMobileMenuButton()
 		
 	}
 	
@@ -51,6 +67,14 @@ class Header extends JABView {
 	
 	addMenu () {
 		this.addSubview(this.menu)
+	}
+	
+	addMobileMenu () {
+		this.addSubview(this.mobileMenu)
+	}
+	
+	addMobileMenuButton () {
+		this.addSubview(this.mobileMenuButton)
 	}
 	
 
@@ -67,6 +91,13 @@ class Header extends JABView {
 
 		this.configureMenu()
 		this.positionMenu()
+		
+		
+		this.configureMobileMenu()
+		this.positionMobileMenu()
+		
+		this.configureMobileMenuButton()
+		this.positionMobileMenuButton()
 
 	}
 
@@ -76,15 +107,17 @@ class Header extends JABView {
 	// Logo
 	configureLogo () {
 		
-		this.logo.positionDuration = 0
+		var view = this.logo
+		
+		view.positionDuration = 0
 		if (this.websiteClosed) {
-			this.logo.faded = true
+			view.faded = true
 		} else {
-			this.logo.faded = false
+			view.faded = false
 		}
-		this.logo.cursor = 'pointer'
+		view.cursor = 'pointer'
 
-		this.logo.updateAllUI()
+		view.updateAllUI()
 
 	}
 
@@ -100,7 +133,7 @@ class Header extends JABView {
 		newFrame.origin.y = 39
 		
 		if (sizeClass == 'xxs' || sizeClass == 'xs') {
-			newFrame.origin.x = (this.width - newFrame.size.width)/2
+			newFrame.origin.x = this.parameters.sideBufferForMobileContent
 			newFrame.origin.y = 14
 		}
 		
@@ -115,19 +148,29 @@ class Header extends JABView {
 
 	// Menu
 	configureMenu () {
-
-		this.menu.showUnderline = !this.websiteClosed
-		this.menu.selectedIndex = this.selectedMenuIndex
 		
-		this.menu.textColor = 'white'
+		var view = this.menu
+
+		view.showUnderline = !this.websiteClosed
+		view.selectedIndex = this.selectedMenuIndex
+		
+		view.textColor = 'white'
 		
 		var fontSizes = {'xxs': 12, 'xs': 12, 's': 16, 'm': 12, 'l': 12, 'xl': 12}
-		this.menu.fontSize = fontSizes[sizeClass]
-		this.menu.letterSpacing = 1.5
-		this.menu.fontWeight = 'bold'
-		this.menu.textAlign = 'right'
+		view.fontSize = fontSizes[sizeClass]
+		view.letterSpacing = 1.5
+		view.fontWeight = 'bold'
+		view.textAlign = 'right'
 		
-		this.menu.updateAllUI()
+		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			view.opacity = 0
+		} else {
+			view.opacity = 1
+		}
+		
+		
+		view.updateAllUI()
 
 	}
 
@@ -156,7 +199,85 @@ class Header extends JABView {
 
 
 	}
+	
+	
+	
+	
+	// Mobile Menu
+	configureMobileMenu () {
+		var view = this.mobileMenu
+		
+		view.backgroundColor = 'black'
+		view.positionDuration = this.parameters.mobileMenuAnimationSpeed
+		
+		view.state = {
+			open: this.state.mobileMenuOpen
+		}
+		
+		view.overflow = 'hidden'
+		
+		view.updateAllUI()
+	}
+	
+	positionMobileMenu () {
+		var view = this.mobileMenu
+		var newFrame = new CGRect()
+		
+		newFrame.size.width = this.width * this.parameters.widthFractionOfMobileMenu
+		
+		if (this.state.mobileMenuOpen) {
+			newFrame.size.height = view.requiredHeight
+		} else {
+			newFrame.size.height = 0
+		}
+		
+		newFrame.origin.x = (this.width - newFrame.size.width)/2
+		newFrame.origin.y = this.parameters.topBufferForMobileMenu
+		
+							
+		view.frame = newFrame
+	}
+	
+	
+	
+	
+	// Mobile Menu Button
+	configureMobileMenuButton () {
+		
+		var view = this.mobileMenuButton
+		
+		view.clickable = true
+		view.cursor = 'pointer'
+		view.parameters = {animationSpeed: this.parameters.mobileMenuAnimationSpeed, minimumSideBuffer: this.parameters.sideBufferForMobileContent, maximumWidthOfLines: this.parameters.widthOfMobileMenuButtonLines}
+		view.state = {crossed: this.state.mobileMenuOpen}
+		
+		if (sizeClass == 'xxs' || sizeClass == 'xs') {
+			view.opacity = 1
+		} else {
+			view.opacity = 0
+		}
+		
+		view.updateAllUI()
+	}
+	
+	positionMobileMenuButton () {
+		var view = this.mobileMenuButton
+		var newFrame = new CGRect()
+		
+		newFrame.size.width = this.parameters.widthOfMobileMenuButtonLines + (2 * this.parameters.sideBufferForMobileContent)
+		newFrame.size.height = newFrame.size.width
 
+		newFrame.origin.x = this.width - newFrame.size.width
+		newFrame.origin.y = this.logo.y + (this.logo.height - newFrame.size.height)/2
+							
+		view.frame = newFrame
+	}
+	
+	
+	
+	
+	
+	
 
 	//
 	// Event Listeners
@@ -176,9 +297,24 @@ class Header extends JABView {
 	// Delegate
 	//
 
-
-	menuButtonWasPressed (buttonIndex) {
-		this.parent.headerDidSelectPage(buttonIndex)
+	// Menus
+	menuItemWasSelected (menuItem) {
+		this.state = {mobileMenuOpen: false}
+		var header = this
+		this.animatedUpdate(null, function() {
+			header.parent.headerDidSelectPage(menuItem.index)
+		})
 	}
+	
+	
+	
+	// JABView
+	viewWasClicked (view) {
+		if (view == this.mobileMenuButton) {
+			this.state = {mobileMenuOpen: !this.state.mobileMenuOpen}
+			this.animatedUpdate()
+		}
+	}
+		
 
 }

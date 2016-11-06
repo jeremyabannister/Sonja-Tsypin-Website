@@ -533,6 +533,13 @@ class ProjectsPage extends JABView {
 	
 	
 	// Keys
+	spaceBarWasPressed () {
+		if (this.state.selectedProject != null) {
+			this.parent.projectsPageWantsToDisplayProject(this, this.state.selectedProject.state.projectDataBundle.id, true)
+		}
+	}
+	
+	
 	leftArrowWasPressed () {
 		if (this.state.selectedProject == null) {
 			if (this.projectPanes.length > 0) {

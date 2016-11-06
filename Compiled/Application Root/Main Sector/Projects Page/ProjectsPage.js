@@ -507,6 +507,13 @@ var ProjectsPage = function (_JABView) {
 		// Keys
 
 	}, {
+		key: 'spaceBarWasPressed',
+		value: function spaceBarWasPressed() {
+			if (this.state.selectedProject != null) {
+				this.parent.projectsPageWantsToDisplayProject(this, this.state.selectedProject.state.projectDataBundle.id, true);
+			}
+		}
+	}, {
 		key: 'leftArrowWasPressed',
 		value: function leftArrowWasPressed() {
 			if (this.state.selectedProject == null) {
