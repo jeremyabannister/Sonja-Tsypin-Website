@@ -21,7 +21,8 @@ var ReelPage = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ReelPage).call(this, customId));
 
 		_this.state = {
-			readyToClose: true
+			readyToClose: true,
+			shouldStartLoading: false
 		};
 		_this.currentlyActive = null;
 
@@ -111,7 +112,7 @@ var ReelPage = function (_JABView) {
 				view.loadingGif = new LoadingGif();
 			}
 
-			if (view.vimeoId != vimeoId) {
+			if (view.vimeoId != vimeoId && this.state.shouldStartLoading) {
 				view.vimeoId = vimeoId;
 			}
 

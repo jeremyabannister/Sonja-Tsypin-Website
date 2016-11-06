@@ -22,6 +22,7 @@ var MainSector = function (_JABView) {
 
 		_this.state = {
 			currentlyActive: false,
+			shouldStartLoading: false,
 			pageIndex: 0,
 			projectOpen: false,
 			closingProject: false,
@@ -209,6 +210,9 @@ var MainSector = function (_JABView) {
 
 			view.backgroundColor = 'black';
 			view.overflowX = 'hidden';
+			view.state = {
+				shouldStartLoading: this.state.shouldStartLoading
+			};
 
 			if (this.state.projectOpen || !this.state.currentlyActive) {
 				view.overflowY = 'hidden';
@@ -278,6 +282,9 @@ var MainSector = function (_JABView) {
 			view.backgroundColor = 'black';
 			view.overflow = 'scroll';
 			view.reservedTopBuffer = this.parameters.reservedTopBuffer;
+			view.state = {
+				shouldStartLoading: this.state.shouldStartLoading
+			};
 
 			if (this.currentlyActivePage == view) {
 				if (!this.state.closingProject && !this.state.closingMailForm) {
@@ -370,6 +377,9 @@ var MainSector = function (_JABView) {
 			view.parameters.reservedTopBuffer = this.parameters.reservedTopBuffer;
 			view.overflowX = 'hidden';
 			view.overflowY = 'scroll';
+			view.state = {
+				shouldStartLoading: this.state.shouldStartLoading
+			};
 
 			view.configureDuration = 200;
 			view.backgroundColor = 'rgba(0,0,0, 0.6)';

@@ -5,6 +5,8 @@ class ProjectPage extends JABView {
 		
 		// State
 		this.state = {
+			shouldStartLoading: false,
+			
 			projectGroupIndex: 0,
 			projectIndex: 0,
 			
@@ -171,7 +173,9 @@ class ProjectPage extends JABView {
 					view.positionDuration = 800
 				}
 				
-				view.vimeoId = projectDataBundle.vimeoId
+				if (view.vimeoId != projectDataBundle.vimeoId && this.state.shouldStartLoading) {
+					view.vimeoId = projectDataBundle.vimeoId
+				}
 				
 				if (view.loadingGif == null) {
 					view.loadingGif = new LoadingGif()

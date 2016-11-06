@@ -116,7 +116,7 @@ var JABGifWrapper = function (_JABView) {
 				}
 			}
 
-			this.gif.cycle(this);
+			this.gif.advance(this);
 		}
 	}, {
 		key: 'stop',
@@ -137,6 +137,29 @@ var JABGifWrapper = function (_JABView) {
 			} else {
 				if (this.state.currentIteration < this.state.totalIterations) {
 					this.gif.cycle(this);
+				} else {
+					this.state = {
+						currentIteration: 0,
+						totalIterations: 0,
+						playing: false,
+						paused: false
+					};
+				}
+			}
+		}
+	}, {
+		key: 'advanceCompleted',
+		value: function advanceCompleted(cycleCompleted) {
+
+			if (cycleCompleted) {
+				this.state.totalIterations += 1;
+			}
+
+			if (this.state.totalIterations == null) {
+				this.gif.advance(this);
+			} else {
+				if (this.state.currentIteration < this.state.totalIterations) {
+					this.gif.advance(this);
 				} else {
 					this.state = {
 						currentIteration: 0,

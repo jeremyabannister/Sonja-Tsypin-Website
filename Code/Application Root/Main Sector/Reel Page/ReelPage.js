@@ -5,7 +5,8 @@ class ReelPage extends JABView {
 		
 		// State
 		this.state = {
-			readyToClose: true
+			readyToClose: true,
+			shouldStartLoading: false,
 		}
 		this.currentlyActive = null
 		
@@ -105,7 +106,7 @@ class ReelPage extends JABView {
 			view.loadingGif = new LoadingGif()
 		}
 		
-		if (view.vimeoId != vimeoId) {
+		if (view.vimeoId != vimeoId && this.state.shouldStartLoading) {
 			view.vimeoId = vimeoId
 		}
 		

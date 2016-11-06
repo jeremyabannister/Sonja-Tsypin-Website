@@ -8,6 +8,7 @@ class ProjectsPage extends JABView {
 		this.state = {
 			scrollable: false,
 			readyToClose: true,
+			shouldStartLoading: false,
 			
 			selectedProject: null,
 			selectedProjectIndex: null,

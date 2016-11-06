@@ -177,6 +177,23 @@ var LoadingGif = function (_JABView) {
 			}, this.gifDuration - this.gifDuration / this.numberOfSpokes);
 		}
 	}, {
+		key: 'advance',
+		value: function advance(delegate) {
+
+			this.highlightedSpokeIndex += 1;
+
+			if (this.highlightedSpokeIndex > this.numberOfSpokes) {
+				this.highlightedSpokeIndex = 0;
+			}
+
+			this.animatedUpdate(this.gifDuration / this.numberOfSpokes);
+
+			var gif = this;
+			setTimeout(function () {
+				delegate.advanceCompleted(gif.highlightedSpokeIndex == 0);
+			}, this.gifDuration / this.numberOfSpokes);
+		}
+	}, {
 		key: 'stop',
 		value: function stop() {
 
