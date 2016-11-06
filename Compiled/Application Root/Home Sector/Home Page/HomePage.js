@@ -124,7 +124,7 @@ var HomePage = function (_JABView) {
 			for (var i = 0; i < this.backgroundImageViews.length; i++) {
 				var view = this.backgroundImageViews[i];
 
-				view.src = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
+				view.src = './Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
 
 				/*
     (function(i, view) {

@@ -35,7 +35,7 @@ var Footer = function (_JABView) {
 		_this.rightBufferForRightButton = _this.leftBufferForCopyrightLabel;
 		_this.betweenBufferForButtons = 10;
 
-		_this.buttonImages = ['/Resources/Images/Buttons/Instagram Button.png', '/Resources/Images/Buttons/Art Button.png', '/Resources/Images/Buttons/Email Button.png'];
+		_this.buttonImages = ['./Resources/Images/Buttons/Instagram Button.png', './Resources/Images/Buttons/Art Button.png', './Resources/Images/Buttons/Email Button.png'];
 
 		// UI
 		_this.copyrightLabel = new UILabel('CopyrightLabel');

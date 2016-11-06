@@ -117,8 +117,8 @@ var ReelPage = function (_JABView) {
 
 			view.blur = 0;
 
-			view.coverImage = new UIImage("/Resources/Images/Reel Page/Reel Cover Photo.png");
-			view.playButtonImage = new UIImage("/Resources/Images/Buttons/Play Button.png");
+			view.coverImage = new UIImage("./Resources/Images/Reel Page/Reel Cover Photo.png");
+			view.playButtonImage = new UIImage("./Resources/Images/Buttons/Play Button.png");
 			view.labelText = "REEL";
 		}
 	}, {

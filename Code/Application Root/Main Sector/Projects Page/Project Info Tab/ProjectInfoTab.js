@@ -276,7 +276,7 @@ class ProjectInfoTab extends JABView {
 	configurePlayButton () {
 		
 		var view = this.playButton
-		view.src = '/Resources/Images/Buttons/Play Button.png'
+		view.src = './Resources/Images/Buttons/Play Button.png'
 		view.cursor = 'pointer'
 		view.positionDuration = 0
 		view.configureDuration = 0

@@ -20,6 +20,8 @@ class ApplicationRoot extends JABApplicationRoot {
 		// Parameters
 		this.parameters = {
 			heightOfHeader: 110,
+			
+			numberOfHomePageImages: 10,
 		}
 
 		if (this.laboratoryEnabled) {
@@ -42,7 +44,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	init () {
 		super.init()
 		
-		// this.getCoreImages()
+		this.getCoreImages()
 	}
 	
 	
@@ -460,7 +462,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '167824606'
 		dataBundle.vimeoHeightToWidth = (1.0/2.35)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/1/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -489,7 +491,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '172178428'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/3/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/3/'
 		for (var i = 0; i < 2; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -517,7 +519,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.noVideoMessage = 'TRAILER COMING SOON'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/2/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -541,7 +543,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '139578681'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/4/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/4/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -566,7 +568,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '99426346'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/5/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/5/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -593,7 +595,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '152982438'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -625,7 +627,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '126022343'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = './Resources/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -645,6 +647,17 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	
 	getCoreImages () {
+		
+		var imageQueue = []
+		
+		var homePageImageStem = './Resources/Images/Home Page/Featured Stills/'
+		
+		for (var i = 0; i < this.parameters.numberOfHomePageImages; i++) {
+			var imageObject = new Image()
+			imageObject.src = homePageImageStem  + (i + 1) + '.jpg'
+		}
+		
+		
 		var coreImages = ["Resources/Images/Home Page/Featured Stills/1.jpg", "Resources/Images/Home Page/Featured Stills/2.jpg", "Resources/Images/Home Page/Featured Stills/3.jpg"]
 		
 		this.opacity = 0
@@ -659,10 +672,12 @@ class ApplicationRoot extends JABApplicationRoot {
 			(function (i, image) {
 				var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/" + (i + 1) + ".jpg")
 				
+				console.log('starting getting')
 				imageRef.getDownloadURL().then(function(url) {
 				  // Get the download URL for 'images/stars.jpg'
 				  // This can be inserted into an <img> tag
 				  // This can also be downloaded directly
+				  console.log('finished getting')
 				  image.src = url
 				  applicationRoot.counter += 1
 				  

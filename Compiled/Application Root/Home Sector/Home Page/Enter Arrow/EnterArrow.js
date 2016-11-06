@@ -191,7 +191,7 @@ var EnterArrow = function (_JABView) {
 	}, {
 		key: 'configureImageView',
 		value: function configureImageView() {
-			this.imageView.src = '/Resources/Images/Buttons/Enter Arrow.png';
+			this.imageView.src = './Resources/Images/Buttons/Enter Arrow.png';
 
 			if (this.updatingForFade) {
 				if (this.fadedOut) {
