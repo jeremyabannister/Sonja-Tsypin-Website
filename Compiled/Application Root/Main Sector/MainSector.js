@@ -204,7 +204,13 @@ var MainSector = function (_JABView) {
 
 			view.backgroundColor = 'black';
 			view.overflowX = 'hidden';
-			view.overflowY = 'scroll';
+
+			if (this.state.projectOpen) {
+				view.overflowY = 'hidden';
+			} else {
+				view.overflowY = 'scroll';
+			}
+
 			view.parameters = {
 				reservedTopBuffer: this.parameters.reservedTopBuffer,
 				heightOfHeader: this.parameters.heightOfHeader
@@ -455,6 +461,23 @@ var MainSector = function (_JABView) {
 				mainSector.state = { closingMailForm: false };
 				mainSector.animatedUpdate();
 			});
+		}
+
+		// Swipe
+
+	}, {
+		key: 'leftSwipeDetected',
+		value: function leftSwipeDetected() {
+			if (this.state.projectOpen) {
+				this.projectPage.leftSwipeDetected();
+			}
+		}
+	}, {
+		key: 'rightSwipeDetected',
+		value: function rightSwipeDetected() {
+			if (this.state.projectOpen) {
+				this.projectPage.rightSwipeDetected();
+			}
 		}
 
 		// Keys

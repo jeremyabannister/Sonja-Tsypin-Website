@@ -65,6 +65,9 @@ html {
 
 body {
 	position: relative;
+	overflow: hidden;
+	
+	
 
 	/*font-family: 'siteFont';*/
 	/*background-color:#000;*/

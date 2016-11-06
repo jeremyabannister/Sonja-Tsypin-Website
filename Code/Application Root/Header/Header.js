@@ -20,7 +20,8 @@ class Header extends JABView {
 		
 		// Parameters
 		this.parameters = {
-			sideBufferForMobileContent: 10,
+			sideBufferForMobileContent: 20,
+			widthOfMobileMenuButtonLines: 30,
 			
 			mobileMenuAnimationSpeed: 300,
 			
@@ -132,7 +133,7 @@ class Header extends JABView {
 		newFrame.origin.y = 39
 		
 		if (sizeClass == 'xxs' || sizeClass == 'xs') {
-			newFrame.origin.x = (this.width - newFrame.size.width)/2
+			newFrame.origin.x = this.parameters.sideBufferForMobileContent
 			newFrame.origin.y = 14
 		}
 		
@@ -247,7 +248,7 @@ class Header extends JABView {
 		
 		view.clickable = true
 		view.cursor = 'pointer'
-		view.parameters = {animationSpeed: this.parameters.mobileMenuAnimationSpeed}
+		view.parameters = {animationSpeed: this.parameters.mobileMenuAnimationSpeed, minimumSideBuffer: this.parameters.sideBufferForMobileContent, maximumWidthOfLines: this.parameters.widthOfMobileMenuButtonLines}
 		view.state = {crossed: this.state.mobileMenuOpen}
 		
 		if (sizeClass == 'xxs' || sizeClass == 'xs') {
@@ -257,17 +258,16 @@ class Header extends JABView {
 		}
 		
 		view.updateAllUI()
-		
 	}
 	
 	positionMobileMenuButton () {
 		var view = this.mobileMenuButton
 		var newFrame = new CGRect()
 		
-		newFrame.size.width = this.logo.left
+		newFrame.size.width = this.parameters.widthOfMobileMenuButtonLines + (2 * this.parameters.sideBufferForMobileContent)
 		newFrame.size.height = newFrame.size.width
 
-		newFrame.origin.x = 0
+		newFrame.origin.x = this.width - newFrame.size.width
 		newFrame.origin.y = this.logo.y + (this.logo.height - newFrame.size.height)/2
 							
 		view.frame = newFrame

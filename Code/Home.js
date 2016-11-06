@@ -16,11 +16,10 @@ $(document).ready(function() {
 })
 
 $(window).load(function() {
-
+  
    applicationRoot = new ApplicationRoot('ApplicationRoot')
    $('body').append(applicationRoot.view)
    applicationRoot.init()
-   applicationRoot.addAllUI()
    configureApplicationRoot()
    positionApplicationRoot()
    
@@ -42,12 +41,14 @@ $(document).keydown(function(event) {
   } else if (keyCode == 37) {
     event.preventDefault()
     applicationRoot.leftArrowWasPressed()
+    // applicationRoot.leftSwipeDetected()
   } else if (keyCode == 38) {
     event.preventDefault()
     applicationRoot.upArrowWasPressed()
   } else if (keyCode == 39) {
     event.preventDefault()
     applicationRoot.rightArrowWasPressed()
+    // applicationRoot.rightSwipeDetected()
   } else if (keyCode == 40) {
     event.preventDefault()
     applicationRoot.downArrowWasPressed()
@@ -90,5 +91,54 @@ $(document).bind('mousewheel', function(evt) {
   
   
 })
+
+
+document.addEventListener('touchstart', handleTouchStart, false);        
+document.addEventListener('touchmove', handleTouchMove, false);
+
+var xDown = null;                                                        
+var yDown = null;                                                        
+
+function handleTouchStart(evt) {                                       
+    xDown = evt.touches[0].clientX;                                      
+    yDown = evt.touches[0].clientY;                                      
+};                                                
+
+function handleTouchMove(evt) {
+    if ( ! xDown || ! yDown ) {
+        return;
+    }
+
+    var xUp = evt.touches[0].clientX;                                    
+    var yUp = evt.touches[0].clientY;
+
+    var xDiff = xDown - xUp;
+    var yDiff = yDown - yUp;
+
+    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+        if ( xDiff > 0 ) {
+            /* left swipe */
+            // evt.preventDefault()
+            applicationRoot.leftSwipeDetected()
+        } else {
+            /* right swipe */
+            // evt.preventDefault()
+            applicationRoot.rightSwipeDetected()
+        }                       
+    } else {
+        if ( yDiff > 0 ) {
+            /* up swipe */ 
+            // evt.preventDefault()
+            applicationRoot.upSwipeDetected()
+        } else { 
+            /* down swipe */
+            // evt.preventDefault()
+            applicationRoot.downSwipeDetected()
+        }                                                                 
+    }
+    /* reset values */
+    xDown = null;
+    yDown = null;                                             
+};
 
 

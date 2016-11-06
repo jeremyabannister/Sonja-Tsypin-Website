@@ -356,6 +356,12 @@ var ProjectPage = function (_JABView) {
 			view.positionDuration = 0;
 			view.parameters.widthAddition = this.parameters.widthAdditionForNavigationButtons;
 
+			if (this.vimeoViews[this.state.projectGroupIndex].length == 1) {
+				view.opacity = 0;
+			} else {
+				view.opacity = 1;
+			}
+
 			view.updateAllUI();
 		}
 	}, {
@@ -452,6 +458,19 @@ var ProjectPage = function (_JABView) {
 		key: 'pause',
 		value: function pause() {
 			this.currentVimeoView.pause();
+		}
+
+		// Swipe
+
+	}, {
+		key: 'leftSwipeDetected',
+		value: function leftSwipeDetected() {
+			this.goToNextProject();
+		}
+	}, {
+		key: 'rightSwipeDetected',
+		value: function rightSwipeDetected() {
+			this.goToPreviousProject();
 		}
 
 		// Keys

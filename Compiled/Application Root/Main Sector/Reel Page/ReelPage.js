@@ -104,7 +104,7 @@ var ReelPage = function (_JABView) {
 		key: 'configureVimeoView',
 		value: function configureVimeoView() {
 
-			var vimeoId = '153864846';
+			var vimeoId = '179671795';
 			var view = this.vimeoView;
 
 			if (!(view.loadingGif instanceof LoadingGif)) {

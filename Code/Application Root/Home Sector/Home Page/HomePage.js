@@ -12,8 +12,10 @@ class HomePage extends JABView {
 		this.currentlyActive = true
 		
 		
-		this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [270, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]]
+		this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [240, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]]
 		
+		this.imageTimer = null
+		this.arrowTimer = null
 		
 		// UI
 		this.blackBackground = new JABView('BlackBackground')
@@ -50,7 +52,6 @@ class HomePage extends JABView {
 		this.addBlackBackground()
 		this.addBackgroundImageViews()
 		this.addEnterArrow()
-		
 	}
 	
 	
@@ -229,8 +230,9 @@ class HomePage extends JABView {
 	startTimeoutForNextImage () {
 		
 		var homePage = this
-
-		setTimeout(function() {
+		
+		clearTimeout(this.imageTimer)
+		this.imageTimer = setTimeout(function() {
 
 			homePage.backgroundImageIndex += 1
 			if (homePage.backgroundImageIndex > homePage.numberOfImages - 1) {
@@ -251,9 +253,8 @@ class HomePage extends JABView {
 
 
 	startTimeoutForArrowFade () {
-
 		var homePage = this
-
+		
 		setTimeout(function () {
 
 			// homePage.enterArrow.animationDuration = 1000

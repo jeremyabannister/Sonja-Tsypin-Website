@@ -215,7 +215,13 @@ class MainSector extends JABView {
 		
 		view.backgroundColor = 'black'
 		view.overflowX = 'hidden'
-		view.overflowY = 'scroll'
+		
+		if (this.state.projectOpen) {
+			view.overflowY = 'hidden'
+		} else {
+			view.overflowY = 'scroll'
+		}
+		
 		view.parameters = {
 			reservedTopBuffer: this.parameters.reservedTopBuffer,
 			heightOfHeader: this.parameters.heightOfHeader,
@@ -490,6 +496,22 @@ class MainSector extends JABView {
 			mainSector.state = {closingMailForm: false}
 			mainSector.animatedUpdate()
 		})
+	}
+	
+	
+	
+	
+	// Swipe
+	leftSwipeDetected () {
+		if (this.state.projectOpen) {
+			this.projectPage.leftSwipeDetected()
+		}
+	}
+	
+	rightSwipeDetected () {
+		if (this.state.projectOpen) {
+			this.projectPage.rightSwipeDetected()
+		}
 	}
 	
 	

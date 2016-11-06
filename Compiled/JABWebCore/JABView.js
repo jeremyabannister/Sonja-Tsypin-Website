@@ -174,6 +174,7 @@ var JABView = function () {
 				$(this.selector).append(subview.view);
 				subview.position = 'absolute';
 
+				// console.log('initing ' + subview.id)
 				subview.init();
 			}
 

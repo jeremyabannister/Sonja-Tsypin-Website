@@ -32,6 +32,13 @@ var JABImageView = function (_JABView) {
 		key: 'addAllUI',
 		value: function addAllUI() {
 			$(this.selector).append(this.imageView);
+
+			var imageView = this;
+			$(this.selector + ' > img').on('load', function () {
+				if (imageView.parent != null) {
+					imageView.parent.imageViewDidFinishLoadingImage(this);
+				}
+			});
 		}
 	}, {
 		key: 'updateAllUI',

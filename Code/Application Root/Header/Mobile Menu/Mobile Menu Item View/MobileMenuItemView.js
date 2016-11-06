@@ -96,7 +96,7 @@ class MobileMenuItemView extends JABView {
 			newFrame.size.width = size.width
 			newFrame.size.height = this.height
 
-			newFrame.origin.x = this.width - newFrame.size.width - this.parameters.sideBufferForContent
+			newFrame.origin.x = this.parameters.sideBufferForContent
 			newFrame.origin.y = 0
 		}
 							

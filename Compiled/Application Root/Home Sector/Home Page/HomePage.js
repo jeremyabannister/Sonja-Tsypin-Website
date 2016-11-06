@@ -26,7 +26,10 @@ var HomePage = function (_JABView) {
 		_this.arrowFaded = true;
 		_this.currentlyActive = true;
 
-		_this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [270, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]];
+		_this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [240, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]];
+
+		_this.imageTimer = null;
+		_this.arrowTimer = null;
 
 		// UI
 		_this.blackBackground = new JABView('BlackBackground');
@@ -122,6 +125,22 @@ var HomePage = function (_JABView) {
 				var view = this.backgroundImageViews[i];
 
 				view.src = './Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
+
+				/*
+    (function(i, view) {
+    	var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/" + (i + 1) + ".jpg")
+    	
+    	imageRef.getDownloadURL().then(function(url) {
+    	  // Get the download URL for 'images/stars.jpg'
+    	  // This can be inserted into an <img> tag
+    	  // This can also be downloaded directly
+    	  view.src = url
+    	}).catch(function(error) {
+    	  // Handle any errors
+    	  console.log('error', error)
+    	});
+    })(i, view)
+    */
 
 				if (this.backgroundImageIndex != this.numberOfImages - 1) {
 					if (i > this.backgroundImageIndex) {
@@ -227,7 +246,8 @@ var HomePage = function (_JABView) {
 
 			var homePage = this;
 
-			setTimeout(function () {
+			clearTimeout(this.imageTimer);
+			this.imageTimer = setTimeout(function () {
 
 				homePage.backgroundImageIndex += 1;
 				if (homePage.backgroundImageIndex > homePage.numberOfImages - 1) {
@@ -245,7 +265,6 @@ var HomePage = function (_JABView) {
 	}, {
 		key: 'startTimeoutForArrowFade',
 		value: function startTimeoutForArrowFade() {
-
 			var homePage = this;
 
 			setTimeout(function () {
@@ -261,6 +280,14 @@ var HomePage = function (_JABView) {
 		//
 		// Delegate
 		//
+
+		// JABImageView
+
+	}, {
+		key: 'imageViewDidFinishLoadingImage',
+		value: function imageViewDidFinishLoadingImage(imageView) {}
+		// console.log(imageView)
+
 
 		// JABView
 

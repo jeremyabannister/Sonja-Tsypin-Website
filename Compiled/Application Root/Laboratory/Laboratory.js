@@ -24,10 +24,10 @@ var Laboratory = function (_JABView) {
 		_this.big = false;
 
 		// UI
-		_this.view1 = new UILabel('View1');
-		_this.view2 = new JABView('View2', _this);
+		_this.view1 = new JABImageView('View1');
+		_this.view2 = new JABImageView('View2');
 
-		_this.defaultTimeInterval = 2000;
+		_this.defaultTimeInterval = 5000;
 		_this.specificTimeIntervals = [2000]; // First one specifies start delay and is necessary
 
 		_this.numberOfExperiments = 0; // Actual value is set in runExperiment which is run on the next line
@@ -163,13 +163,40 @@ var Laboratory = function (_JABView) {
 			var view1 = this.view1;
 			var view2 = this.view2;
 
-			this.numberOfExperiments = 1;
+			this.numberOfExperiments = 2;
 			console.log('<<<<<<<<<< Launching Experiment #' + experimentNumber + ' >>>>>>>>>>');
 
 			if (experimentNumber == 1) {
 
-				view1.frame = new CGRect(300, 300, 130, 130);
-			} else if (experimentNumber == 2) {} else if (experimentNumber == 3) {}
+				// var ref = new Firebase("https://sonjatsypin-b7a3e.firebaseio.co./Resources/Images/Home Page/Featured Stills")
+
+				this.downloaded = true;
+				var lab = this;
+				this.test = new Image();
+				$(this.test).on('load', function () {
+					console.log('finished download');
+					lab.downloaded = true;
+				});
+
+				var imageRef = storageRef.child("Resources/Images/Home Page/Featured Stills/8.jpg");
+
+				imageRef.getDownloadURL().then(function (url) {
+					// Get the download URL for 'images/stars.jpg'
+					// This can be inserted into an <img> tag
+					// This can also be downloaded directly
+					console.log('starting download');
+					// lab.test.src = url
+					lab.url = url;
+				}).catch(function (error) {
+					// Handle any errors
+					console.log('error', error);
+				});
+			} else if (experimentNumber == 2) {
+
+				if (this.downloaded) {
+					view1.src = this.url;
+				}
+			} else if (experimentNumber == 3) {}
 
 			console.log('<<<<<<<<<< Ending Experiment #' + experimentNumber + ' >>>>>>>>>>');
 		}

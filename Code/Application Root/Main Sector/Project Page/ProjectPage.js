@@ -463,6 +463,16 @@ class ProjectPage extends JABView {
 	
 	
 	
+	// Swipe
+	leftSwipeDetected () {
+		this.goToNextProject()
+	}
+	
+	rightSwipeDetected () {
+		this.goToPreviousProject()
+	}
+	
+	
 	// Keys
 	leftArrowWasPressed () {
 		this.goToPreviousProject()

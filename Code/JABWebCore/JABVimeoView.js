@@ -151,6 +151,7 @@ class JABVimeoView extends JABView {
 	
 	addIFrame () {
 		$(this.iFrameWrapper.selector).append(this.iframe)
+		this.addTouchListener()
 	}
 	
 	
@@ -424,6 +425,54 @@ class JABVimeoView extends JABView {
 		if (this.player != null) {
 			this.player.pause()
 		}
+	}
+	
+	addTouchListener () {
+		document.getElementById(this.id).addEventListener('touchstart', handleTouchStart, false);        
+		document.getElementById(this.id).addEventListener('touchmove', handleTouchMove, false);
+		
+		var vimeoView = this;
+		var xDown = null;
+		var yDown = null;                                                    
+
+		function handleTouchStart(evt) {
+			console.log('touch started!')
+		    xDown = evt.touches[0].clientX;                                      
+		    yDown = evt.touches[0].clientY;                                      
+		};                                                
+
+		function handleTouchMove(evt) {
+		    if ( ! xDown || ! yDown ) {
+		        return;
+		    }
+
+		    var xUp = evt.touches[0].clientX;                                    
+		    var yUp = evt.touches[0].clientY;
+
+		    var xDiff = xDown - xUp;
+		    var yDiff = yDown - yUp;
+
+		    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+		        if ( xDiff > 0 ) {
+		            /* left swipe */
+		            vimeoView.parent.leftSwipeDetected()
+		        } else {
+		            /* right swipe */
+		            vimeoView.parent.rightSwipeDetected()
+		        }                       
+		    } else {
+		        if ( yDiff > 0 ) {
+		            /* up swipe */ 
+		            vimeoView.parent.upSwipeDetected()
+		        } else { 
+		            /* down swipe */
+		            vimeoView.parent.downSwipeDetected()
+		        }                                                                 
+		    }
+		    /* reset values */
+		    xDown = null;
+		    yDown = null;                                             
+		};
 	}
 	
 	

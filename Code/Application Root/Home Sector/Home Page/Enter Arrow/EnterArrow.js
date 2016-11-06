@@ -282,7 +282,6 @@ class EnterArrow extends JABView {
 			}, this.bounceInitialTimeBuffer)
 		}
 		
-		
 		if (this.fadePaused) {
 			var pauseTime = this.fadedInPause
 			if (this.fadedOut) {
@@ -300,6 +299,7 @@ class EnterArrow extends JABView {
 				enterArrow.advanceTextOpacityPulse()
 			}, function() {})
 		}
+		
 	}
 	
 	

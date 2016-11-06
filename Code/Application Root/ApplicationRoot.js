@@ -42,7 +42,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	init () {
 		super.init()
 		
-		this.getCoreImages()
+		// this.getCoreImages()
 	}
 	
 	
@@ -378,6 +378,26 @@ class ApplicationRoot extends JABApplicationRoot {
 				}
 			}
 		}
+		
+	}
+	
+	
+	// Swipe
+	leftSwipeDetected () {
+		this.mainSector.leftSwipeDetected()
+	}
+	
+	rightSwipeDetected () {
+		this.mainSector.rightSwipeDetected()
+	}
+	
+	upSwipeDetected () {
+		if (this.websiteClosed) {
+			this.openWebsite()
+		}
+	}
+	
+	downSwipeDetected () {
 		
 	}
 	
