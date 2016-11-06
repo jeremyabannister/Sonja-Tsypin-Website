@@ -193,6 +193,26 @@ class LoadingGif extends JABView {
 	}
 	
 	
+	
+	advance (delegate) {
+		
+		this.highlightedSpokeIndex += 1
+		
+		if (this.highlightedSpokeIndex > this.numberOfSpokes) {
+			this.highlightedSpokeIndex = 0
+		}
+		
+		this.animatedUpdate(this.gifDuration/this.numberOfSpokes)
+		
+		var gif = this
+		setTimeout(function() {
+			delegate.advanceCompleted(gif.highlightedSpokeIndex == 0)
+		}, this.gifDuration/this.numberOfSpokes)
+		
+	}
+	
+	
+	
 	stop () {
 		
 		for (var i = 0; i < this.advanceHighlightTimers.length; i++) {

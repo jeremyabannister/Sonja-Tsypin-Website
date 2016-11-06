@@ -204,7 +204,10 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			};
 			view.projectDataBundles = this.projectDataBundles;
 
-			view.state.currentlyActive = !this.websiteClosed;
+			view.state = {
+				currentlyActive: !this.websiteClosed,
+				shouldStartLoading: !this.state.initiallyLoading
+			};
 			view.positionDuration = 0;
 
 			if (this.state.initiallyLoading) {

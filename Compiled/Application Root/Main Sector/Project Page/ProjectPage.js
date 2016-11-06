@@ -21,6 +21,8 @@ var ProjectPage = function (_JABView) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ProjectPage).call(this, customId));
 
 		_this.state = {
+			shouldStartLoading: false,
+
 			projectGroupIndex: 0,
 			projectIndex: 0,
 
@@ -171,7 +173,9 @@ var ProjectPage = function (_JABView) {
 						view.positionDuration = 800;
 					}
 
-					view.vimeoId = projectDataBundle.vimeoId;
+					if (view.vimeoId != projectDataBundle.vimeoId && this.state.shouldStartLoading) {
+						view.vimeoId = projectDataBundle.vimeoId;
+					}
 
 					if (view.loadingGif == null) {
 						view.loadingGif = new LoadingGif();

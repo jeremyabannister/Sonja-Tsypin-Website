@@ -63,10 +63,15 @@ var JABGif = function (_JABView) {
 
 	}, {
 		key: "cycle",
-		value: function cycle(delegate) {}
+		value: function cycle(delegate) {
 
-		// This is defined by each gif. The gif is responsible for caling cycleCompleted on the passed delegate at the end of its cycle
+			// This is defined by each gif. The gif is responsible for caling cycleCompleted on the passed delegate at the end of its cycle
+		}
+	}, {
+		key: "advance",
+		value: function advance(delegate) {}
 
+		// This is distinct from the cycle method in that advance does not necessarily return the gif to its original state. For example, a gif which consists of three images will need to advance three times before it is back to where it started. cycle, by contrast, is defined as one full loop returning to where it started. The gif is responsible for calling advancedCompleted at the end of the advancement
 
 		//
 		// Delegate

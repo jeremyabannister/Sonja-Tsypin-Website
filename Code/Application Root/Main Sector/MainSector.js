@@ -7,6 +7,7 @@ class MainSector extends JABView {
 		// State
 		this.state = {
 			currentlyActive: false,
+			shouldStartLoading: false,
 			pageIndex: 0,
 			projectOpen: false,
 			closingProject: false,
@@ -220,6 +221,9 @@ class MainSector extends JABView {
 		
 		view.backgroundColor = 'black'
 		view.overflowX = 'hidden'
+		view.state = {
+			shouldStartLoading: this.state.shouldStartLoading,
+		}
 		
 		if (this.state.projectOpen || !this.state.currentlyActive) {
 			view.overflowY = 'hidden'
@@ -301,6 +305,9 @@ class MainSector extends JABView {
 		view.backgroundColor = 'black'
 		view.overflow = 'scroll'
 		view.reservedTopBuffer = this.parameters.reservedTopBuffer
+		view.state = {
+			shouldStartLoading: this.state.shouldStartLoading,
+		}
 		
 		if (this.currentlyActivePage == view) {
 			if (!this.state.closingProject && !this.state.closingMailForm) { // closingProject is true when the projectPage is fading out, during which we do not want to reorder the pages because that will cause the project page to disappear immediately
@@ -397,6 +404,9 @@ class MainSector extends JABView {
 		view.parameters.reservedTopBuffer = this.parameters.reservedTopBuffer
 		view.overflowX = 'hidden'
 		view.overflowY = 'scroll'
+		view.state = {
+			shouldStartLoading: this.state.shouldStartLoading,
+		}
 		
 		view.configureDuration = 200
 		view.backgroundColor = 'rgba(0,0,0, 0.6)'
