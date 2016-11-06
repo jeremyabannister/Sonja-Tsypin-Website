@@ -324,7 +324,11 @@ var ProjectsPage = function (_JABView) {
 
 	}, {
 		key: 'configureFooter',
-		value: function configureFooter() {}
+		value: function configureFooter() {
+			var view = this.footer;
+
+			view.updateAllUI();
+		}
 	}, {
 		key: 'positionFooter',
 		value: function positionFooter() {

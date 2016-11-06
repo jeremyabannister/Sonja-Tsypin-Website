@@ -409,8 +409,8 @@ class ProjectPage extends JABView {
 		this.pause()
 		if (this.state.projectIndex != 0) {
 			this.state.projectIndex -= 1
-			if (this.state.projectIndex == 2) {
-				this.state.projectIndex = 1
+			if (this.state.projectIndex == 1) {
+				this.state.projectIndex = 0
 			}
 			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
 			
@@ -424,8 +424,8 @@ class ProjectPage extends JABView {
 		this.pause()
 		if (this.state.projectIndex != this.projectGroups[this.state.projectGroupIndex].length - 1) {
 			this.state.projectIndex += 1
-			if (this.state.projectIndex == 2) {
-				this.state.projectIndex = 3
+			if (this.state.projectIndex == 1) {
+				this.state.projectIndex = 2
 			}
 			this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex)
 			

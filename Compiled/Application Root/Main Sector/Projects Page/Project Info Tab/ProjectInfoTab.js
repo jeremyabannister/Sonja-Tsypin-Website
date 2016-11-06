@@ -280,7 +280,11 @@ var ProjectInfoTab = function (_JABView) {
 		value: function configurePlayButton() {
 
 			var view = this.playButton;
-			view.src = './Resources/Images/Buttons/Play Button.png';
+			var imagePath = '/Resources/Images/Buttons/Play Button.png';
+			if (imageBank.imageStatus[imagePath] == true) {
+				view.src = imagePath;
+			}
+
 			view.cursor = 'pointer';
 			view.positionDuration = 0;
 			view.configureDuration = 0;
@@ -409,6 +413,11 @@ var ProjectInfoTab = function (_JABView) {
 			}
 			view.fontFamily = 'siteFont';
 			view.fontSize = this.titleLabel.fontSize * (10.0 / 20.0);
+
+			if (sizeClass == 'xxs') {
+				view.fontSize = 9;
+			}
+
 			view.hyphenate = true;
 			view.positionDuration = 0;
 
@@ -458,6 +467,12 @@ var ProjectInfoTab = function (_JABView) {
 		//
 		// Delegate
 		//
+
+		// Image View
+
+	}, {
+		key: 'imageViewDidFinishLoadingImage',
+		value: function imageViewDidFinishLoadingImage(imageView) {}
 
 		// JABView
 

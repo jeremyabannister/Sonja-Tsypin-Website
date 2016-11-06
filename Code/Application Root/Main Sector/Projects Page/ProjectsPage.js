@@ -331,8 +331,9 @@ class ProjectsPage extends JABView {
 	
 	// Footer
 	configureFooter () {
+		var view = this.footer
 		
-		
+		view.updateAllUI()
 	}
 	
 	positionFooter () {

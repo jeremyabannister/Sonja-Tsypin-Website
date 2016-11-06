@@ -191,7 +191,11 @@ var EnterArrow = function (_JABView) {
 	}, {
 		key: 'configureImageView',
 		value: function configureImageView() {
-			this.imageView.src = './Resources/Images/Buttons/Enter Arrow.png';
+			var imagePath = '/Resources/Images/Buttons/Enter Arrow.png';
+
+			if (imageBank.imageStatus[imagePath] == true) {
+				this.imageView.src = imagePath;
+			}
 
 			if (this.updatingForFade) {
 				if (this.fadedOut) {
@@ -332,6 +336,11 @@ var EnterArrow = function (_JABView) {
 		// Delegate
 		//
 
+		// Image View
+
+	}, {
+		key: 'imageViewDidFinishLoadingImage',
+		value: function imageViewDidFinishLoadingImage(imageView) {}
 	}]);
 
 	return EnterArrow;

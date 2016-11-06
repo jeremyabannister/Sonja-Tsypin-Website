@@ -276,7 +276,11 @@ class ProjectInfoTab extends JABView {
 	configurePlayButton () {
 		
 		var view = this.playButton
-		view.src = './Resources/Images/Buttons/Play Button.png'
+		var imagePath = '/Resources/Images/Buttons/Play Button.png'
+		if (imageBank.imageStatus[imagePath] == true) {
+			view.src = imagePath
+		}
+		
 		view.cursor = 'pointer'
 		view.positionDuration = 0
 		view.configureDuration = 0
@@ -411,6 +415,11 @@ class ProjectInfoTab extends JABView {
 		}
 		view.fontFamily = 'siteFont'
 		view.fontSize = this.titleLabel.fontSize * (10.0/20.0)
+		
+		if (sizeClass == 'xxs') {
+			view.fontSize = 9
+		}
+		
 		view.hyphenate = true
 		view.positionDuration = 0
 		
@@ -467,6 +476,10 @@ class ProjectInfoTab extends JABView {
 	// Delegate
 	//
 	
+	// Image View
+	imageViewDidFinishLoadingImage (imageView) {
+		
+	}
 	
 	// JABView
 	viewWasClicked (view) {

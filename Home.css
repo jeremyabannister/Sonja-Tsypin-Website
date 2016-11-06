@@ -2,13 +2,13 @@
 
 @font-face {
     font-family: siteFont;
-    src: url(./Resources/Fonts/siteFont.woff);
+    src: url(/Resources/Fonts/siteFont.woff);
     font-weight:normal;
 }
 
 @font-face {
     font-family: siteFont;
-    src: url(./Resources/Fonts/siteFontBold.woff);
+    src: url(/Resources/Fonts/siteFontBold.woff);
     font-weight: bold;
 }
 
@@ -29,12 +29,12 @@ body {
 
 @font-face {
     font-family: "siteFont";
-    src: url("./Resources/Fonts/site-font.woff") format('woff');
+    src: url("/Resources/Fonts/site-font.woff") format('woff');
 }
 
 @font-face {
     font-family: "siteFont";
-    src: url("./Resources/Fonts/site-font-bold.woff") format('woff');
+    src: url("/Resources/Fonts/site-font-bold.woff") format('woff');
     font-weight: bold;
 }
 

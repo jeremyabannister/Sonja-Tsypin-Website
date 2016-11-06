@@ -224,7 +224,10 @@ var JABVimeoView = function (_JABView) {
 			var insertBelow = !this.unplayed;
 			if (this.coverImage != null) {
 
-				view.src = this.coverImage.src;
+				var imagePath = this.coverImage.src;
+				if (imageBank.imageStatus[imagePath] == true) {
+					view.src = imagePath;
+				}
 
 				if (this.unplayed) {
 					view.opacity = 1;
@@ -262,7 +265,10 @@ var JABVimeoView = function (_JABView) {
 			var view = this.playButton;
 
 			if (this.playButtonImage != null) {
-				view.src = this.playButtonImage.src;
+				var imagePath = this.playButtonImage.src;
+				if (imageBank.imageStatus[imagePath] == true) {
+					view.src = imagePath;
+				}
 				if (this.unplayed) {
 					view.opacity = 1;
 				} else {
@@ -441,6 +447,12 @@ var JABVimeoView = function (_JABView) {
 		//
 		// Delegate
 		//
+
+		// Image View
+
+	}, {
+		key: 'imageViewDidFinishLoadingImage',
+		value: function imageViewDidFinishLoadingImage(imageView) {}
 
 		// JABView
 

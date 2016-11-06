@@ -285,7 +285,10 @@ class JABVimeoView extends JABView {
 		var insertBelow = !this.unplayed
 		if (this.coverImage != null) {
 			
-			view.src = this.coverImage.src
+			var imagePath = this.coverImage.src
+			if (imageBank.imageStatus[imagePath] == true) {
+				view.src = imagePath
+			}
 			
 			if (this.unplayed) {
 				view.opacity = 1
@@ -324,7 +327,10 @@ class JABVimeoView extends JABView {
 		var view = this.playButton
 		
 		if (this.playButtonImage != null) {
-			view.src = this.playButtonImage.src
+			var imagePath = this.playButtonImage.src
+			if (imageBank.imageStatus[imagePath] == true) {
+				view.src = imagePath
+			}
 			if (this.unplayed) {
 				view.opacity = 1
 			} else {
@@ -498,6 +504,11 @@ class JABVimeoView extends JABView {
 	//
 	// Delegate
 	//
+	
+	// Image View
+	imageViewDidFinishLoadingImage (imageView) {
+		
+	}
 	
 	// JABView
 	viewWasClicked (view) {

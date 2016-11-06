@@ -92,7 +92,11 @@ var ProjectImageView = function (_JABView) {
 
 			var view = this.imageView;
 
-			view.src = this.state.projectDataBundle.stills[this.state.projectDataBundle.mainStillIndex];
+			var imagePath = this.state.projectDataBundle.stills[this.state.projectDataBundle.mainStillIndex];
+			if (imageBank.imageStatus[imagePath] == true) {
+				view.src = imagePath;
+			}
+
 			view.configureDuration = 150;
 			view.positionDuration = 150;
 
@@ -162,6 +166,11 @@ var ProjectImageView = function (_JABView) {
 		// Delegate
 		//
 
+		// Image View
+
+	}, {
+		key: 'imageViewDidFinishLoadingImage',
+		value: function imageViewDidFinishLoadingImage(imageView) {}
 	}]);
 
 	return ProjectImageView;

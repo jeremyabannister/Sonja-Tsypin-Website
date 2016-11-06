@@ -75,7 +75,11 @@ class ProjectImageView extends JABView {
 		
 		var view = this.imageView
 		
-		view.src = this.state.projectDataBundle.stills[this.state.projectDataBundle.mainStillIndex]
+		var imagePath = this.state.projectDataBundle.stills[this.state.projectDataBundle.mainStillIndex]
+		if (imageBank.imageStatus[imagePath] == true) {
+			view.src = imagePath
+		}
+		
 		view.configureDuration = 150
 		view.positionDuration = 150
 		
@@ -153,5 +157,10 @@ class ProjectImageView extends JABView {
 	//
 	// Delegate
 	//
+	
+	// Image View
+	imageViewDidFinishLoadingImage (imageView) {
+		
+	}
 	
 }

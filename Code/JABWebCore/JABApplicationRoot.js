@@ -15,6 +15,7 @@ class JABApplicationRoot extends JABView {
 		// UI
 		this.laboratory
 		
+		// Image Bank
 		
 	}
 

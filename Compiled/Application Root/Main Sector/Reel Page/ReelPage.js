@@ -117,9 +117,11 @@ var ReelPage = function (_JABView) {
 
 			view.blur = 0;
 
-			view.coverImage = new UIImage("./Resources/Images/Reel Page/Reel Cover Photo.png");
-			view.playButtonImage = new UIImage("./Resources/Images/Buttons/Play Button.png");
+			view.coverImage = new UIImage("/Resources/Images/Reel Page/Reel Cover Photo.png");
+			view.playButtonImage = new UIImage("/Resources/Images/Buttons/Play Button.png");
 			view.labelText = "REEL";
+
+			view.updateAllUI();
 		}
 	}, {
 		key: 'positionVimeoView',
@@ -140,7 +142,11 @@ var ReelPage = function (_JABView) {
 
 	}, {
 		key: 'configureFooter',
-		value: function configureFooter() {}
+		value: function configureFooter() {
+			var view = this.footer;
+
+			view.updateAllUI();
+		}
 	}, {
 		key: 'positionFooter',
 		value: function positionFooter() {
@@ -217,7 +223,6 @@ var ReelPage = function (_JABView) {
 	}, {
 		key: 'spaceBarWasPressed',
 		value: function spaceBarWasPressed() {
-			console.log('pressed');
 			var reelPage = this;
 			this.vimeoView.paused.then(function (paused) {
 				if (paused) {
@@ -231,6 +236,12 @@ var ReelPage = function (_JABView) {
 		//
 		// Delegate
 		//
+
+		// Image View
+
+	}, {
+		key: 'imageViewDidFinishLoadingImage',
+		value: function imageViewDidFinishLoadingImage(imageView) {}
 
 		// JABVimeoView
 
