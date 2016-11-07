@@ -50,7 +50,7 @@ class ApplicationRoot extends JABApplicationRoot {
 	init () {
 		super.init()
 		
-		this.getCoreImages()
+		this.downloadImages()
 	}
 	
 	
@@ -725,9 +725,9 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	
 	
-	getCoreImages () {
+	downloadImages () {
 		
-		var numberOfHomePageImagesLoadedAtFirst = 2
+		var numberOfHomePageImagesLoadedAtFirst = 4
 		
 		var homePageImageStem = '/Resources/Images/Home Page/Featured Stills/'
 		var buttonImageStem = '/Resources/Images/Buttons/'
