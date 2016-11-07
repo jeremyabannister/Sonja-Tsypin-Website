@@ -24,6 +24,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		_this.contentWidth = { 'xxs': 0, 'xs': 0, 's': 780, 'm': 1000, 'l': 1000, 'xl': 1450 };
 		_this.state = {
 			headerBackdropHidden: false,
+			initialLoadingGifInPlace: false,
 			initiallyLoading: true
 		};
 
@@ -67,7 +68,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		value: function init() {
 			_get(Object.getPrototypeOf(ApplicationRoot.prototype), 'init', this).call(this);
 
-			this.getCoreImages();
+			this.downloadImages();
 		}
 
 		//
@@ -143,17 +144,19 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 				this.configureInitialLoadingGifWrapper();
 				this.positionInitialLoadingGifWrapper();
 
-				this.configureMainSector();
-				this.positionMainSector();
+				if (this.state.initialLoadingGifInPlace) {
+					this.configureMainSector();
+					this.positionMainSector();
 
-				this.configureHeaderBackdrop();
-				this.positionHeaderBackdrop();
+					this.configureHeaderBackdrop();
+					this.positionHeaderBackdrop();
 
-				this.configureHomeSector();
-				this.positionHomeSector();
+					this.configureHomeSector();
+					this.positionHomeSector();
 
-				this.configureHeader();
-				this.positionHeader();
+					this.configureHeader();
+					this.positionHeader();
+				}
 			}
 		}
 
@@ -188,6 +191,10 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			newFrame.origin.y = (this.height - newFrame.size.height) / 2;
 
 			view.frame = newFrame;
+
+			if (!this.state.initialLoadingGifInPlace) {
+				this.state.initialLoadingGifInPlace = true;
+			}
 		}
 
 		// Main Sector
@@ -682,10 +689,10 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			return dataBundles;
 		}
 	}, {
-		key: 'getCoreImages',
-		value: function getCoreImages() {
+		key: 'downloadImages',
+		value: function downloadImages() {
 
-			var numberOfHomePageImagesLoadedAtFirst = 2;
+			var numberOfHomePageImagesLoadedAtFirst = 4;
 
 			var homePageImageStem = '/Resources/Images/Home Page/Featured Stills/';
 			var buttonImageStem = '/Resources/Images/Buttons/';
@@ -695,22 +702,22 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 
 			// Home Page (first batch)
 			for (var i = 0; i < numberOfHomePageImagesLoadedAtFirst; i++) {
-				imageBank.addToQueue(homePageImageStem + (i + 1) + '.jpg');
+				imageBank.addToQueue(homePageImageStem + (i + 1) + '.jpg', this);
 			}
-			imageBank.addToQueue(buttonImageStem + 'Enter Arrow.png');
+			imageBank.addToQueue(buttonImageStem + 'Enter Arrow.png', this);
 
 			// Reel Page
-			imageBank.addToQueue('/Resources/Images/Reel Page/Reel Cover Photo.png');
+			imageBank.addToQueue('/Resources/Images/Reel Page/Reel Cover Photo.png', this);
 			imageBank.addToQueue(buttonImageStem + 'Play Button.png', this);
 
 			// Footer
-			imageBank.addToQueue(buttonImageStem + 'Instagram Button.png');
-			imageBank.addToQueue(buttonImageStem + 'Art Button.png');
+			imageBank.addToQueue(buttonImageStem + 'Instagram Button.png', this);
+			imageBank.addToQueue(buttonImageStem + 'Art Button.png', this);
 			imageBank.addToQueue(buttonImageStem + 'Email Button.png', this);
 
 			// Projects Page
 			for (var i = 0; i < projectsPageIndexCombinations.length; i++) {
-				imageBank.addToQueue(projectsPageImageStem + projectsPageIndexCombinations[i][0] + '/still' + projectsPageIndexCombinations[i][1] + '.jpg');
+				imageBank.addToQueue(projectsPageImageStem + projectsPageIndexCombinations[i][0] + '/still' + projectsPageIndexCombinations[i][1] + '.jpg', this);
 			}
 
 			// Home Page (second batch)
@@ -728,6 +735,7 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'imageDidFinishLoading',
 		value: function imageDidFinishLoading(src) {
+			console.log('loaded: ' + src);
 			if (src == '/Resources/Images/Buttons/Play Button.png') {
 				this.state.initiallyLoading = false;
 				this.updateAllUI();
