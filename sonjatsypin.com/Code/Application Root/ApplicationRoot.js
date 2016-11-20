@@ -1,3 +1,5 @@
+// Test
+
 class ApplicationRoot extends JABApplicationRoot {
 
 	constructor (customId) {
