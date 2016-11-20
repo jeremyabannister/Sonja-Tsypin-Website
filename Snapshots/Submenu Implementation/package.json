@@ -1,0 +1,13 @@
+{
+  "name": "sonjatsypin",
+  "version": "0.1.0",
+  "scripts": {
+      "build": "babel Code -d Compiled"
+    },
+    "scripts": {
+      "build": "babel --presets es2015 Code -d Compiled"
+    },
+    "devDependencies": {
+      "babel-cli": "^6.0.0"
+    }
+}
