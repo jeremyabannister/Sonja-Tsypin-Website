@@ -306,11 +306,13 @@ var Header = function (_JABView) {
 	}, {
 		key: 'menuItemWasSelected',
 		value: function menuItemWasSelected(menuItem) {
-			this.state = { mobileMenuOpen: false };
-			var header = this;
-			this.animatedUpdate(null, function () {
-				header.parent.headerDidSelectPage(menuItem.index);
-			});
+			if (this.state.mobileMenuOpen) {
+				var header = this;
+				this.state = { mobileMenuOpen: false };
+				this.animatedUpdate(null, function () {});
+			} else {
+				this.parent.headerDidSelectPage(menuItem.index);
+			}
 		}
 
 		// JABView
