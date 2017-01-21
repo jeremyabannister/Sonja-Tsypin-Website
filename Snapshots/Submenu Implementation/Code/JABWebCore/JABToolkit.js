@@ -1,5 +1,0 @@
-
-
-function replaceSpacesWithSpaceCode (string) {
-	
-}
