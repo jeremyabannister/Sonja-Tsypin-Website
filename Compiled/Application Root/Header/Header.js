@@ -168,7 +168,7 @@ var Header = function (_JABView) {
 			view.showUnderline = !this.websiteClosed;
 			view.selectedIndex = this.selectedMenuIndex;
 
-			view.textColor = 'white';
+			view.textColor = 'blue';
 
 			var fontSizes = { 'xxs': 12, 'xs': 12, 's': 16, 'm': 12, 'l': 12, 'xl': 12 };
 			view.fontSize = fontSizes[sizeClass];
