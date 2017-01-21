@@ -405,6 +405,7 @@ var ProjectPage = function (_JABView) {
 			if (this.state.projectIndex != 0) {
 				this.state.projectIndex -= 1;
 				if (this.state.projectIndex == 1) {
+					// To account for Audrey's missing film Angels
 					this.state.projectIndex = 0;
 				}
 				this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex);
@@ -421,6 +422,7 @@ var ProjectPage = function (_JABView) {
 			if (this.state.projectIndex != this.projectGroups[this.state.projectGroupIndex].length - 1) {
 				this.state.projectIndex += 1;
 				if (this.state.projectIndex == 1) {
+					// To account for Audrey's missing film Angels
 					this.state.projectIndex = 2;
 				}
 				this.parent.projectPageDidChangeProjectIndexTo(this, this.state.projectIndex);
