@@ -781,7 +781,6 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	// Image Bank
 	imageDidFinishLoading (src) {
-		console.log('loaded: ' + src)
 		if (src == '/Resources/Images/Buttons/Play Button.png') {
 			this.state.initiallyLoading = false
 			this.updateAllUI()
