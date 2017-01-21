@@ -735,7 +735,6 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 	}, {
 		key: 'imageDidFinishLoading',
 		value: function imageDidFinishLoading(src) {
-			console.log('loaded: ' + src);
 			if (src == '/Resources/Images/Buttons/Play Button.png') {
 				this.state.initiallyLoading = false;
 				this.updateAllUI();
