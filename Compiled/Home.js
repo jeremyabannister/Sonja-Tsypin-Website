@@ -91,6 +91,7 @@ var xDown = null;
 var yDown = null;
 
 function handleTouchStart(evt) {
+  evt.preventDefault();
   xDown = evt.touches[0].clientX;
   yDown = evt.touches[0].clientY;
 };
