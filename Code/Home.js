@@ -84,6 +84,7 @@ $(window).bind('mousewheel DOMMouseScroll wheel MozMousePixelScroll', function(e
 });
 */
 
+
 $(document).bind('mousewheel', function(evt) {
   
   var delta = evt.originalEvent.wheelDelta
@@ -99,7 +100,8 @@ document.addEventListener('touchmove', handleTouchMove, false);
 var xDown = null;                                                        
 var yDown = null;                                                        
 
-function handleTouchStart(evt) {                                       
+function handleTouchStart(evt) {     
+    evt.preventDefault();                                  
     xDown = evt.touches[0].clientX;                                      
     yDown = evt.touches[0].clientY;                                      
 };                                                
