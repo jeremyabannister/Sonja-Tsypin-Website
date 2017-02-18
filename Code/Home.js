@@ -101,12 +101,14 @@ var xDown = null;
 var yDown = null;                                                        
 
 function handleTouchStart(evt) {
-    if (applicationRoot.websiteClosed) {
-      evt.preventDefault();
-    }
+  
+  if (applicationRoot.websiteClosed) {
     
-    xDown = evt.touches[0].clientX;                                      
-    yDown = evt.touches[0].clientY;                                      
+    // evt.preventDefault();
+  }
+    
+    xDown = evt.touches[0].clientX;
+    yDown = evt.touches[0].clientY;
 };                                                
 
 function handleTouchMove(evt) {
@@ -133,11 +135,11 @@ function handleTouchMove(evt) {
     } else {
         if ( yDiff > 0 ) {
             /* up swipe */ 
-            // evt.preventDefault()
+            evt.preventDefault()
             applicationRoot.upSwipeDetected()
         } else { 
             /* down swipe */
-            // evt.preventDefault()
+            evt.preventDefault()
             applicationRoot.downSwipeDetected()
         }                                                                 
     }
