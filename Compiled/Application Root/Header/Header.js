@@ -309,7 +309,9 @@ var Header = function (_JABView) {
 			if (this.state.mobileMenuOpen) {
 				var header = this;
 				this.state = { mobileMenuOpen: false };
-				this.animatedUpdate(null, function () {});
+				this.animatedUpdate(null, function () {
+					this.parent.headerDidSelectPage(menuItem.index);
+				});
 			} else {
 				this.parent.headerDidSelectPage(menuItem.index);
 			}

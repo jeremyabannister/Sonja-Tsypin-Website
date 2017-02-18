@@ -91,8 +91,10 @@ var xDown = null;
 var yDown = null;
 
 function handleTouchStart(evt) {
+
   if (applicationRoot.websiteClosed) {
-    evt.preventDefault();
+
+    // evt.preventDefault();
   }
 
   xDown = evt.touches[0].clientX;
@@ -124,11 +126,11 @@ function handleTouchMove(evt) {
   } else {
     if (yDiff > 0) {
       /* up swipe */
-      // evt.preventDefault()
+      evt.preventDefault();
       applicationRoot.upSwipeDetected();
     } else {
       /* down swipe */
-      // evt.preventDefault()
+      evt.preventDefault();
       applicationRoot.downSwipeDetected();
     }
   }

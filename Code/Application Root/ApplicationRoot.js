@@ -474,6 +474,8 @@ class ApplicationRoot extends JABApplicationRoot {
 	}
 	
 	
+	
+	
 	// Swipe
 	leftSwipeDetected () {
 		this.mainSector.leftSwipeDetected()
