@@ -125,11 +125,11 @@ function handleTouchMove(evt) {
     if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
         if ( xDiff > 0 ) {
             /* left swipe */
-            // evt.preventDefault()
+            evt.preventDefault()
             applicationRoot.leftSwipeDetected()
         } else {
             /* right swipe */
-            // evt.preventDefault()
+            evt.preventDefault()
             applicationRoot.rightSwipeDetected()
         }                       
     } else {
