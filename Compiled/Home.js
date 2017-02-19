@@ -116,21 +116,29 @@ function handleTouchMove(evt) {
     /*most significant*/
     if (xDiff > 0) {
       /* left swipe */
-      evt.preventDefault();
+      if (applicationRoot.websiteClosed) {
+        evt.preventDefault();
+      }
       applicationRoot.leftSwipeDetected();
     } else {
       /* right swipe */
-      evt.preventDefault();
+      if (applicationRoot.websiteClosed) {
+        evt.preventDefault();
+      }
       applicationRoot.rightSwipeDetected();
     }
   } else {
     if (yDiff > 0) {
       /* up swipe */
-      evt.preventDefault();
+      if (applicationRoot.websiteClosed) {
+        evt.preventDefault();
+      }
       applicationRoot.upSwipeDetected();
     } else {
       /* down swipe */
-      evt.preventDefault();
+      if (applicationRoot.websiteClosed) {
+        evt.preventDefault();
+      }
       applicationRoot.downSwipeDetected();
     }
   }

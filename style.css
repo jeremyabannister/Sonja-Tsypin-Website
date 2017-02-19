@@ -27,17 +27,6 @@ body {
 
 */
 
-@font-face {
-    font-family: "siteFont";
-    src: url("/Resources/Fonts/site-font.woff") format('woff');
-}
-
-@font-face {
-    font-family: "siteFont";
-    src: url("/Resources/Fonts/site-font-bold.woff") format('woff');
-    font-weight: bold;
-}
-
 
 
 

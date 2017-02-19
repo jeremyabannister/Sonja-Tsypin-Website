@@ -27,7 +27,7 @@ var HomePage = function (_JABView) {
 		_this.arrowFaded = true;
 		_this.currentlyActive = true;
 
-		_this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [240, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]];
+		_this.imageOffsets = [[0, 0], [-70, 0], [0, 0], [100, 0], [-10, 0], [0, 0], [10, 0], [-80, 0], [80, 0], [130, 0]];
 
 		_this.imageTimer = null;
 		_this.arrowTimer = null;
@@ -133,7 +133,7 @@ var HomePage = function (_JABView) {
 
 			for (var i = 0; i < this.backgroundImageViews.length; i++) {
 				var view = this.backgroundImageViews[i];
-				var imagePath = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
+				var imagePath = resourcesDirectory + '/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
 
 				if (imageBank.imageStatus[imagePath] == true) {
 					view.src = imagePath;
@@ -264,7 +264,7 @@ var HomePage = function (_JABView) {
 		value: function checkLoadedImages() {
 			var numberLoaded = 0;
 			for (var i = 0; i < this.numberOfImages; i++) {
-				var imagePath = '/Resources/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
+				var imagePath = resourcesDirectory + '/Images/Home Page/Featured Stills/' + (i + 1) + '.jpg';
 				if (imageBank.imageStatus[imagePath] == true) {
 					numberLoaded++;
 				}

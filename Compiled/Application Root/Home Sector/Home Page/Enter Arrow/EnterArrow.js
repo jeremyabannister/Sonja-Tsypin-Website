@@ -191,7 +191,7 @@ var EnterArrow = function (_JABView) {
 	}, {
 		key: 'configureImageView',
 		value: function configureImageView() {
-			var imagePath = '/Resources/Images/Buttons/Enter Arrow.png';
+			var imagePath = resourcesDirectory + '/Images/Buttons/Enter Arrow.png';
 
 			if (imageBank.imageStatus[imagePath] == true) {
 				this.imageView.src = imagePath;

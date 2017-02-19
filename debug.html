@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link type='text/css' rel='stylesheet' href='style.css'/>
+		<title>Sonja Tsypin</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</head>
+	<body>
+		
+		
+		<style id="css-animations"></style>
+		
+		
+		
+		
+		<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+		<script>
+		  // Initialize Firebase
+		  var config = {
+		    apiKey: "AIzaSyB5_0x69VVxsGG1SwvYea2GCoqqc0M8thY",
+		    authDomain: "sonjatsypin-b7a3e.firebaseapp.com",
+		    databaseURL: "https://sonjatsypin-b7a3e.firebaseio.com",
+		    storageBucket: "gs://sonjatsypin-b7a3e.appspot.com",
+		  };
+		  firebase.initializeApp(config);
+		  
+		  
+		  var storageRef = firebase.storage().ref()
+		</script>
+		
+		<script>
+		// This script defines the codes for special characters. This is necessary because Babel annoyingly converts these codes to the actual unicode character, which then displays improperly. This file (Home.html) is not run through Babel before being uploaded to the server, so it is safe to define these codes as variables here and then reference those variables in the javascript files which are converted by Babel
+		var lowerCaseEnya = "\u00f1";
+		var upperCaseEnya = "\u00d1";
+		var trademarkC = "\u00a9";
+		
+		var resourcesDirectory = "./Resources"
+		</script>
+		
+		<style>
+			@font-face {
+			    font-family: "siteFont";
+			    src: url("./Resources/Fonts/site-font.woff") format('woff');
+			}
+
+			@font-face {
+			    font-family: "siteFont";
+			    src: url("./Resources/Fonts/site-font-bold.woff") format('woff');
+			    font-weight: bold;
+			}
+		</style>
+		
+		
+
+		<!-- jQuery -->
+		<script type='text/javascript' src='./Plugins/jQuery/jquery.min.js'></script>
+
+		<!-- Plugins -->
+		<script type="text/javascript" src="./Plugins/Bez/Bez.js"></script>
+		<script type="text/javascript" src="./Plugins/FontSpy/FontSpy.js"></script>
+		<script src="https://player.vimeo.com/api/player.js"></script>
+
+		<!-- JABWebCore -->
+		<script type='text/javascript' src='./Code/JABWebCore/JABArrayExtension.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABToolkit.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/CGPoint.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/CGSize.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/CGRect.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/Polygon.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABView.js'></script>
+
+		<script type='text/javascript' src='./Code/JABWebCore/UIImage.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/UIFont.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/UILabel.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABImageView.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABEmbeddedImageView.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABInput.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABTextArea.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABGif.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABGifWrapper.js'></script>
+		
+		<script type='text/javascript' src='./Code/JABWebCore/JABVimeoView.js'></script>
+
+		<script type='text/javascript' src='./Code/JABWebCore/JABButton.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABApplicationRoot.js'></script>
+		<script type='text/javascript' src='./Code/JABWebCore/JABImageBank.js'></script>
+		
+		
+		<script type='text/javascript' src='./Code/JABWebCore/JABGlobal.js'></script>
+
+		<!-- Model -->
+		<script type='text/javascript' src='./Code/Model/Project Data Bundle/Project Meta Data Bundle/ProjectMetaDataBundle.js'></script>
+		<script type='text/javascript' src='./Code/Model/Project Data Bundle/Project Stills Bundle/ProjectStillsBundle.js'></script>
+		<script type='text/javascript' src='./Code/Model/Project Data Bundle/Project Video Bundle/ProjectVideoBundle.js'></script>
+
+		<script type='text/javascript' src='./Code/Model/Project Data Bundle/ProjectDataBundle.js'></script>
+
+		<script type='text/javascript' src='./Code/Model/Image Data/ImageData.js'></script>
+
+		<!-- Generic Views -->
+		<script type='text/javascript' src='./Code/Generic Views/Interactive ImageView/Interactive Cover/InteractiveCover.js'></script>
+		<script type='text/javascript' src='./Code/Generic Views/Interactive ImageView/InteractiveImageView.js'></script>
+		<script type='text/javascript' src='./Code/Generic Views/Loading Gif/LoadingGif.js'></script>
+
+		<!--  -->
+		<!-- View Hierarchy -->
+		<!--  -->
+		
+		<!-- Basic Views -->
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Footer/Footer.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Projects Page/Project Image View/ProjectImageView.js'></script>
+
+		
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Projects Page/Project Info Tab/ProjectInfoTab.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Projects Page/ProjectsPage.js'></script>
+
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/About Page/AboutPage.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Reel Page/ReelPage.js'></script>
+		
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Mail Form Page/Mail Form/Labeled Input/LabeledInput.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Mail Form Page/Mail Form/Labeled Text Area/LabeledTextArea.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Mail Form Page/Mail Form/MailForm.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Mail Form Page/MailFormPage.js'></script>
+		
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/MainSector.js'></script>
+		
+		<script type='text/javascript' src='./Code/Application Root/Home Sector/Home Page/Enter Arrow/EnterArrow.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Home Sector/Home Page/HomePage.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Home Sector/HomeSector.js'></script>
+		
+		
+		<script type='text/javascript' src='./Code/Application Root/Header/Menu Item/MenuItem.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Header/Logo/Logo.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Header/Menu/Menu.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Header/Mobile Menu Button/MobileMenuButton.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Header/Mobile Menu/Mobile Menu Item View/MobileMenuItemView.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Header/Mobile Menu/MobileMenu.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Header/Header.js'></script>
+		
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Project Page/Video Navigation Buttons/VideoNavigationButtons.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/Main Sector/Project Page/ProjectPage.js'></script>
+
+		<script type='text/javascript' src='./Code/Application Root/Laboratory/Laboratory.js'></script>
+		<script type='text/javascript' src='./Code/Application Root/ApplicationRoot.js'></script>
+		<script type='text/javascript' src='./Code/Home.js'></script>
+		
+		
+		<script type='text/javascript' src='./php/phpTest.js'></script>
+
+	</body>
+</html>

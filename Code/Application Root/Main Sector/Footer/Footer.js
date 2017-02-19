@@ -19,7 +19,7 @@ class Footer extends JABView {
 		this.rightBufferForRightButton = this.leftBufferForCopyrightLabel
 		this.betweenBufferForButtons = 10
 		
-		this.buttonImages = ['/Resources/Images/Buttons/Instagram Button.png', '/Resources/Images/Buttons/Art Button.png', '/Resources/Images/Buttons/Email Button.png']
+		this.buttonImages = [resourcesDirectory + '/Images/Buttons/Instagram Button.png', resourcesDirectory + '/Images/Buttons/Art Button.png', resourcesDirectory + '/Images/Buttons/Email Button.png']
 		
 		// UI
 		this.copyrightLabel = new UILabel('CopyrightLabel')

@@ -168,8 +168,6 @@ var Laboratory = function (_JABView) {
 
 			if (experimentNumber == 1) {
 
-				// var ref = new Firebase("https://sonjatsypin-b7a3e.firebaseio.co/Resources/Images/Home Page/Featured Stills")
-
 				this.downloaded = true;
 				var lab = this;
 				this.test = new Image();

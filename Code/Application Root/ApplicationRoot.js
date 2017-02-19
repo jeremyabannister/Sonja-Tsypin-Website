@@ -554,7 +554,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '167824606'
 		dataBundle.vimeoHeightToWidth = (1.0/2.35)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/1/'
+		var pathStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/1/'
 		for (var i = 0; i < 4; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -580,7 +580,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.noVideoMessage = 'TRAILER COMING SOON'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/2/'
+		var pathStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/2/'
 		for (var i = 0; i < 5; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -605,7 +605,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '172178428'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/3/'
+		var pathStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/3/'
 		for (var i = 0; i < 2; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -630,7 +630,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '139578681'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/4/'
+		var pathStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/4/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -655,7 +655,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '99426346'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/5/'
+		var pathStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/5/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -682,7 +682,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '152982438'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -714,7 +714,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		dataBundle.vimeoId = '126022343'
 		dataBundle.vimeoHeightToWidth = (9.0/16.0)
 		
-		var pathStem = '/Resources/Images/Projects Page/Project Data Bundles/6/'
+		var pathStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/6/'
 		for (var i = 0; i < 1; i++) {
 			var index = i + 1
 			dataBundle.stills.push(pathStem + 'still' + index + '.jpg')
@@ -737,9 +737,9 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 		var numberOfHomePageImagesLoadedAtFirst = 4
 		
-		var homePageImageStem = '/Resources/Images/Home Page/Featured Stills/'
-		var buttonImageStem = '/Resources/Images/Buttons/'
-		var projectsPageImageStem = '/Resources/Images/Projects Page/Project Data Bundles/'
+		var homePageImageStem = resourcesDirectory + '/Images/Home Page/Featured Stills/'
+		var buttonImageStem = resourcesDirectory + '/Images/Buttons/'
+		var projectsPageImageStem = resourcesDirectory + '/Images/Projects Page/Project Data Bundles/'
 		
 		var projectsPageIndexCombinations = [[1, 3], [2, 4], [3, 1], [4, 1], [5, 1], [6, 1]]
 		
@@ -750,7 +750,7 @@ class ApplicationRoot extends JABApplicationRoot {
 		imageBank.addToQueue(buttonImageStem + 'Enter Arrow.png', this)
 		
 		// Reel Page
-		imageBank.addToQueue('/Resources/Images/Reel Page/Reel Cover Photo.png', this)
+		imageBank.addToQueue(resourcesDirectory + '/Images/Reel Page/Reel Cover Photo.png', this)
 		imageBank.addToQueue(buttonImageStem + 'Play Button.png', this)
 		
 		// Footer
@@ -783,12 +783,12 @@ class ApplicationRoot extends JABApplicationRoot {
 	
 	// Image Bank
 	imageDidFinishLoading (src) {
-		if (src == '/Resources/Images/Buttons/Play Button.png') {
+		if (src == resourcesDirectory + '/Images/Buttons/Play Button.png') {
 			this.state.initiallyLoading = false
 			this.updateAllUI()
-		} else if (src.lastIndexOf('/Resources/Images/Buttons/', 0) != -1) {
+		} else if (src.lastIndexOf(resourcesDirectory + '/Images/Buttons/', 0) != -1) {
 			this.updateAllUI()
-		} else if (src.lastIndexOf('/Resources/Images/Home Page/Featured Stills/', 0) != -1) {
+		} else if (src.lastIndexOf(resourcesDirectory + '/Images/Home Page/Featured Stills/', 0) != -1) {
 			this.homeSector.updateAllUI()
 		}
 	}

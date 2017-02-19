@@ -112,8 +112,8 @@ class ReelPage extends JABView {
 		
 		view.blur = 0
 		
-		view.coverImage = new UIImage("/Resources/Images/Reel Page/Reel Cover Photo.png")
-		view.playButtonImage = new UIImage("/Resources/Images/Buttons/Play Button.png")
+		view.coverImage = new UIImage(resourcesDirectory + '/Images/Reel Page/Reel Cover Photo.png')
+		view.playButtonImage = new UIImage(resourcesDirectory + '/Images/Buttons/Play Button.png')
 		view.labelText = "REEL"
 		
 		view.updateAllUI()

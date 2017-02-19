@@ -276,7 +276,7 @@ class ProjectInfoTab extends JABView {
 	configurePlayButton () {
 		
 		var view = this.playButton
-		var imagePath = '/Resources/Images/Buttons/Play Button.png'
+		var imagePath = resourcesDirectory + '/Images/Buttons/Play Button.png'
 		if (imageBank.imageStatus[imagePath] == true) {
 			view.src = imagePath
 		}
