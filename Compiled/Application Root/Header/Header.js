@@ -310,7 +310,7 @@ var Header = function (_JABView) {
 				var header = this;
 				this.state = { mobileMenuOpen: false };
 				this.animatedUpdate(null, function () {
-					this.parent.headerDidSelectPage(menuItem.index);
+					header.parent.headerDidSelectPage(menuItem.index);
 				});
 			} else {
 				this.parent.headerDidSelectPage(menuItem.index);
