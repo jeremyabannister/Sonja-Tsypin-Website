@@ -1420,9 +1420,22 @@ class JABView {
 			var thisView = this
 			$(this.selector).off()
 			if (this.clickable) {
-				$(this.selector).click(function() {
-					thisView.parent.viewWasClicked(thisView)
-				})
+				$(this.selector).contextmenu(function() {
+					return false
+				});
+				$(this.selector).mousedown(function(event) {
+					switch (event.which) {
+						case 1:
+							thisView.parent.viewWasClicked(thisView)
+							break;
+						case 2:
+							thisView.parent.viewWasMiddleClicked(thisView)
+							break;
+						case 3:
+							thisView.parent.viewWasRightClicked(thisView)
+							break;
+					}
+				});
 				
 				$(this.selector).css({
 					'-webkit-touch-callout': 'none',
@@ -1433,7 +1446,8 @@ class JABView {
 					'user-select': 'none',
 				})
 			} else {
-				$(this.selector).click(function() {})
+				$(this.selector).contextmenu(function() {});
+				$(this.selector).mousedown(function() {})
 				$(this.selector).css({
 					'-webkit-touch-callout': 'text',
 					'-webkit-user-select': 'text',

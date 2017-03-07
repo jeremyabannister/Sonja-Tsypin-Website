@@ -42,7 +42,7 @@ class Header extends JABView {
 	init () {
 		super.init()
 		
-		this.startEventListeners()
+
 	}
 
 	//
@@ -116,6 +116,7 @@ class Header extends JABView {
 			view.faded = false
 		}
 		view.cursor = 'pointer'
+		view.clickable = true
 
 		view.updateAllUI()
 
@@ -246,15 +247,17 @@ class Header extends JABView {
 		
 		var view = this.mobileMenuButton
 		
-		view.clickable = true
-		view.cursor = 'pointer'
 		view.parameters = {animationSpeed: this.parameters.mobileMenuAnimationSpeed, minimumSideBuffer: this.parameters.sideBufferForMobileContent, maximumWidthOfLines: this.parameters.widthOfMobileMenuButtonLines}
 		view.state = {crossed: this.state.mobileMenuOpen}
 		
 		if (sizeClass == 'xxs' || sizeClass == 'xs') {
 			view.opacity = 1
+			view.clickable = true
+			view.cursor = 'pointer'
 		} else {
 			view.opacity = 0
+			view.clickable = false
+			view.cursor = 'auto'
 		}
 		
 		view.updateAllUI()
@@ -279,18 +282,6 @@ class Header extends JABView {
 	
 	
 
-	//
-	// Event Listeners
-	//
-
-	startEventListeners () {
-
-		var header = this
-		$(this.logo.selector).click(function() {
-			header.parent.headerLogoWasClicked()
-		})
-
-	}
 
 
 	//
@@ -317,6 +308,8 @@ class Header extends JABView {
 		if (view == this.mobileMenuButton) {
 			this.state = {mobileMenuOpen: !this.state.mobileMenuOpen}
 			this.animatedUpdate()
+		} else if (view == this.logo) {
+			this.parent.headerLogoWasClicked()
 		}
 	}
 		

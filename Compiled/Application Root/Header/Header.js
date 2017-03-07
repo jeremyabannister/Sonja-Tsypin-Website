@@ -58,8 +58,6 @@ var Header = function (_JABView) {
 		key: 'init',
 		value: function init() {
 			_get(Object.getPrototypeOf(Header.prototype), 'init', this).call(this);
-
-			this.startEventListeners();
 		}
 
 		//
@@ -133,6 +131,7 @@ var Header = function (_JABView) {
 				view.faded = false;
 			}
 			view.cursor = 'pointer';
+			view.clickable = true;
 
 			view.updateAllUI();
 		}
@@ -255,15 +254,17 @@ var Header = function (_JABView) {
 
 			var view = this.mobileMenuButton;
 
-			view.clickable = true;
-			view.cursor = 'pointer';
 			view.parameters = { animationSpeed: this.parameters.mobileMenuAnimationSpeed, minimumSideBuffer: this.parameters.sideBufferForMobileContent, maximumWidthOfLines: this.parameters.widthOfMobileMenuButtonLines };
 			view.state = { crossed: this.state.mobileMenuOpen };
 
 			if (sizeClass == 'xxs' || sizeClass == 'xs') {
 				view.opacity = 1;
+				view.clickable = true;
+				view.cursor = 'pointer';
 			} else {
 				view.opacity = 0;
+				view.clickable = false;
+				view.cursor = 'auto';
 			}
 
 			view.updateAllUI();
@@ -281,20 +282,6 @@ var Header = function (_JABView) {
 			newFrame.origin.y = this.logo.y + (this.logo.height - newFrame.size.height) / 2;
 
 			view.frame = newFrame;
-		}
-
-		//
-		// Event Listeners
-		//
-
-	}, {
-		key: 'startEventListeners',
-		value: function startEventListeners() {
-
-			var header = this;
-			$(this.logo.selector).click(function () {
-				header.parent.headerLogoWasClicked();
-			});
 		}
 
 		//
@@ -325,6 +312,8 @@ var Header = function (_JABView) {
 			if (view == this.mobileMenuButton) {
 				this.state = { mobileMenuOpen: !this.state.mobileMenuOpen };
 				this.animatedUpdate();
+			} else if (view == this.logo) {
+				this.parent.headerLogoWasClicked();
 			}
 		}
 	}]);
