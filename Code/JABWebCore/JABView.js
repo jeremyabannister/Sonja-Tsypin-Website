@@ -67,6 +67,7 @@ class JABView {
 
 
 		// Configuration
+		// Animatable
 		this.opacity = 1
 		this.backgroundColor = 'transparent'
 		this.borderStyle = null
@@ -74,6 +75,15 @@ class JABView {
 		this.borderColor = null
 		this.borderRadius = null
 		this.blur = 0
+		
+		
+		// Non-animatable
+		this.backgroundImage = null
+		this.backgroundImageObject = null
+		this.backgroundImageLoaded = false
+		this.backgroundSize = 'cover'
+		this.backgroundPosition = 'center'
+		this.backgroundRepeat = 'no-repeat'
 		
 		this.zIndex = 0
 		this.position = 'absolute'
@@ -90,6 +100,8 @@ class JABView {
 		
 		// Position
 		this.frame = new CGRect()
+		this.widthIsAuto = false
+		this.heightIsAuto = false
 		this.angle = 0
 		
 		// Shape
@@ -931,11 +943,93 @@ class JABView {
 
 
 
-
-
 	//
 	// Non-Animatable
 	//
+	
+	
+	// Background Image
+	get backgroundImage () {
+		return this._backgroundImage
+	}
+	
+	set backgroundImage (newBackgroundImage) {
+		if (this.backgroundImage != newBackgroundImage) {
+			this._backgroundImage = newBackgroundImage
+			
+			// Deal with backgroundImageObject
+			this.backgroundImageLoaded = false
+			this.backgroundImageObject = new Image()
+			let view = this
+			this.backgroundImageObject.onload = function () {
+				view.backgroundImageLoaded = true
+				view.parent.viewBackgroundImageDidLoad(view)
+			}
+			this.backgroundImageObject.src = newBackgroundImage
+			
+			var urlString = 'url(' + newBackgroundImage.split(' ').join('%20') + ')'
+			$(this.selector).css({
+				'background-image': urlString,
+				'background-size': this.backgroundSize,
+				'background-position': this.backgroundPosition,
+				'background-repeat': this.backgroundRepeat,
+			})
+		}
+	}
+	
+	
+	
+	// Background Size
+	get backgroundSize () {
+		return this._backgroundSize
+	}
+	
+	set backgroundSize (newBackgroundSize) {
+		if (this.backgroundSize != newBackgroundSize) {
+			this._backgroundSize = newBackgroundSize
+			
+			$(this.selector).css({
+				'background-size': newBackgroundSize
+			})
+		}
+	}
+	
+	
+	// Background Position
+	get backgroundPosition () {
+		return this._backgroundPosition
+	}
+	
+	set backgroundPosition (newBackgroundPosition) {
+		if (this.backgroundPosition != newBackgroundPosition) {
+			this._backgroundPosition = newBackgroundPosition
+			
+			$(this.selector).css({
+				'background-position': newBackgroundPosition,
+			})
+		}
+	}
+	
+	
+	// Background Repeat
+	get backgroundRepeat () {
+		return this._backgroundRepeat
+	}
+	
+	set backgroundRepeat (newBackgroundRepeat) {
+		if (this.backgroundRepeat != newBackgroundRepeat) {
+			this._backgroundRepeat = newBackgroundRepeat
+			
+			$(this.selector).css({
+				'background-repeat': newBackgroundRepeat,
+			})
+		}
+	}
+	
+	
+	
+	
+	
 	
 	// ZIndex
 	get zIndex () {
@@ -1143,10 +1237,15 @@ class JABView {
 	
 	
 	get frame () {
-		if (this._frame != null) {
-			return (new CGRect(this._frame.origin.x, this._frame.origin.y, this._frame.size.width, this._frame.size.height))
-		}
-		return new CGRect()
+		let elementalSelf = document.getElementById(this.id)
+		if ((this._frame == null) || ((this.widthIsAuto || this.heightIsAuto) && elementalSelf == null )) { return new CGRect() }
+		
+		var width = this._frame.size.width
+		var height = this._frame.size.height
+		if (this.widthIsAuto && elementalSelf != null) { width = elementalSelf.clientWidth }
+		if (this.heightIsAuto && elementalSelf != null) { height = elementalSelf.clientHeight }
+		
+		return (new CGRect(this._frame.origin.x, this._frame.origin.y, width, height))
 	}
 
 	set frame (newFrame) {
@@ -1169,13 +1268,16 @@ class JABView {
 				rotationTransform = ' rotate(' + this.angle + 'deg)'
 			}
 			
+			let width = {true: 'auto', false: this.width}[this.widthIsAuto]
+			let height = {true: 'auto', false: this.height}[this.heightIsAuto]
+			
 			
 			$(this.selector).css({
 				
 				transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)' + rotationTransform,
 
-				width: this.width,
-				height: this.height,
+				width: width,
+				height: height,
 			})
 
 
@@ -1420,22 +1522,9 @@ class JABView {
 			var thisView = this
 			$(this.selector).off()
 			if (this.clickable) {
-				$(this.selector).contextmenu(function() {
-					return false
-				});
-				$(this.selector).mousedown(function(event) {
-					switch (event.which) {
-						case 1:
-							thisView.parent.viewWasClicked(thisView)
-							break;
-						case 2:
-							thisView.parent.viewWasMiddleClicked(thisView)
-							break;
-						case 3:
-							thisView.parent.viewWasRightClicked(thisView)
-							break;
-					}
-				});
+				$(this.selector).click(function() {
+					thisView.parent.viewWasClicked(thisView)
+				})
 				
 				$(this.selector).css({
 					'-webkit-touch-callout': 'none',
@@ -1446,8 +1535,7 @@ class JABView {
 					'user-select': 'none',
 				})
 			} else {
-				$(this.selector).contextmenu(function() {});
-				$(this.selector).mousedown(function() {})
+				$(this.selector).click(function() {})
 				$(this.selector).css({
 					'-webkit-touch-callout': 'text',
 					'-webkit-user-select': 'text',

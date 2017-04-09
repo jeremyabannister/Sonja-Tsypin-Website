@@ -68,6 +68,7 @@ var JABView = function () {
 		this.willingToInheritAnimationOptions = true;
 
 		// Configuration
+		// Animatable
 		this.opacity = 1;
 		this.backgroundColor = 'transparent';
 		this.borderStyle = null;
@@ -75,6 +76,14 @@ var JABView = function () {
 		this.borderColor = null;
 		this.borderRadius = null;
 		this.blur = 0;
+
+		// Non-animatable
+		this.backgroundImage = null;
+		this.backgroundImageObject = null;
+		this.backgroundImageLoaded = false;
+		this.backgroundSize = 'cover';
+		this.backgroundPosition = 'center';
+		this.backgroundRepeat = 'no-repeat';
 
 		this.zIndex = 0;
 		this.position = 'absolute';
@@ -90,6 +99,8 @@ var JABView = function () {
 
 		// Position
 		this.frame = new CGRect();
+		this.widthIsAuto = false;
+		this.heightIsAuto = false;
 		this.angle = 0;
 
 		// Shape
@@ -1143,6 +1154,95 @@ var JABView = function () {
 		// Non-Animatable
 		//
 
+		// Background Image
+
+	}, {
+		key: 'backgroundImage',
+		get: function get() {
+			return this._backgroundImage;
+		},
+		set: function set(newBackgroundImage) {
+			var _this = this;
+
+			if (this.backgroundImage != newBackgroundImage) {
+				var urlString;
+
+				(function () {
+					_this._backgroundImage = newBackgroundImage;
+
+					// Deal with backgroundImageObject
+					_this.backgroundImageLoaded = false;
+					_this.backgroundImageObject = new Image();
+					var view = _this;
+					_this.backgroundImageObject.onload = function () {
+						view.backgroundImageLoaded = true;
+						view.parent.viewBackgroundImageDidLoad(view);
+					};
+					_this.backgroundImageObject.src = newBackgroundImage;
+
+					urlString = 'url(' + newBackgroundImage.split(' ').join('%20') + ')';
+
+					$(_this.selector).css({
+						'background-image': urlString,
+						'background-size': _this.backgroundSize,
+						'background-position': _this.backgroundPosition,
+						'background-repeat': _this.backgroundRepeat
+					});
+				})();
+			}
+		}
+
+		// Background Size
+
+	}, {
+		key: 'backgroundSize',
+		get: function get() {
+			return this._backgroundSize;
+		},
+		set: function set(newBackgroundSize) {
+			if (this.backgroundSize != newBackgroundSize) {
+				this._backgroundSize = newBackgroundSize;
+
+				$(this.selector).css({
+					'background-size': newBackgroundSize
+				});
+			}
+		}
+
+		// Background Position
+
+	}, {
+		key: 'backgroundPosition',
+		get: function get() {
+			return this._backgroundPosition;
+		},
+		set: function set(newBackgroundPosition) {
+			if (this.backgroundPosition != newBackgroundPosition) {
+				this._backgroundPosition = newBackgroundPosition;
+
+				$(this.selector).css({
+					'background-position': newBackgroundPosition
+				});
+			}
+		}
+
+		// Background Repeat
+
+	}, {
+		key: 'backgroundRepeat',
+		get: function get() {
+			return this._backgroundRepeat;
+		},
+		set: function set(newBackgroundRepeat) {
+			if (this.backgroundRepeat != newBackgroundRepeat) {
+				this._backgroundRepeat = newBackgroundRepeat;
+
+				$(this.selector).css({
+					'background-repeat': newBackgroundRepeat
+				});
+			}
+		}
+
 		// ZIndex
 
 	}, {
@@ -1332,10 +1432,21 @@ var JABView = function () {
 	}, {
 		key: 'frame',
 		get: function get() {
-			if (this._frame != null) {
-				return new CGRect(this._frame.origin.x, this._frame.origin.y, this._frame.size.width, this._frame.size.height);
+			var elementalSelf = document.getElementById(this.id);
+			if (this._frame == null || (this.widthIsAuto || this.heightIsAuto) && elementalSelf == null) {
+				return new CGRect();
 			}
-			return new CGRect();
+
+			var width = this._frame.size.width;
+			var height = this._frame.size.height;
+			if (this.widthIsAuto && elementalSelf != null) {
+				width = elementalSelf.clientWidth;
+			}
+			if (this.heightIsAuto && elementalSelf != null) {
+				height = elementalSelf.clientHeight;
+			}
+
+			return new CGRect(this._frame.origin.x, this._frame.origin.y, width, height);
 		},
 		set: function set(newFrame) {
 
@@ -1355,12 +1466,15 @@ var JABView = function () {
 					rotationTransform = ' rotate(' + this.angle + 'deg)';
 				}
 
+				var width = { true: 'auto', false: this.width }[this.widthIsAuto];
+				var height = { true: 'auto', false: this.height }[this.heightIsAuto];
+
 				$(this.selector).css({
 
 					transform: 'translate3d(' + this.x + 'px, ' + this.y + 'px, 0px)' + rotationTransform,
 
-					width: this.width,
-					height: this.height
+					width: width,
+					height: height
 				});
 
 				if (scaled) {
@@ -1550,21 +1664,8 @@ var JABView = function () {
 				var thisView = this;
 				$(this.selector).off();
 				if (this.clickable) {
-					$(this.selector).contextmenu(function () {
-						return false;
-					});
-					$(this.selector).mousedown(function (event) {
-						switch (event.which) {
-							case 1:
-								thisView.parent.viewWasClicked(thisView);
-								break;
-							case 2:
-								thisView.parent.viewWasMiddleClicked(thisView);
-								break;
-							case 3:
-								thisView.parent.viewWasRightClicked(thisView);
-								break;
-						}
+					$(this.selector).click(function () {
+						thisView.parent.viewWasClicked(thisView);
 					});
 
 					$(this.selector).css({
@@ -1576,8 +1677,7 @@ var JABView = function () {
 						'user-select': 'none'
 					});
 				} else {
-					$(this.selector).contextmenu(function () {});
-					$(this.selector).mousedown(function () {});
+					$(this.selector).click(function () {});
 					$(this.selector).css({
 						'-webkit-touch-callout': 'text',
 						'-webkit-user-select': 'text',

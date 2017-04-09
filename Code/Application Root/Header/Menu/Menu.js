@@ -124,6 +124,8 @@ class Menu extends JABView {
 			this.buttons[i].letterSpacing = this.letterSpacing
 			
 			this.buttons[i].textAlign = this.textAlign
+			this.buttons[i].widthIsAuto = true
+			this.buttons[i].heightIsAuto = true
 			
 			if (this.fadeUnselectedButtons) {
 				if (i != this.selectedIndex) {
@@ -148,8 +150,8 @@ class Menu extends JABView {
 			var newFrame = new CGRect()
 			var size = this.buttons[i].font.sizeOfString(this.buttons[i].text)
 
-			newFrame.size.width = size.width
-			newFrame.size.height = size.height
+			// newFrame.size.width = size.width
+			// newFrame.size.height = size.height
 
 			if (newFrame.size.height > tallestHeight) {
 				tallestHeight = newFrame.size.height
