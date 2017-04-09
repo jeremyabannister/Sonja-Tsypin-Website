@@ -114,29 +114,13 @@ class AboutPage extends JABView {
 	configureBioText () {
 		
 		if (this.bioText.text == '') {
-			this.bioText.text = "Sonja Tsypin is a cinematographer based in New York and Los Angeles. Sonja's most recent short film, <span id='powderRoomSpan---" + this.id + "' style='color:white; cursor:pointer'>Powder Room</span> (2016), recieved the Bard College Seniors to Seniors Grant as well as the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja was also recently awarded First Place in the international 2016 KODAK Student Cinematography Scholarship Awards. Sonja's other recent work as Director of Photography includes upcoming narrative feature-length film <span id='angelsSpan---" + this.id + "' style='color:white;'>Angels</span> (2016, dir. Audrey Banks), short psychological drama <span id='birthDaySpan---" + this.id + "' style='color:white; cursor:pointer'>Birth Day</span> (2016, dir. Eva Evans) and short horror film <span id='theodoreSpan---" + this.id + "' style='color:white; cursor:pointer'>Theodore</span> (2015, dir. Ondine Vi" + lowerCaseEnya + "ao). Sonja's directing work also includes <span id='contactEsterinaSpan---" + this.id + "' style='color:white; cursor:pointer;'>Contact Esterina</span> (2014), a feature-length documentary about an Orthodox Jewish woman breaking away from tradition and <span id='foundGuiltySpan---" + this.id + "' style='color:white; cursor:pointer'>Found Guilty</span> (2014), a short film remake of Alfred Hitchcock\'s \"Blackmail.\" Sonja comes from a background in fine art (view work <a target='_blank' href='http://www.sonjatsypin.weebly.com'><span style='color:white'>here</span></a>); she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja is currently studying towards a master's degree in cinematography at the American Film Institute (AFI) Conservatory in Los Angeles."
+			this.bioText.text = "Sonja Tsypin is a cinematographer based in New York and Los Angeles. Her most recent short film, <span id='powderRoomSpan---" + this.id + "' style='color:white; cursor:pointer'>Powder Room</span> (2016), recieved the Bard College Seniors to Seniors Grant, the Adolfas Mekas Award, and won Best Student Short Drama in the Los Angeles Independant Film Festival. Sonja was also recently awarded First Place in the international 2016 KODAK Student Cinematography Scholarship Awards. Sonja comes from a background in fine art (view work <a target='_blank' href='http://www.sonjatsypin.weebly.com'><span style='color:white'>here</span></a>); she is the recipient of two regional Gold Keys and a national Gold Medal and Best in Grade award in the Scholastic Art and Writing Awards. Sonja is currently studying towards a master's degree in cinematography at the American Film Institute (AFI) Conservatory in Los Angeles."
+			
 			
 			
 			var parent = this.parent
 			$('#powderRoomSpan---' + this.id).click(function(){
 				parent.aboutPageWantsToDisplayProject(this, 'powderRoom')
-			})
-			$('#angelsSpan---' + this.id).click(function(){
-				parent.aboutPageWantsToDisplayProject(this, 'angels')
-			})
-			$('#birthDaySpan---' + this.id).click(function(){
-				parent.aboutPageWantsToDisplayProject(this, 'birthDay')
-			})
-			$('#theodoreSpan---' + this.id).click(function(){
-				parent.aboutPageWantsToDisplayProject(this, 'theodore')
-			})
-			$('#foundGuiltySpan---' + this.id).click(function(){
-				parent.aboutPageWantsToDisplayProject(this, 'foundGuilty')
-			})
-			
-			
-			$('#contactEsterinaSpan---' + this.id).click(function() {
-				parent.aboutPageWantsToDisplayProject(this, 'contactEsterina')
 			})
 		}
 		
