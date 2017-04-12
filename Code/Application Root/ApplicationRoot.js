@@ -18,6 +18,9 @@ class ApplicationRoot extends JABApplicationRoot {
 		
 		this.websiteClosed = true
 		this.websiteClosedLocked = false
+		
+		
+		this.shallowUpdates = []
 
 		// Parameters
 		this.parameters = {
@@ -455,6 +458,18 @@ class ApplicationRoot extends JABApplicationRoot {
 			applicationRoot.websiteClosedLocked = false
 		}, timeoutDuration)
 	}
+	
+	
+	// Updates
+	populateShallowUpdatesForPageSwitching () {
+		this.shallowUpdates.push(this.headerBackdrop)
+		this.shallowUpdates.push(this.header)
+		this.shallowUpdates.push(this.homeSector)
+	}
+	
+	clearShallowUpdates () {
+		this.shallowUpdates = []
+	}
 
 	// Scrolling
 	userDidScrollByAmount (amount) {
@@ -850,7 +865,11 @@ class ApplicationRoot extends JABApplicationRoot {
 		if (this.websiteClosed) {
 			this.openWebsite()
 		} else {
+			this.populateShallowUpdatesForPageSwitching()
+			// this.mainSector.populateShallowUpdatesForPageSwitching()
 			this.updateAllUI() // Use non-animated update because the only thing that should animate is the menu underline which has its own hardcoded positionDuration. If animated update is used then the newly selected page fades in but we want it to pop it
+			// this.mainSector.clearShallowUpdates()
+			this.clearShallowUpdates()
 		}
 		
 	}

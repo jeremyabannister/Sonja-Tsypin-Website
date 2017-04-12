@@ -104,11 +104,15 @@ class EnterArrow extends JABView {
 	// Label
 	configureLabel () {
 		
-		this.label.text = 'SCROLL DOWN'
-		this.label.textColor = 'white'
-		this.label.fontFamily = 'siteFont'
-		this.label.fontSize = 10
-		this.label.fontWeight = 'bold'
+		let view = this.label
+		
+		view.text = 'SCROLL DOWN'
+		view.textColor = 'white'
+		view.textAlign = 'center'
+		view.fontFamily = 'siteFont'
+		view.fontSize = 10
+		view.fontWeight = 'bold'
+		
 		
 		if (this.updatingForFade) {
 			if (this.fadedOut) {

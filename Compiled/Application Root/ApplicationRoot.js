@@ -34,6 +34,8 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 		_this.websiteClosed = true;
 		_this.websiteClosedLocked = false;
 
+		_this.shallowUpdates = [];
+
 		// Parameters
 		_this.parameters = {
 			sizeOfInitialLoadingGifWrapper: 50,
@@ -440,6 +442,21 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			}, timeoutDuration);
 		}
 
+		// Updates
+
+	}, {
+		key: 'populateShallowUpdatesForPageSwitching',
+		value: function populateShallowUpdatesForPageSwitching() {
+			this.shallowUpdates.push(this.headerBackdrop);
+			this.shallowUpdates.push(this.header);
+			this.shallowUpdates.push(this.homeSector);
+		}
+	}, {
+		key: 'clearShallowUpdates',
+		value: function clearShallowUpdates() {
+			this.shallowUpdates = [];
+		}
+
 		// Scrolling
 
 	}, {
@@ -809,7 +826,11 @@ var ApplicationRoot = function (_JABApplicationRoot) {
 			if (this.websiteClosed) {
 				this.openWebsite();
 			} else {
+				this.populateShallowUpdatesForPageSwitching();
+				// this.mainSector.populateShallowUpdatesForPageSwitching()
 				this.updateAllUI(); // Use non-animated update because the only thing that should animate is the menu underline which has its own hardcoded positionDuration. If animated update is used then the newly selected page fades in but we want it to pop it
+				// this.mainSector.clearShallowUpdates()
+				this.clearShallowUpdates();
 			}
 		}
 	}, {

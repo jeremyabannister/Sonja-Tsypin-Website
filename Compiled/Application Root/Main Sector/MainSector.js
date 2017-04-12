@@ -478,6 +478,23 @@ var MainSector = function (_JABView) {
 			});
 		}
 
+		// Updates
+
+	}, {
+		key: 'populateShallowUpdatesForPageSwitching',
+		value: function populateShallowUpdatesForPageSwitching() {
+			for (var i = 0; i < this.pages.length; i++) {
+				if (i != this.state.pageIndex) {
+					this.shallowUpdates.push(this.pags[i]);
+				}
+			}
+		}
+	}, {
+		key: 'clearShallowUpdates',
+		value: function clearShallowUpdates() {
+			this.shallowUpdates = [];
+		}
+
 		// Swipe
 
 	}, {

@@ -514,6 +514,19 @@ class MainSector extends JABView {
 	}
 	
 	
+	// Updates
+	populateShallowUpdatesForPageSwitching () {
+		for (var i = 0; i < this.pages.length; i++) {
+			if (i != this.state.pageIndex) {
+				this.shallowUpdates.push(this.pags[i])
+			}
+		}
+	}
+	
+	clearShallowUpdates () {
+		this.shallowUpdates = []
+	}
+	
 	
 	
 	// Swipe

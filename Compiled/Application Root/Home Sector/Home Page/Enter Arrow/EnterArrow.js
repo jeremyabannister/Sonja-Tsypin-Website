@@ -118,11 +118,14 @@ var EnterArrow = function (_JABView) {
 		key: 'configureLabel',
 		value: function configureLabel() {
 
-			this.label.text = 'SCROLL DOWN';
-			this.label.textColor = 'white';
-			this.label.fontFamily = 'siteFont';
-			this.label.fontSize = 10;
-			this.label.fontWeight = 'bold';
+			var view = this.label;
+
+			view.text = 'SCROLL DOWN';
+			view.textColor = 'white';
+			view.textAlign = 'center';
+			view.fontFamily = 'siteFont';
+			view.fontSize = 10;
+			view.fontWeight = 'bold';
 
 			if (this.updatingForFade) {
 				if (this.fadedOut) {
