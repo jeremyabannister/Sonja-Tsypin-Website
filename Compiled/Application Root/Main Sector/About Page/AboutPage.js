@@ -163,7 +163,7 @@ var AboutPage = function (_JABView) {
 					'text-justify': 'inter-word'
 				});
 
-				this.bioText.fontSize = 13;
+				this.bioText.fontSize = 12;
 				this.bioText.lineHeight = 1.5;
 			} else if (sizeClass == 'xs') {
 				this.bioText.textAlign = 'justify';
@@ -171,7 +171,7 @@ var AboutPage = function (_JABView) {
 					'text-justify': 'inter-word'
 				});
 
-				this.bioText.fontSize = 20;
+				this.bioText.fontSize = 14;
 				this.bioText.lineHeight = 1.8;
 			}
 
